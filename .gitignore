@@ -1,0 +1,9 @@
+.vs/
+
+Debug/
+Release/
+
+*.user
+*.vcxproj*
+
+*.txt
