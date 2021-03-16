@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <CL/opencl.h>
 
+// OpenCL configuration instruction: https://www.notion.so/Visual-Studio-OpenCL-cad4d748972b4464bb0c7f2d09b17cc9
+
 void printPlatformInfo(cl_platform_id platformId)
 {
 	printf("ID: %i\n", platformId);
