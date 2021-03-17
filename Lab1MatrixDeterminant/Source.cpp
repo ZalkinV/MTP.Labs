@@ -30,6 +30,16 @@ vector<vector<float>> readMatrix(char* filename)
 	return matrix;
 }
 
+int measureDeterminantCalculationMs(float (*func)(vector<vector<float>>&), vector<vector<float>>& matrix, float& determinant)
+{
+	clock_t startTime = clock();
+	determinant = func(matrix);
+	clock_t endTime = clock();
+	int milliseconds = endTime - startTime;
+
+	return milliseconds;
+}
+
 void matrixDeterminant(int argc, char* argv[])
 {
 	if (argc < 3)
@@ -43,8 +53,12 @@ void matrixDeterminant(int argc, char* argv[])
 	vector<vector<float>> matrix = readMatrix(filename);
 	vector<vector<float>> test1({ { 1, 2 }, {3, 4} });
 	vector<vector<float>> test2({ { 1, 2, 3 }, { 4, 5, 6}, { 7, 8, 9} });
-	float determinant = calcGaussDeterminant(matrix);
+
+	float determinant = 0;
+	int measuredMs = measureDeterminantCalculationMs(calcGaussDeterminant, matrix, determinant);
+
 	printf("Determinant: %g\n", determinant);
+	printf("\nTime (%i thread(s)): %f ms\n", 1, measuredMs);
 }
 
 int main(int argc, char* argv[])
