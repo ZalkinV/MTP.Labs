@@ -16,8 +16,12 @@ float calcGaussDeterminant(vector<vector<float>>& matrix)
 	int size = matrix.size();
 	
 	float determinant = 1;
+	int rowsSwappingCount = 0;
 	for (int iDiag = 0; iDiag < size; iDiag++)
 	{
+		if (swapWithFirstNotZeroDiagElRow(matrix, iDiag))
+			rowsSwappingCount++;
+
 		float diagEl = matrix[iDiag][iDiag];
 		for (int iRow = iDiag + 1; iRow < size; iRow++)
 		{
@@ -34,5 +38,29 @@ float calcGaussDeterminant(vector<vector<float>>& matrix)
 		determinant *= diagEl;
 	}
 
+	if (rowsSwappingCount % 2 != 0)
+		determinant *= -1;
+
 	return determinant;
+}
+
+bool swapWithFirstNotZeroDiagElRow(vector<vector<float>>& matrix, int iDiag)
+{
+	bool isSwapped = false;
+	if (matrix[iDiag][iDiag] == 0)
+	{
+		int size = matrix.size();
+		for (int iRow = iDiag + 1; iRow < size; iRow++)
+		{
+			if (matrix[iRow][iDiag] != 0)
+			{
+				swap(matrix[iDiag], matrix[iRow]);
+				isSwapped = true;
+				break;
+			}
+		}
+
+	}
+
+	return isSwapped;
 }
