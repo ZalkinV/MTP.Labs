@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "RecursiveDeterminant.h"
+#include "GaussDeterminant.h"
 
 using namespace std;
 
@@ -43,7 +43,7 @@ void matrixDeterminant(int argc, char* argv[])
 	vector<vector<float>> matrix = readMatrix(filename);
 	vector<vector<float>> test1({ { 1, 2 }, {3, 4} });
 	vector<vector<float>> test2({ { 1, 2, 3 }, { 4, 5, 6}, { 7, 8, 9} });
-	float determinant = calcDeterminant(matrix);
+	float determinant = calcGaussDeterminant(matrix);
 	printf("Determinant: %g\n", determinant);
 }
 
