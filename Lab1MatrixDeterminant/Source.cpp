@@ -37,17 +37,19 @@ void matrixDeterminant(int argc, char* argv[])
 		throw exception("Wrong count of arguments");
 
 	char* filename = argv[1];
-	int threadCount = stoi(argv[2]);
-	if (threadCount < -1)
-		throw exception("Thread count cannot be less than -1");
+	int threadsCount = stoi(argv[2]);
 
 	vector<vector<float>> matrix = readMatrix(filename);
 	vector<vector<float>> test1({ { 1, 2 }, {3, 4} });
 	vector<vector<float>> test2({ { 1, 2, 3 }, { 4, 5, 6}, { 7, 8, 9} });
 
+	float determinant;
 	Timer timer;
 	timer.start();
-	float determinant = calcGaussDeterminant(matrix);
+	if (threadsCount == -1)
+		determinant = calcGaussDeterminant(matrix);
+	else
+		determinant = calcGaussDeterminantMT(matrix, threadsCount);
 	timer.stop();
 	auto measuredMs = timer.getMs();
 

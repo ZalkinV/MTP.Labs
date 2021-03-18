@@ -14,7 +14,7 @@ https://e-maxx.ru/algo/determinant_gauss
 float calcGaussDeterminant(vector<vector<float>>& matrix)
 {
 	int size = matrix.size();
-	
+
 	float determinant = 1;
 	int rowsSwappingCount = 0;
 	for (int iDiag = 0; iDiag < size; iDiag++)
@@ -36,6 +36,49 @@ float calcGaussDeterminant(vector<vector<float>>& matrix)
 		}
 
 		determinant *= diagEl;
+	}
+
+	if (rowsSwappingCount % 2 != 0)
+		determinant *= -1;
+
+	return determinant;
+}
+
+float calcGaussDeterminantMT(vector<vector<float>>& matrix, int threadsCount)
+{
+	if (threadsCount < -1)
+		throw exception("Thread count cannot be less than -1");
+
+	if (threadsCount == 0)
+		threadsCount = omp_get_max_threads();
+
+	omp_set_num_threads(threadsCount);
+
+
+	int size = matrix.size();
+	
+	float determinant = 1;
+	int rowsSwappingCount = 0;
+	for (int iDiag = 0; iDiag < size; iDiag++)
+	{
+		if (swapWithFirstNotZeroDiagElRow(matrix, iDiag))
+			rowsSwappingCount++;
+
+#pragma omp parallel for schedule(static)
+		for (int iRow = iDiag + 1; iRow < size; iRow++)
+		{
+			float toBeZeroEl = matrix[iRow][iDiag];
+			float zerofierCoef = toBeZeroEl / matrix[iDiag][iDiag];
+
+			for (int iCol = iDiag; iCol < size; iCol++)
+			{
+				float zerofierEl = matrix[iDiag][iCol];
+				matrix[iRow][iCol] -= zerofierCoef * zerofierEl;
+			}
+		}
+		
+
+		determinant *= matrix[iDiag][iDiag];
 	}
 
 	if (rowsSwappingCount % 2 != 0)
