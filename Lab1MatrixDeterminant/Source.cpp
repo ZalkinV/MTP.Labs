@@ -39,9 +39,16 @@ void matrixDeterminant(int argc, char* argv[])
 	char* filename = argv[1];
 	int threadsCount = stoi(argv[2]);
 
+	if (threadsCount < -1)
+		throw exception("Thread count cannot be less than -1");
+
+	if (threadsCount == 0)
+		threadsCount = omp_get_max_threads();
+
+	if (threadsCount != -1)
+		omp_set_num_threads(threadsCount);
+
 	vector<vector<float>> matrix = readMatrix(filename);
-	vector<vector<float>> test1({ { 1, 2 }, {3, 4} });
-	vector<vector<float>> test2({ { 1, 2, 3 }, { 4, 5, 6}, { 7, 8, 9} });
 
 	float determinant;
 	Timer timer;
@@ -49,12 +56,12 @@ void matrixDeterminant(int argc, char* argv[])
 	if (threadsCount == -1)
 		determinant = calcGaussDeterminant(matrix);
 	else
-		determinant = calcGaussDeterminantMT(matrix, threadsCount);
+		determinant = calcGaussDeterminantMT(matrix);
 	timer.stop();
 	auto measuredMs = timer.getMs();
 
 	printf("Determinant: %g\n", determinant);
-	printf("\nTime (%i thread(s)): %f ms\n", 1, measuredMs);
+	printf("\nTime (%i thread(s)): %f ms\n", threadsCount, measuredMs);
 }
 
 int main(int argc, char* argv[])

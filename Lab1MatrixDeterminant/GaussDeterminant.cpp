@@ -44,17 +44,8 @@ float calcGaussDeterminant(vector<vector<float>>& matrix)
 	return determinant;
 }
 
-float calcGaussDeterminantMT(vector<vector<float>>& matrix, int threadsCount)
+float calcGaussDeterminantMT(vector<vector<float>>& matrix)
 {
-	if (threadsCount < -1)
-		throw exception("Thread count cannot be less than -1");
-
-	if (threadsCount == 0)
-		threadsCount = omp_get_max_threads();
-
-	omp_set_num_threads(threadsCount);
-
-
 	int size = matrix.size();
 	
 	float determinant = 1;
