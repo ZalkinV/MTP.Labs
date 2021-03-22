@@ -4,6 +4,7 @@
 #include <fstream>
 #include "Timer.h"
 #include "GaussDeterminant.h"
+#include "TimeMeasurer.h"
 
 using namespace std;
 
@@ -77,7 +78,8 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		labTask(argc, argv);
+		//labTask(argc, argv);
+		onThreadsCount();
 	}
 	catch (const exception& e)
 	{
