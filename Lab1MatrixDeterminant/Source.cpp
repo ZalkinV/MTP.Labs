@@ -31,13 +31,13 @@ vector<vector<float>> readMatrix(char* filename)
 	return matrix;
 }
 
-void matrixDeterminant(int argc, char* argv[])
+float matrixDeterminant(int argc, char* argv[], int& threadsCount, float& measuredMs)
 {
 	if (argc < 3)
 		throw exception("Wrong count of arguments");
 
 	char* filename = argv[1];
-	int threadsCount = stoi(argv[2]);
+	threadsCount = stoi(argv[2]);
 
 	if (threadsCount < -1)
 		throw exception("Thread count cannot be less than -1");
@@ -58,17 +58,21 @@ void matrixDeterminant(int argc, char* argv[])
 	else
 		determinant = calcGaussDeterminantMT(matrix);
 	timer.stop();
-	auto measuredMs = timer.getMs();
+	measuredMs = timer.getMs();
 
-	printf("Determinant: %g\n", determinant);
-	printf("\nTime (%i thread(s)): %f ms\n", threadsCount, measuredMs);
+	return determinant;
 }
 
 int main(int argc, char* argv[])
 {
 	try
 	{
-		matrixDeterminant(argc, argv);
+		int threadsCount = 0;
+		float measuredMs = 0;
+		float determinant = matrixDeterminant(argc, argv, threadsCount, measuredMs);
+
+		printf("Determinant: %g\n", determinant);
+		printf("\nTime (%i thread(s)): %f ms\n", threadsCount, measuredMs);
 	}
 	catch (const exception& e)
 	{
