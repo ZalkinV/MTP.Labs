@@ -63,16 +63,21 @@ float matrixDeterminant(int argc, char* argv[], int& threadsCount, float& measur
 	return determinant;
 }
 
+void labTask(int argc, char* argv[])
+{
+	int threadsCount = 0;
+	float measuredMs = 0;
+	float determinant = matrixDeterminant(argc, argv, threadsCount, measuredMs);
+
+	printf("Determinant: %g\n", determinant);
+	printf("\nTime (%i thread(s)): %f ms\n", threadsCount, measuredMs);
+}
+
 int main(int argc, char* argv[])
 {
 	try
 	{
-		int threadsCount = 0;
-		float measuredMs = 0;
-		float determinant = matrixDeterminant(argc, argv, threadsCount, measuredMs);
-
-		printf("Determinant: %g\n", determinant);
-		printf("\nTime (%i thread(s)): %f ms\n", threadsCount, measuredMs);
+		labTask(argc, argv);
 	}
 	catch (const exception& e)
 	{
