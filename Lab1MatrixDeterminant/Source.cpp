@@ -79,7 +79,8 @@ int main(int argc, char* argv[])
 	try
 	{
 		//labTask(argc, argv);
-		onThreadsCount();
+		//onThreadsCount();
+		onOmpOnOff();
 	}
 	catch (const exception& e)
 	{
