@@ -3,6 +3,11 @@
 
 using namespace std;
 
+/*
+Useful links:
+http://jakascorner.com/blog/2016/06/omp-for-scheduling.html
+*/
+
 void onThreadsCount()
 {
 	int minThreadsCount = 1;
@@ -51,4 +56,18 @@ void onOmpOnOff()
 			printf("%i, %f\n", threadsCount, measuredMs);
 		}
 	}
+}
+
+void onSchedules()
+{
+	int argc = 3;
+	char** argv = new char* [argc];
+	argv[1] = (char*)"matrix512.txt";
+	argv[2] = (char*)"0";
+
+	int threadsCount = 0;
+	float measuredMs = 0;
+	matrixDeterminant(argc, argv, threadsCount, measuredMs);
+
+	printf("%f\n", measuredMs);
 }

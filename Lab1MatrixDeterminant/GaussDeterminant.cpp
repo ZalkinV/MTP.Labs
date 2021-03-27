@@ -55,7 +55,7 @@ float calcGaussDeterminantMT(vector<vector<float>>& matrix)
 		if (swapWithFirstNotZeroDiagElRow(matrix, iDiag))
 			rowsSwappingCount++;
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(dynamic)
 		for (int iRow = iDiag + 1; iRow < size; iRow++)
 		{
 			float toBeZeroEl = matrix[iRow][iDiag];

@@ -2,3 +2,4 @@
 
 void onThreadsCount();
 void onOmpOnOff();
+void onSchedules();

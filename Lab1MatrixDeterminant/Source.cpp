@@ -80,7 +80,8 @@ int main(int argc, char* argv[])
 	{
 		//labTask(argc, argv);
 		//onThreadsCount();
-		onOmpOnOff();
+		//onOmpOnOff();
+		onSchedules();
 	}
 	catch (const exception& e)
 	{
