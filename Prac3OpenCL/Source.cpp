@@ -3,9 +3,56 @@
 
 // OpenCL configuration instruction: https://www.notion.so/Visual-Studio-OpenCL-cad4d748972b4464bb0c7f2d09b17cc9
 
+void printDeviceInfo(cl_device_id deviceId)
+{
+	printf("\tID: %p\n", deviceId);
+
+	size_t nameSize = 0;
+	clGetDeviceInfo(deviceId, CL_DEVICE_NAME, 0, NULL, &nameSize);
+	char* name = new char[nameSize];
+	clGetDeviceInfo(deviceId, CL_DEVICE_NAME, nameSize, name, NULL);
+	printf("\t\tName: %s\n", name);
+	delete[] name;
+
+	cl_device_type type = 0;
+	clGetDeviceInfo(deviceId, CL_DEVICE_TYPE, sizeof(cl_device_type), &type, NULL);
+	char* typeName = new char[4];
+	switch (type)
+	{
+	case 0:
+		typeName = (char*)"DEF";
+		break;
+	case 2:
+		typeName = (char*)"CPU";
+		break;
+	case 4:
+		typeName = (char*)"GPU";
+		break;
+	case 8:
+		typeName = (char*)"ACL";
+		break;
+	}
+	printf("\t\tType: %s\n", typeName);
+}
+
+void printAvailableDevicesInfos(cl_platform_id platformId)
+{
+	cl_uint devicesCount = 0;
+	clGetDeviceIDs(platformId, CL_DEVICE_TYPE_ALL, 0, NULL, &devicesCount);
+	cl_device_id* devicesIds = new cl_device_id[devicesCount];
+	clGetDeviceIDs(platformId, CL_DEVICE_TYPE_ALL, devicesCount, devicesIds, NULL);
+
+	printf("\tDevices count: %i\n", devicesCount);
+	for (int i = 0; i < devicesCount; i++)
+	{
+		cl_device_id deviceId = devicesIds[i];
+		printDeviceInfo(deviceId);
+	}
+}
+
 void printPlatformInfo(cl_platform_id platformId)
 {
-	printf("ID: %i\n", platformId);
+	printf("ID: %p\n", platformId);
 
 	size_t platfromNameSize = 0;
 	clGetPlatformInfo(platformId, CL_PLATFORM_NAME, NULL, NULL, &platfromNameSize);
@@ -20,9 +67,11 @@ void printPlatformInfo(cl_platform_id platformId)
 	clGetPlatformInfo(platformId, CL_PLATFORM_VERSION, platformVersionSize, platformVersion, NULL);
 	printf("\tVersion: %s\n", platformVersion);
 	delete[] platformVersion;
+
+	printAvailableDevicesInfos(platformId);
 }
 
-int main()
+void printAvailablePlatformsInfos()
 {
 	cl_uint platformCount = 0;
 	int err = clGetPlatformIDs(0, NULL, &platformCount);
@@ -37,6 +86,11 @@ int main()
 	}
 
 	delete[] platformsIds;
+}
+
+int main()
+{
+	printAvailablePlatformsInfos();
 
 	return 0;
 }
