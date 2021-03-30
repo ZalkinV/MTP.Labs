@@ -78,10 +78,10 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		//labTask(argc, argv);
+		labTask(argc, argv);
 		//onThreadsCount();
 		//onOmpOnOff();
-		onSchedules();
+		//onSchedules();
 	}
 	catch (const exception& e)
 	{
