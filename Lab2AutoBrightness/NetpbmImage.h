@@ -11,7 +11,7 @@ private:
 	NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, unsigned char* bytes);
 
 public:
-	static NetpbmImage Read(char* filename);
+	static NetpbmImage* Read(char* filename);
 	void AutoBrightness();
 	void Write(char* filename);
 	~NetpbmImage();
