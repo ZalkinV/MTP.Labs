@@ -5,6 +5,8 @@
 
 using namespace std;
 
+const char* NetpbmImage::HEADER_FORMAT = "P%i\n%i %i\n%i\n";
+
 NetpbmImage::NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, unsigned char* bytes)
 {
 	if (format != NetpbmFormat::P5 && format != NetpbmFormat::P6)
@@ -23,9 +25,11 @@ NetpbmImage* NetpbmImage::Read(char* filename)
 	if (file == NULL)
 		throw exception("Cannot open input file");
 
-	int err = 0;
 	int format = 0, width = 0, height = 0, byteSize = 0;
-	err = fscanf(file, "P%i\n%i %i\n%i\n", &format, &width, &height, &byteSize);
+	int valuesCount = fscanf(file, HEADER_FORMAT, &format, &width, &height, &byteSize);
+	if (valuesCount != 4)
+		throw exception("Wrong header in the input file");
+
 	NetpbmFormat netpbmFormat = (NetpbmFormat)format;
 	
 	int bytesCount = width * height;

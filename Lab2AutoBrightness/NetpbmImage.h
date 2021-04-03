@@ -4,6 +4,7 @@
 class NetpbmImage
 {
 private:
+	static const char* HEADER_FORMAT;
 	NetpbmFormat format;
 	int width, height;
 	int byteSize;
