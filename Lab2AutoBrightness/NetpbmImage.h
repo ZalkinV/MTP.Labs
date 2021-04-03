@@ -13,11 +13,11 @@ private:
 
 	NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, unsigned char* bytes);
 
-	static int CalculateBytesCount(NetpbmFormat format, int width, int height);
+	static int calculateBytesCount(NetpbmFormat format, int width, int height);
 
 public:
-	static NetpbmImage* Read(char* filename);
-	void AutoBrightness();
-	void Write(char* filename);
+	static NetpbmImage* read(char* filename);
+	void autoBrightness();
+	void write(char* filename);
 	~NetpbmImage();
 };

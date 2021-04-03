@@ -17,10 +17,10 @@ NetpbmImage::NetpbmImage(NetpbmFormat format, int width, int height, int byteSiz
 	this->height = height;
 	this->byteSize = byteSize;
 	this->bytes = bytes;
-	this->bytesCount = NetpbmImage::CalculateBytesCount(format, width, height);
+	this->bytesCount = NetpbmImage::calculateBytesCount(format, width, height);
 }
 
-int NetpbmImage::CalculateBytesCount(NetpbmFormat format, int width, int height)
+int NetpbmImage::calculateBytesCount(NetpbmFormat format, int width, int height)
 {
 	int bytesCount = width * height;
 	if (format == NetpbmFormat::P6)
@@ -29,7 +29,7 @@ int NetpbmImage::CalculateBytesCount(NetpbmFormat format, int width, int height)
 	return bytesCount;
 }
 
-NetpbmImage* NetpbmImage::Read(char* filename)
+NetpbmImage* NetpbmImage::read(char* filename)
 {
 	FILE* file = fopen(filename, "rb");
 	if (file == NULL)
@@ -42,7 +42,7 @@ NetpbmImage* NetpbmImage::Read(char* filename)
 
 	NetpbmFormat netpbmFormat = (NetpbmFormat)format;
 	
-	int bytesCount = NetpbmImage::CalculateBytesCount(netpbmFormat, width, height);
+	int bytesCount = NetpbmImage::calculateBytesCount(netpbmFormat, width, height);
 	unsigned char* bytesBuffer = new unsigned char[bytesCount];
 	fread(bytesBuffer, sizeof(unsigned char), bytesCount, file);
 	
@@ -53,11 +53,11 @@ NetpbmImage* NetpbmImage::Read(char* filename)
 	return image;
 }
 
-void NetpbmImage::AutoBrightness()
+void NetpbmImage::autoBrightness()
 {
 }
 
-void NetpbmImage::Write(char* filename)
+void NetpbmImage::write(char* filename)
 {
 	FILE* file = fopen(filename, "wb");
 	if (file == NULL)
