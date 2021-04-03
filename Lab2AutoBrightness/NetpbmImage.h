@@ -1,6 +1,8 @@
 #pragma once
 #include "NetpbmFormat.h"
 
+typedef unsigned char byte;
+
 class NetpbmImage
 {
 private:
@@ -9,9 +11,9 @@ private:
 	int width, height;
 	int byteSize;
 	int bytesCount;
-	unsigned char* bytes;
+	byte* bytes;
 
-	NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, unsigned char* bytes);
+	NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, byte* bytes);
 
 	static int calculateBytesCount(NetpbmFormat format, int width, int height);
 

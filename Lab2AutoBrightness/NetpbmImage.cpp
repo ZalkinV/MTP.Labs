@@ -7,7 +7,7 @@ using namespace std;
 
 const char* NetpbmImage::HEADER_FORMAT = "P%i\n%i %i\n%i\n";
 
-NetpbmImage::NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, unsigned char* bytes)
+NetpbmImage::NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, byte* bytes)
 {
 	if (format != NetpbmFormat::P5 && format != NetpbmFormat::P6)
 		throw exception("Wrong Netpbm file format");
@@ -43,8 +43,8 @@ NetpbmImage* NetpbmImage::read(char* filename)
 	NetpbmFormat netpbmFormat = (NetpbmFormat)format;
 	
 	int bytesCount = NetpbmImage::calculateBytesCount(netpbmFormat, width, height);
-	unsigned char* bytesBuffer = new unsigned char[bytesCount];
-	fread(bytesBuffer, sizeof(unsigned char), bytesCount, file);
+	byte* bytesBuffer = new byte[bytesCount];
+	fread(bytesBuffer, sizeof(byte), bytesCount, file);
 	
 	fclose(file);
 
@@ -65,7 +65,7 @@ void NetpbmImage::write(char* filename)
 
 	int valuesCount = fprintf(file, HEADER_FORMAT, this->format, this->width, this->height, this->byteSize);
 	
-	fwrite(this->bytes, sizeof(unsigned char), this->bytesCount, file);
+	fwrite(this->bytes, sizeof(byte), this->bytesCount, file);
 
 	fclose(file);
 }
