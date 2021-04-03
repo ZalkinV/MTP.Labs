@@ -1,14 +1,18 @@
 #pragma once
+#include "NetpbmFormat.h"
 
 class NetpbmImage
 {
 private:
-	char format[3];
+	NetpbmFormat format;
 	int width, height;
+	int byteSize;
 	unsigned char* bytes;
+	NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, unsigned char* bytes);
 
 public:
-	void Read(char* filename);
+	static NetpbmImage Read(char* filename);
 	void AutoBrightness();
 	void Write(char* filename);
+	~NetpbmImage();
 };

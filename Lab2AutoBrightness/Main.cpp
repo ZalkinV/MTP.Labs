@@ -1,8 +1,10 @@
 #include <exception>
 #include <string>
 #include <omp.h>
+#include "NetpbmImage.h"
 
 using namespace std;
+
 /*
 Useful links:
 https://docs.google.com/presentation/d/1pH7sGzIy2-_qd6YYeApTmw5vHwxjV9Y2CwvRAQ82EIc/edit
@@ -30,9 +32,11 @@ void labTask(int argc, char* argv[])
 	if (argc < 4)
 		throw exception("Wrong count of arguments");
 
-	char* inputFile = argv[1];
-	char* outputFile = argv[2];
+	char* inputFilename = argv[1];
+	char* outputFilename = argv[2];
 	int threadsCount = getThreadsCount(argv[3]);
+
+	NetpbmImage image = NetpbmImage::Read(inputFilename);
 }
 
 int main(int argc, char* argv[])
