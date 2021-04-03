@@ -17,6 +17,16 @@ NetpbmImage::NetpbmImage(NetpbmFormat format, int width, int height, int byteSiz
 	this->height = height;
 	this->byteSize = byteSize;
 	this->bytes = bytes;
+	this->bytesCount = NetpbmImage::CalculateBytesCount(format, width, height);
+}
+
+int NetpbmImage::CalculateBytesCount(NetpbmFormat format, int width, int height)
+{
+	int bytesCount = width * height;
+	if (format == NetpbmFormat::P6)
+		bytesCount *= 3;
+
+	return bytesCount;
 }
 
 NetpbmImage* NetpbmImage::Read(char* filename)
@@ -32,7 +42,7 @@ NetpbmImage* NetpbmImage::Read(char* filename)
 
 	NetpbmFormat netpbmFormat = (NetpbmFormat)format;
 	
-	int bytesCount = width * height;
+	int bytesCount = NetpbmImage::CalculateBytesCount(netpbmFormat, width, height);
 	unsigned char* bytesBuffer = new unsigned char[bytesCount];
 	fread(bytesBuffer, sizeof(unsigned char), bytesCount, file);
 	
@@ -55,8 +65,7 @@ void NetpbmImage::Write(char* filename)
 
 	int valuesCount = fprintf(file, HEADER_FORMAT, this->format, this->width, this->height, this->byteSize);
 	
-	int bytesCount = width * height;
-	fwrite(this->bytes, sizeof(unsigned char), bytesCount, file);
+	fwrite(this->bytes, sizeof(unsigned char), this->bytesCount, file);
 
 	fclose(file);
 }
