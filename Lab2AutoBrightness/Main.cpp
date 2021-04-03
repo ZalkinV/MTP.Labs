@@ -37,6 +37,9 @@ void labTask(int argc, char* argv[])
 	int threadsCount = getThreadsCount(argv[3]);
 
 	NetpbmImage* image = NetpbmImage::Read(inputFilename);
+	image->Write(outputFilename);
+
+	delete image;
 }
 
 int main(int argc, char* argv[])

@@ -49,6 +49,16 @@ void NetpbmImage::AutoBrightness()
 
 void NetpbmImage::Write(char* filename)
 {
+	FILE* file = fopen(filename, "wb");
+	if (file == NULL)
+		throw exception("Cannot create output file");
+
+	int valuesCount = fprintf(file, HEADER_FORMAT, this->format, this->width, this->height, this->byteSize);
+	
+	int bytesCount = width * height;
+	fwrite(this->bytes, sizeof(unsigned char), bytesCount, file);
+
+	fclose(file);
 }
 
 NetpbmImage::~NetpbmImage()
