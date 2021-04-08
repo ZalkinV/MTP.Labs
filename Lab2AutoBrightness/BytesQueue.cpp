@@ -7,20 +7,32 @@ BytesQueue::BytesQueue(int maxSize)
 
 void BytesQueue::push(byte value)
 {
-	byte greatestMin = this->topMin();
-	if (value < greatestMin)
+	if (this->minBytes.size() < this->maxSize)
 	{
-		if (this->minBytes.size() >= maxSize)
-			this->minBytes.pop();
 		this->minBytes.push(value);
 	}
-
-	byte smallestMax = this->topMax();
-	if (value > smallestMax)
+	else
 	{
-		if (this->maxBytes.size() >= maxSize)
-			this->maxBytes.pop();
+		byte greatestMin = this->topMin();
+		if (value < greatestMin)
+		{
+			this->minBytes.pop();
+			this->minBytes.push(value);
+		}
+	}
+
+	if (this->maxBytes.size() < this->maxSize)
+	{
 		this->maxBytes.push(value);
+	}
+	else
+	{
+		byte smallestMax = this->topMax();
+		if (value > smallestMax)
+		{
+			this->maxBytes.pop();
+			this->maxBytes.push(value);
+		}
 	}
 }
 
