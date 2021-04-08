@@ -2,6 +2,7 @@
 #include <string>
 
 #include "NetpbmImage.h"
+#include "BytesQueue.h"
 
 using namespace std;
 
@@ -55,6 +56,16 @@ NetpbmImage* NetpbmImage::read(char* filename)
 
 void NetpbmImage::autoBrightness()
 {
+	int thresholdPixelsCount = (this->width * this->height) / 256;
+	BytesQueue bytesQueue(thresholdPixelsCount);
+
+	for (int i = 0; i < this->bytesCount; i++)
+	{
+		bytesQueue.push(this->bytes[i]);
+	}
+
+	int minThreshold = bytesQueue.topMin();
+	int maxThreshold = bytesQueue.topMax();
 }
 
 void NetpbmImage::write(char* filename)
