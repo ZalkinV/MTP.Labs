@@ -1,7 +1,6 @@
 #pragma once
 #include "NetpbmFormat.h"
-
-typedef unsigned char byte;
+#include "TypeDefs.h"
 
 class NetpbmImage
 {
