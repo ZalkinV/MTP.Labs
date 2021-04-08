@@ -5,7 +5,7 @@
 
 using namespace std;
 
-const char* NetpbmImage::HEADER_FORMAT = "P%i\n%i %i\n%i\n";
+const char* NetpbmImage::HEADER_FORMAT = "P%i\n%i %i\n%i%1\n"; // по стандарту С++ \n значит, что мы считываем один или несколько пробельных символов, поэтому, чтобы не пропускать возможные пробельные символы в начале блока данных, используется такой шаблон заголовка с %1\n, чтобы пропускать только один символ переноса строки
 
 NetpbmImage::NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, byte* bytes)
 {
