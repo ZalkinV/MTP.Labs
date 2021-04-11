@@ -10,7 +10,6 @@ using namespace std;
 /*
 Useful links:
 https://docs.google.com/presentation/d/1pH7sGzIy2-_qd6YYeApTmw5vHwxjV9Y2CwvRAQ82EIc/edit
-https://stackoverflow.com/questions/596216/formula-to-determine-brightness-of-rgb-color
 */
 
 int getThreadsCount(char* threadsCountStr)
@@ -39,8 +38,8 @@ void labTask(int argc, char* argv[])
 	int threadsCount = getThreadsCount(argv[3]);
 
 	NetpbmImage* image = NetpbmImage::read(inputFilename);
+	
 	Timer timer;
-
 	timer.start();
 	if (threadsCount == -1)
 		image->autoBrightnessST();
@@ -49,11 +48,10 @@ void labTask(int argc, char* argv[])
 	timer.stop();
 	
 	image->write(outputFilename);
+	delete image;
 
 	float measuredMs = timer.getMs();
 	printf("Time (%i thread(s)): %f ms\n", threadsCount, measuredMs);
-
-	delete image;
 }
 
 int main(int argc, char* argv[])
