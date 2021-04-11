@@ -2,7 +2,8 @@
 
 BytesQueue::BytesQueue(int maxSize)
 {
-	this->maxSize = maxSize;
+	int sizeOfSingleQueue = maxSize / 2;
+	this->maxSize = sizeOfSingleQueue;
 }
 
 void BytesQueue::push(byte value)
