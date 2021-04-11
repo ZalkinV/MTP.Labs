@@ -42,7 +42,10 @@ void labTask(int argc, char* argv[])
 	Timer timer;
 
 	timer.start();
-	image->autoBrightness();
+	if (threadsCount == -1)
+		image->autoBrightnessST();
+	else
+		image->autoBrightness();
 	timer.stop();
 	
 	image->write(outputFilename);

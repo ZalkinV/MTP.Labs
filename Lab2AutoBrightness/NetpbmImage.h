@@ -20,6 +20,7 @@ private:
 public:
 	static NetpbmImage* read(char* filename);
 	void autoBrightness();
+	void autoBrightnessST();
 	void write(char* filename);
 	~NetpbmImage();
 };
