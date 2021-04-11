@@ -65,8 +65,15 @@ void NetpbmImage::autoBrightness()
 		bytesQueue.push(this->bytes[i]);
 	}
 
-	int minThreshold = bytesQueue.topMin();
-	int maxThreshold = bytesQueue.topMax();
+	byte minThreshold = bytesQueue.topMin();
+	byte maxThreshold = bytesQueue.topMax();
+
+	for (int i = 0; i < this->bytesCount; i++)
+	{
+		byte curByte = this->bytes[i];
+		byte newByte = scaleColor(curByte, minThreshold, maxThreshold);
+		this->bytes[i] = newByte;
+	}
 }
 
 byte NetpbmImage::scaleColor(byte value, byte min, byte max)
