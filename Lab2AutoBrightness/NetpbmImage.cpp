@@ -69,10 +69,16 @@ void NetpbmImage::autoBrightness()
 	int maxThreshold = bytesQueue.topMax();
 }
 
-int NetpbmImage::scaleColor(int value, int min, int max)
+byte NetpbmImage::scaleColor(byte value, byte min, byte max)
 {
 	int newValue = (value - min) * 255 / (max - min);
-	return newValue;
+	
+	if (newValue < 0)
+		newValue = 0;
+	if (newValue > 255)
+		newValue = 255;
+	
+	return (byte)newValue;
 }
 
 void NetpbmImage::write(char* filename)

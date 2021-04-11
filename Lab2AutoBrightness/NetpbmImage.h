@@ -15,7 +15,7 @@ private:
 	NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, byte* bytes);
 
 	static int calculateBytesCount(NetpbmFormat format, int width, int height);
-	static int scaleColor(int value, int min, int max);
+	static byte scaleColor(byte value, byte min, byte max);
 
 public:
 	static NetpbmImage* read(char* filename);
