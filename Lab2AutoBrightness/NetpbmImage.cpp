@@ -60,6 +60,7 @@ void NetpbmImage::autoBrightness()
 	int thresholdPixelsCount = (this->width * this->height) / 256;
 	BytesQueue bytesQueue(thresholdPixelsCount);
 
+#pragma omp parallel for schedule(static)
 	for (int i = 0; i < this->bytesCount; i++)
 	{
 		bytesQueue.push(this->bytes[i]);
