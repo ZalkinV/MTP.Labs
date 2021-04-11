@@ -6,7 +6,8 @@
 
 using namespace std;
 
-const char* NetpbmImage::HEADER_FORMAT = "P%i\n%i %i\n%i%1\n"; // по стандарту С++ \n значит, что мы считываем один или несколько пробельных символов, поэтому, чтобы не пропускать возможные пробельные символы в начале блока данных, используется такой шаблон заголовка с %1\n, чтобы пропускать только один символ переноса строки
+// по стандарту С++ \n значит, что мы считываем один или несколько пробельных символов, поэтому, чтобы не пропускать возможные пробельные символы в начале блока данных, используется такой шаблон заголовка с %1\n, чтобы пропускать только один символ переноса строки
+const char* NetpbmImage::HEADER_FORMAT = "P%i\n%i %i\n%i%c";
 
 NetpbmImage::NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, byte* bytes)
 {
@@ -36,9 +37,9 @@ NetpbmImage* NetpbmImage::read(char* filename)
 	if (file == NULL)
 		throw exception("Cannot open input file");
 
-	int format = 0, width = 0, height = 0, byteSize = 0;
-	int valuesCount = fscanf(file, HEADER_FORMAT, &format, &width, &height, &byteSize);
-	if (valuesCount != 4)
+	int format = 0, width = 0, height = 0, byteSize = 0; char newLineChar;
+	int valuesCount = fscanf(file, HEADER_FORMAT, &format, &width, &height, &byteSize, &newLineChar);
+	if (valuesCount != 5)
 		throw exception("Wrong header in the input file");
 
 	NetpbmFormat netpbmFormat = (NetpbmFormat)format;
@@ -80,7 +81,7 @@ void NetpbmImage::write(char* filename)
 	if (file == NULL)
 		throw exception("Cannot create output file");
 
-	int valuesCount = fprintf(file, HEADER_FORMAT, this->format, this->width, this->height, this->byteSize);
+	int valuesCount = fprintf(file, HEADER_FORMAT, this->format, this->width, this->height, this->byteSize, '\n');
 	
 	fwrite(this->bytes, sizeof(byte), this->bytesCount, file);
 
