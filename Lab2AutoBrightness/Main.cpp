@@ -1,7 +1,9 @@
 #include <exception>
 #include <string>
 #include <omp.h>
+
 #include "NetpbmImage.h"
+#include "Timer.h"
 
 using namespace std;
 
@@ -37,8 +39,16 @@ void labTask(int argc, char* argv[])
 	int threadsCount = getThreadsCount(argv[3]);
 
 	NetpbmImage* image = NetpbmImage::read(inputFilename);
+	Timer timer;
+
+	timer.start();
 	image->autoBrightness();
+	timer.stop();
+	
 	image->write(outputFilename);
+
+	float measuredMs = timer.getMs();
+	printf("Time (%i thread(s)): %f ms\n", threadsCount, measuredMs);
 
 	delete image;
 }
