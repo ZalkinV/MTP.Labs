@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Prac3OpenCL", "Prac3OpenCL\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab1MatrixDeterminant", "Lab1MatrixDeterminant\Lab1MatrixDeterminant.vcxproj", "{4AF86DA6-31F9-4223-851A-8FADEE254F5D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Prac4OpenCLMatrix", "Prac4OpenCLMatrix\Prac4OpenCLMatrix.vcxproj", "{F8DC3398-0677-4417-A14C-38F446DF219A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{4AF86DA6-31F9-4223-851A-8FADEE254F5D}.Release|x64.Build.0 = Release|x64
 		{4AF86DA6-31F9-4223-851A-8FADEE254F5D}.Release|x86.ActiveCfg = Release|Win32
 		{4AF86DA6-31F9-4223-851A-8FADEE254F5D}.Release|x86.Build.0 = Release|Win32
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Debug|x64.ActiveCfg = Debug|x64
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Debug|x64.Build.0 = Debug|x64
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Debug|x86.ActiveCfg = Debug|Win32
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Debug|x86.Build.0 = Debug|Win32
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Release|x64.ActiveCfg = Release|x64
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Release|x64.Build.0 = Release|x64
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Release|x86.ActiveCfg = Release|Win32
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
