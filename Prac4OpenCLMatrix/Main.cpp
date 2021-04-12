@@ -41,5 +41,16 @@ cl_device_id getDeviceId()
 int main()
 {
 	cl_device_id deviceId = getDeviceId();
+
+	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
+
+	cl_queue_properties queueProperties[] = { CL_QUEUE_PROFILING_ENABLE };
+	cl_command_queue queue = clCreateCommandQueueWithProperties(context, deviceId, queueProperties, NULL);
+	
+
+
+	clReleaseCommandQueue(queue);
+	clReleaseContext(context);
+	
 	return 0;
 }
