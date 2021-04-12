@@ -32,7 +32,11 @@ void printDeviceInfo(cl_device_id deviceId)
 		typeName = (char*)"ACL";
 		break;
 	}
-	printf("\t\tType: %s\n", typeName);
+
+	int isIntegrated = 0;
+	clGetDeviceInfo(deviceId, CL_DEVICE_HOST_UNIFIED_MEMORY, sizeof(int), &isIntegrated, NULL);
+	
+	printf("\t\tType: %s %s\n", typeName, isIntegrated ? "Integrated" : "Discrete");
 }
 
 void printAvailableDevicesInfos(cl_platform_id platformId)
