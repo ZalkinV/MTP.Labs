@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_DEPRECATE
 #include <iostream>
 
 #include <CL/opencl.h>
@@ -38,6 +39,30 @@ cl_device_id getDeviceId()
 	return defaultDeviceId;
 }
 
+cl_program getProgram(cl_context context)
+{
+	FILE* file = fopen("Kernel.ocl", "rb");
+	if (file == NULL)
+		return NULL;
+
+	fseek(file, 0, SEEK_END);
+	size_t fileSize = ftell(file);
+	fseek(file, 0, SEEK_SET);
+
+	char** sourceCode = new char*[1];
+	sourceCode[0] = new char[fileSize];
+	fread(sourceCode[0], sizeof(char), fileSize, file);
+	
+	fclose(file);
+
+	cl_program program = clCreateProgramWithSource(context, 1, (const char**)sourceCode, &fileSize, NULL);
+
+	delete[] sourceCode[0];
+	delete[] sourceCode;
+
+	return program;
+}
+
 int main()
 {
 	cl_device_id deviceId = getDeviceId();
@@ -47,6 +72,7 @@ int main()
 	cl_queue_properties queueProperties[] = { CL_QUEUE_PROFILING_ENABLE };
 	cl_command_queue queue = clCreateCommandQueueWithProperties(context, deviceId, queueProperties, NULL);
 	
+	cl_program program = getProgram(context);
 
 
 	clReleaseCommandQueue(queue);
