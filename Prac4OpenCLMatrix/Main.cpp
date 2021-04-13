@@ -104,7 +104,7 @@ void runKernel(cl_context context, cl_program program, cl_command_queue queue, c
 	err = clEnqueueWriteBuffer(queue, bufferB, false, 0, bufferSize, arrayB, NULL, NULL, NULL);
 
 	cl_uint workDim = 1;
-	size_t globalWorkSize = 1;
+	size_t globalWorkSize = arraySize;
 	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, &globalWorkSize, NULL, NULL, NULL, NULL);
 
 	err = clEnqueueReadBuffer(queue, bufferC, true, 0, bufferSize, arrayC, NULL, NULL, NULL);
@@ -139,7 +139,7 @@ int main()
 	if (buildStatus != 0)
 		return buildStatus;
 
-	runKernel(context, program, queue, "sum");
+	runKernel(context, program, queue, "arraySum");
 	
 	return 0;
 }
