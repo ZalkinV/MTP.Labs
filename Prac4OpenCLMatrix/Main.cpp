@@ -79,35 +79,22 @@ int buildProgram(cl_program program, cl_device_id deviceId)
 	return compilationErr;
 }
 
-int main()
+void runKernel(cl_context context, cl_program program, cl_command_queue queue, const char* kernelName)
 {
-	cl_device_id deviceId = getDeviceId();
-
-	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
-
-	cl_queue_properties queueProperties[] = { CL_QUEUE_PROFILING_ENABLE };
-	cl_command_queue queue = clCreateCommandQueueWithProperties(context, deviceId, queueProperties, NULL);
-	
-	cl_program program = getProgram(context, "Kernel.ocl");
-	int buildStatus = buildProgram(program, deviceId);
-	if (buildStatus != 0)
-		return buildStatus;
-
-
 	cl_int err = 0;
 	size_t groupSize = 2;
 	size_t arraySize = 2;
 	int* arrayA = new int[] { 1, 2 };
 	int* arrayB = new int[] { 3, 4 };
 	int* arrayC = new int[arraySize];
-	
+
 	size_t bufferSize = arraySize * sizeof(int);
 	cl_mem bufferA = clCreateBuffer(context, CL_MEM_READ_ONLY, bufferSize, NULL, &err);
 	cl_mem bufferB = clCreateBuffer(context, CL_MEM_READ_ONLY, bufferSize, NULL, &err);
 	cl_mem bufferC = clCreateBuffer(context, CL_MEM_WRITE_ONLY, bufferSize, NULL, &err);
 
 
-	cl_kernel kernel = clCreateKernel(program, "sum", &err);
+	cl_kernel kernel = clCreateKernel(program, kernelName, &err);
 
 	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &bufferA);
 	err = clSetKernelArg(kernel, 1, sizeof(cl_mem), &bufferB);
@@ -115,13 +102,13 @@ int main()
 
 	err = clEnqueueWriteBuffer(queue, bufferA, false, 0, bufferSize, arrayA, NULL, NULL, NULL);
 	err = clEnqueueWriteBuffer(queue, bufferB, false, 0, bufferSize, arrayB, NULL, NULL, NULL);
-	
+
 	cl_uint workDim = 1;
 	size_t globalWorkSize = 1;
 	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, &globalWorkSize, NULL, NULL, NULL, NULL);
-	
+
 	err = clEnqueueReadBuffer(queue, bufferC, true, 0, bufferSize, arrayC, NULL, NULL, NULL);
-	
+
 	clReleaseMemObject(bufferA);
 	clReleaseMemObject(bufferB);
 	clReleaseMemObject(bufferC);
@@ -136,6 +123,23 @@ int main()
 	delete[] arrayA;
 	delete[] arrayB;
 	delete[] arrayC;
+}
+
+int main()
+{
+	cl_device_id deviceId = getDeviceId();
+
+	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
+
+	cl_queue_properties queueProperties[] = { CL_QUEUE_PROFILING_ENABLE };
+	cl_command_queue queue = clCreateCommandQueueWithProperties(context, deviceId, queueProperties, NULL);
+	
+	cl_program program = getProgram(context, "Kernel.ocl");
+	int buildStatus = buildProgram(program, deviceId);
+	if (buildStatus != 0)
+		return buildStatus;
+
+	runKernel(context, program, queue, "sum");
 	
 	return 0;
 }
