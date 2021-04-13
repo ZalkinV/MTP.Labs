@@ -93,8 +93,49 @@ int main()
 	if (buildStatus != 0)
 		return buildStatus;
 
+
+	cl_int err = 0;
+	size_t groupSize = 2;
+	size_t arraySize = 2;
+	int* arrayA = new int[] { 1, 2 };
+	int* arrayB = new int[] { 3, 4 };
+	int* arrayC = new int[arraySize];
+	
+	size_t bufferSize = arraySize * sizeof(int);
+	cl_mem bufferA = clCreateBuffer(context, CL_MEM_READ_ONLY, bufferSize, NULL, &err);
+	cl_mem bufferB = clCreateBuffer(context, CL_MEM_READ_ONLY, bufferSize, NULL, &err);
+	cl_mem bufferC = clCreateBuffer(context, CL_MEM_WRITE_ONLY, bufferSize, NULL, &err);
+
+
+	cl_kernel kernel = clCreateKernel(program, "sum", &err);
+
+	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &bufferA);
+	err = clSetKernelArg(kernel, 1, sizeof(cl_mem), &bufferB);
+	err = clSetKernelArg(kernel, 2, sizeof(cl_mem), &bufferC);
+
+	err = clEnqueueWriteBuffer(queue, bufferA, false, 0, bufferSize, arrayA, NULL, NULL, NULL);
+	err = clEnqueueWriteBuffer(queue, bufferB, false, 0, bufferSize, arrayB, NULL, NULL, NULL);
+	
+	cl_uint workDim = 1;
+	size_t globalWorkSize = 1;
+	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, &globalWorkSize, NULL, NULL, NULL, NULL);
+	
+	err = clEnqueueReadBuffer(queue, bufferC, true, 0, bufferSize, arrayC, NULL, NULL, NULL);
+	
+	clReleaseMemObject(bufferA);
+	clReleaseMemObject(bufferB);
+	clReleaseMemObject(bufferC);
 	clReleaseCommandQueue(queue);
 	clReleaseContext(context);
+
+	for (int i = 0; i < arraySize; i++)
+	{
+		printf("%i ", arrayC[i]);
+	}
+
+	delete[] arrayA;
+	delete[] arrayB;
+	delete[] arrayC;
 	
 	return 0;
 }
