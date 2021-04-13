@@ -1,0 +1,7 @@
+kernel void sum(
+	global const int *a, // input buffer
+	global const int *b, // input buffer
+	global int *c) // output buffer
+{
+  *c = *a + *b;
+}
