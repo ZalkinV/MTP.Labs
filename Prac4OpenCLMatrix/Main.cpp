@@ -39,9 +39,9 @@ cl_device_id getDeviceId()
 	return defaultDeviceId;
 }
 
-cl_program getProgram(cl_context context)
+cl_program getProgram(cl_context context, const char* sourceFilename)
 {
-	FILE* file = fopen("Kernel.ocl", "rb");
+	FILE* file = fopen(sourceFilename, "rb");
 	if (file == NULL)
 		return NULL;
 
@@ -88,7 +88,7 @@ int main()
 	cl_queue_properties queueProperties[] = { CL_QUEUE_PROFILING_ENABLE };
 	cl_command_queue queue = clCreateCommandQueueWithProperties(context, deviceId, queueProperties, NULL);
 	
-	cl_program program = getProgram(context);
+	cl_program program = getProgram(context, "Kernel.ocl");
 	int buildStatus = buildProgram(program, deviceId);
 	if (buildStatus != 0)
 		return buildStatus;
