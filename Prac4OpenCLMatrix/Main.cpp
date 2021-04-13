@@ -63,6 +63,22 @@ cl_program getProgram(cl_context context)
 	return program;
 }
 
+int buildProgram(cl_program program, cl_device_id deviceId)
+{
+	cl_int compilationErr = clBuildProgram(program, 1, &deviceId, "", NULL, NULL);
+	
+	if (compilationErr != 0)
+	{
+		size_t buildLogSize;
+		clGetProgramBuildInfo(program, deviceId, CL_PROGRAM_BUILD_LOG, NULL, NULL, &buildLogSize);
+		char* buildLog = new char[buildLogSize];
+		clGetProgramBuildInfo(program, deviceId, CL_PROGRAM_BUILD_LOG, buildLogSize, buildLog, NULL);
+		printf("%s", buildLog);
+	}
+
+	return compilationErr;
+}
+
 int main()
 {
 	cl_device_id deviceId = getDeviceId();
@@ -73,7 +89,9 @@ int main()
 	cl_command_queue queue = clCreateCommandQueueWithProperties(context, deviceId, queueProperties, NULL);
 	
 	cl_program program = getProgram(context);
-
+	int buildStatus = buildProgram(program, deviceId);
+	if (buildStatus != 0)
+		return buildStatus;
 
 	clReleaseCommandQueue(queue);
 	clReleaseContext(context);
