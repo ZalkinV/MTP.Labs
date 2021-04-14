@@ -79,6 +79,19 @@ int buildProgram(cl_program program, cl_device_id deviceId)
 	return compilationErr;
 }
 
+int getElapsedTimeUs(cl_event event)
+{
+	cl_int err = 0;
+
+	cl_ulong startTime = 0, endTime = 0;
+	err = clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &startTime, NULL);
+	err = clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &endTime, NULL);
+
+	int elapsedTimeUs = (endTime - startTime) / 1000;
+
+	return elapsedTimeUs;
+}
+
 void runKernel(cl_context context, cl_program program, cl_command_queue queue, const char* kernelName)
 {
 	cl_int err = 0;
@@ -105,7 +118,8 @@ void runKernel(cl_context context, cl_program program, cl_command_queue queue, c
 
 	cl_uint workDim = 1;
 	size_t globalWorkSize = arraySize;
-	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, &globalWorkSize, NULL, NULL, NULL, NULL);
+	cl_event kernelStartEvent;
+	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, &globalWorkSize, NULL, NULL, NULL, &kernelStartEvent);
 
 	err = clEnqueueReadBuffer(queue, bufferC, true, 0, bufferSize, arrayC, NULL, NULL, NULL);
 
@@ -123,6 +137,9 @@ void runKernel(cl_context context, cl_program program, cl_command_queue queue, c
 	delete[] arrayA;
 	delete[] arrayB;
 	delete[] arrayC;
+
+	int kernelExecTime = getElapsedTimeUs(kernelStartEvent);
+	printf("Kernel execution time: %i us\n", kernelExecTime);
 }
 
 int main()
@@ -131,8 +148,9 @@ int main()
 
 	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
 
-	cl_queue_properties queueProperties[] = { CL_QUEUE_PROFILING_ENABLE };
-	cl_command_queue queue = clCreateCommandQueueWithProperties(context, deviceId, queueProperties, NULL);
+	cl_queue_properties queueProperties = CL_QUEUE_PROFILING_ENABLE;
+#pragma warning(suppress : 4996)
+	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
 	
 	cl_program program = getProgram(context, "Sum.ocl");
 	int buildStatus = buildProgram(program, deviceId);
