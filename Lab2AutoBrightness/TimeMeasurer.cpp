@@ -55,3 +55,30 @@ void onSchedules()
 		}
 	}
 }
+
+void onOmpOnOff()
+{
+	printf("Filename,Omp,Time (ms)\n");
+
+	omp_set_num_threads(1);
+
+	Timer timer;
+	for (int iFilename = 0; iFilename < 4; iFilename++)
+	{
+		const char* currentFilename = filenames[iFilename];
+		NetpbmImage* image = NetpbmImage::read(currentFilename);
+
+		for (int isOmp = 0; isOmp <= 1; isOmp++)
+		{
+			timer.start();
+			if (isOmp)
+				image->autoBrightness();
+			else
+				image->autoBrightnessST();
+			timer.stop();
+			float measuredMs = timer.getMs();
+
+			printf("%s,%s,%f\n", currentFilename, isOmp ? "on" : "off", measuredMs);
+		}
+	}
+}

@@ -6,3 +6,4 @@
 
 void onThreadsCount();
 void onSchedules();
+void onOmpOnOff();
