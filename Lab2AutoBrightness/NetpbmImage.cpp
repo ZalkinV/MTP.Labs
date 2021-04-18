@@ -31,7 +31,7 @@ int NetpbmImage::calculateBytesCount(NetpbmFormat format, int width, int height)
 	return bytesCount;
 }
 
-NetpbmImage* NetpbmImage::read(char* filename)
+NetpbmImage* NetpbmImage::read(const char* filename)
 {
 	FILE* file = fopen(filename, "rb");
 	if (file == NULL)

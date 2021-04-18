@@ -18,7 +18,7 @@ private:
 	static byte scaleColor(byte value, byte min, byte max);
 
 public:
-	static NetpbmImage* read(char* filename);
+	static NetpbmImage* read(const char* filename);
 	void autoBrightness();
 	void autoBrightnessST();
 	void write(char* filename);
