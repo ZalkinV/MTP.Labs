@@ -1,15 +1,15 @@
 #include "TimeMeasurer.h"
 
+const char* filenames[] =
+{
+	"images/orig/river-640.ppm",
+	"images/orig/river-640.pgm",
+	"images/orig/river-1920.ppm",
+	"images/orig/river-1920.pgm"
+};
+
 void onThreadsCount()
 {
-	const char* filenames[] =
-	{
-		"images/orig/river-640.ppm",
-		"images/orig/river-640.pgm",
-		"images/orig/river-1920.ppm",
-		"images/orig/river-1920.pgm"
-	};
-
 	printf("Filename,ThreadsCount,Time (ms)\n");
 	
 	Timer timer;
@@ -34,14 +34,6 @@ void onThreadsCount()
 
 void onSchedules()
 {
-	const char* filenames[] =
-	{
-		"images/orig/river-640.ppm",
-		"images/orig/river-640.pgm",
-		"images/orig/river-1920.ppm",
-		"images/orig/river-1920.pgm"
-	};
-
 	printf("Static\n");
 	printf("Filename,ChunkSize,Time (ms)\n");
 	
@@ -54,7 +46,6 @@ void onSchedules()
 		for (int iChunkSize = 0; iChunkSize <= 10; iChunkSize++)
 		{
 			int chunkSize = (int)pow(2, iChunkSize);
-
 			timer.start();
 			image->autoBrightnessScheduleTest(chunkSize);
 			timer.stop();
