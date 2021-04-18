@@ -86,7 +86,7 @@ void NetpbmImage::autoBrightness()
 	int thresholdPixelsCount = (this->width * this->height) / 256;
 	BytesQueue bytesQueue(thresholdPixelsCount);
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(guided)
 	for (int i = 0; i < this->bytesCount; i++)
 	{
 		bytesQueue.push(this->initialBytes[i]);
@@ -95,7 +95,7 @@ void NetpbmImage::autoBrightness()
 	byte minThreshold = bytesQueue.topMin();
 	byte maxThreshold = bytesQueue.topMax();
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(dynamic, 32)
 	for (int i = 0; i < this->bytesCount; i++)
 	{
 		byte curByte = this->initialBytes[i];

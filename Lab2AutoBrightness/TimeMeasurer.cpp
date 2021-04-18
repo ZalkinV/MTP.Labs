@@ -87,8 +87,8 @@ void onManualDiffSchedules()
 {
 	printf("Filename,QueueSchedule,ScalingSchedule,Time (ms)\n");
 
-	const char* queueSchedule = "Static";
-	const char* scalingSchedule = "Static";
+	const char* queueSchedule = "guided";
+	const char* scalingSchedule = "dynamic32";
 
 	Timer timer;
 	for (int iFilename = 0; iFilename < 4; iFilename++)
