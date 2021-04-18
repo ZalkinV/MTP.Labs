@@ -62,7 +62,8 @@ int main(int argc, char* argv[])
 		//labTask(argc, argv);
 		//onThreadsCount();
 		//onSchedules();
-		onOmpOnOff();
+		//onOmpOnOff();
+		onManualDiffSchedules();
 	}
 	catch (const exception& e)
 	{

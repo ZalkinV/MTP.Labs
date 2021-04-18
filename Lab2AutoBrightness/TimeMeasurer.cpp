@@ -82,3 +82,25 @@ void onOmpOnOff()
 		}
 	}
 }
+
+void onManualDiffSchedules()
+{
+	printf("Filename,QueueSchedule,ScalingSchedule,Time (ms)\n");
+
+	const char* queueSchedule = "Static";
+	const char* scalingSchedule = "Static";
+
+	Timer timer;
+	for (int iFilename = 0; iFilename < 4; iFilename++)
+	{
+		const char* currentFilename = filenames[iFilename];
+		NetpbmImage* image = NetpbmImage::read(currentFilename);
+
+		timer.start();
+		image->autoBrightness();
+		timer.stop();
+		float measuredMs = timer.getMs();
+
+		printf("%s,%s,%s,%f\n", currentFilename, queueSchedule, scalingSchedule, measuredMs);
+	}
+}

@@ -7,3 +7,4 @@
 void onThreadsCount();
 void onSchedules();
 void onOmpOnOff();
+void onManualDiffSchedules();
