@@ -11,7 +11,7 @@ void onThreadsCount()
 	};
 
 	printf("Filename,ThreadsCount,Time (ms)\n");
-
+	
 	Timer timer;
 	for (int iFilename = 0; iFilename < 4; iFilename++)
 	{
@@ -28,6 +28,39 @@ void onThreadsCount()
 			float measuredMs = timer.getMs();
 
 			printf("%s,%i,%f\n", currentFilename, iThreadsCount, measuredMs);
+		}
+	}
+}
+
+void onSchedules()
+{
+	const char* filenames[] =
+	{
+		"images/orig/river-640.ppm",
+		"images/orig/river-640.pgm",
+		"images/orig/river-1920.ppm",
+		"images/orig/river-1920.pgm"
+	};
+
+	printf("Static\n");
+	printf("Filename,ChunkSize,Time (ms)\n");
+	
+	Timer timer;
+	for (int iFilename = 0; iFilename < 4; iFilename++)
+	{
+		const char* currentFilename = filenames[iFilename];
+		NetpbmImage* image = NetpbmImage::read(currentFilename);
+		
+		for (int iChunkSize = 0; iChunkSize <= 10; iChunkSize++)
+		{
+			int chunkSize = (int)pow(2, iChunkSize);
+
+			timer.start();
+			image->autoBrightnessScheduleTest(chunkSize);
+			timer.stop();
+			float measuredMs = timer.getMs();
+
+			printf("%s,%i,%f\n", currentFilename, chunkSize, measuredMs);
 		}
 	}
 }

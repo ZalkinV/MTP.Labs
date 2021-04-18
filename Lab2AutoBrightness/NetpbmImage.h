@@ -21,6 +21,7 @@ private:
 public:
 	static NetpbmImage* read(const char* filename);
 	void autoBrightness();
+	void autoBrightnessScheduleTest(int chunkSize);
 	void autoBrightnessST();
 	void write(char* filename);
 	~NetpbmImage();

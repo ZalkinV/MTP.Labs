@@ -58,6 +58,29 @@ NetpbmImage* NetpbmImage::read(const char* filename)
 	return image;
 }
 
+void NetpbmImage::autoBrightnessScheduleTest(int chunkSize)
+{
+	int thresholdPixelsCount = (this->width * this->height) / 256;
+	BytesQueue bytesQueue(thresholdPixelsCount);
+
+#pragma omp parallel for schedule(static, chunkSize)
+	for (int i = 0; i < this->bytesCount; i++)
+	{
+		bytesQueue.push(this->initialBytes[i]);
+	}
+
+	byte minThreshold = bytesQueue.topMin();
+	byte maxThreshold = bytesQueue.topMax();
+
+#pragma omp parallel for schedule(static, chunkSize)
+	for (int i = 0; i < this->bytesCount; i++)
+	{
+		byte curByte = this->initialBytes[i];
+		byte newByte = scaleColor(curByte, minThreshold, maxThreshold);
+		this->resultBytes[i] = newByte;
+	}
+}
+
 void NetpbmImage::autoBrightness()
 {
 	int thresholdPixelsCount = (this->width * this->height) / 256;

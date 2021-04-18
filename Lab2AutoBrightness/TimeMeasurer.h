@@ -5,3 +5,4 @@
 #include "NetpbmImage.h"
 
 void onThreadsCount();
+void onSchedules();
