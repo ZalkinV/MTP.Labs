@@ -18,8 +18,11 @@ NetpbmImage::NetpbmImage(NetpbmFormat format, int width, int height, int byteSiz
 	this->width = width;
 	this->height = height;
 	this->byteSize = byteSize;
-	this->bytes = bytes;
+	this->initialBytes = bytes;
 	this->bytesCount = NetpbmImage::calculateBytesCount(format, width, height);
+	
+	this->resultBytes = new byte[this->bytesCount];
+	memcpy(this->resultBytes, bytes, this->bytesCount);
 }
 
 int NetpbmImage::calculateBytesCount(NetpbmFormat format, int width, int height)
@@ -63,7 +66,7 @@ void NetpbmImage::autoBrightness()
 #pragma omp parallel for schedule(static)
 	for (int i = 0; i < this->bytesCount; i++)
 	{
-		bytesQueue.push(this->bytes[i]);
+		bytesQueue.push(this->initialBytes[i]);
 	}
 
 	byte minThreshold = bytesQueue.topMin();
@@ -72,9 +75,9 @@ void NetpbmImage::autoBrightness()
 #pragma omp parallel for schedule(static)
 	for (int i = 0; i < this->bytesCount; i++)
 	{
-		byte curByte = this->bytes[i];
+		byte curByte = this->initialBytes[i];
 		byte newByte = scaleColor(curByte, minThreshold, maxThreshold);
-		this->bytes[i] = newByte;
+		this->resultBytes[i] = newByte;
 	}
 }
 
@@ -85,7 +88,7 @@ void NetpbmImage::autoBrightnessST()
 
 	for (int i = 0; i < this->bytesCount; i++)
 	{
-		bytesQueue.push(this->bytes[i]);
+		bytesQueue.push(this->initialBytes[i]);
 	}
 
 	byte minThreshold = bytesQueue.topMin();
@@ -93,9 +96,9 @@ void NetpbmImage::autoBrightnessST()
 
 	for (int i = 0; i < this->bytesCount; i++)
 	{
-		byte curByte = this->bytes[i];
+		byte curByte = this->initialBytes[i];
 		byte newByte = scaleColor(curByte, minThreshold, maxThreshold);
-		this->bytes[i] = newByte;
+		this->resultBytes[i] = newByte;
 	}
 }
 
@@ -119,12 +122,13 @@ void NetpbmImage::write(char* filename)
 
 	int valuesCount = fprintf(file, HEADER_FORMAT, this->format, this->width, this->height, this->byteSize, '\n');
 	
-	fwrite(this->bytes, sizeof(byte), this->bytesCount, file);
+	fwrite(this->resultBytes, sizeof(byte), this->bytesCount, file);
 
 	fclose(file);
 }
 
 NetpbmImage::~NetpbmImage()
 {
-	delete[] this->bytes;
+	delete[] this->initialBytes;
+	delete[] this->resultBytes;
 }

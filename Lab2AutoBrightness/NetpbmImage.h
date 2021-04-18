@@ -10,7 +10,8 @@ private:
 	int width, height;
 	int byteSize;
 	int bytesCount;
-	byte* bytes;
+	byte* initialBytes;
+	byte* resultBytes;
 
 	NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, byte* bytes);
 
