@@ -4,7 +4,7 @@
 #include "MatrixOperations.h"
 
 
-void runKernel(cl_context context, cl_program program, cl_command_queue queue, const char* kernelName)
+void runSumKernel(cl_context context, cl_program program, cl_command_queue queue, const char* kernelName)
 {
 	cl_int err = 0;
 	size_t groupSize = 2;
@@ -87,7 +87,7 @@ int main()
 	if (buildStatus != 0)
 		return buildStatus;
 
-	runKernel(context, program, queue, "arraySum");
+	runSumKernel(context, program, queue, "arraySum");
 	
 	return 0;
 }
