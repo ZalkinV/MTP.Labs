@@ -3,6 +3,8 @@
 
 #include <CL/opencl.h>
 
+#include "MatrixOperations.h"
+
 
 cl_device_id getDeviceId()
 {
@@ -144,6 +146,24 @@ void runKernel(cl_context context, cl_program program, cl_command_queue queue, c
 
 int main()
 {
+	const int rowsCount = 2;
+	const int colsCount = 2;
+	const int elsCount = 3;
+	int** matrixA = new int* [rowsCount]
+	{
+		new int[] {1, 2, 3},
+		new int[] {4, 5, 6}
+	};
+	int** matrixB = new int* [elsCount]
+	{
+		new int[] {1, 2},
+		new int[] {3, 4},
+		new int[] {5, 6},
+	};
+
+	int** matrixResult = multiply(matrixA, matrixB, rowsCount, colsCount, elsCount);
+
+
 	cl_device_id deviceId = getDeviceId();
 
 	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
