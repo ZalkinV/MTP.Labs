@@ -48,3 +48,17 @@ int* multiply(int* matrixA, int* matrixB, int rowsCount, int colsCount, int elsC
 
 	return matrixRes;
 }
+
+int* convertTo1D(int** matrix, int rowsCount, int colsCount)
+{
+	int* matrix1D = new int[rowsCount * colsCount];
+	for (int iRow = 0; iRow < rowsCount; iRow++)
+	{
+		for (int iCol = 0; iCol < colsCount; iCol++)
+		{
+			matrix1D[iRow * rowsCount + iCol] = matrix[iRow][iCol];
+		}
+	}
+	
+	return matrix1D;
+}
