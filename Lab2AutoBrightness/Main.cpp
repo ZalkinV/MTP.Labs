@@ -59,11 +59,11 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		//labTask(argc, argv);
+		labTask(argc, argv);
 		//onThreadsCount();
 		//onSchedules();
 		//onOmpOnOff();
-		onManualDiffSchedules();
+		//onManualDiffSchedules();
 	}
 	catch (const exception& e)
 	{
