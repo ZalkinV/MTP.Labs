@@ -1,3 +1,5 @@
+#define CL_TARGET_OPENCL_VERSION 120
+
 #include <CL/opencl.h>
 
 #include "OpenCLOperations.h"
@@ -151,8 +153,7 @@ int main()
 
 	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
 
-	cl_queue_properties queueProperties = CL_QUEUE_PROFILING_ENABLE;
-#pragma warning(suppress : 4996)
+	cl_command_queue_properties queueProperties = CL_QUEUE_PROFILING_ENABLE;
 	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
 
 	//runSumKernel(context, deviceId, queue);
