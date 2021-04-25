@@ -5,8 +5,12 @@
 #include <vector>
 
 
-void runSumKernel(cl_context context, cl_program program, cl_command_queue queue, const char* kernelName)
+void runSumKernel(cl_context context, cl_device_id deviceId, cl_command_queue queue)
 {
+	const char* kernelName = "arraySum";
+	cl_program program = getProgram(context, "Sum.ocl");
+	int buildStatus = buildProgram(program, deviceId);
+
 	cl_int err = 0;
 	size_t groupSize = 2;
 	size_t arraySize = 2;
@@ -77,9 +81,7 @@ int main()
 	int* matrixA1D = convertTo1D(matrixA, rowsCount, elsCount);
 	int* matrixB1D = convertTo1D(matrixB, elsCount, colsCount);
 
-	int* matrixResult = multiply(matrixA1D, matrixB1D, rowsCount, colsCount, elsCount);
-	std::vector<int> matrixRes;
-	matrixRes.assign(matrixResult, matrixResult + rowsCount * colsCount);
+	int* matrixCorrectResult = multiply(matrixA1D, matrixB1D, rowsCount, colsCount, elsCount);
 
 
 	cl_device_id deviceId = getDeviceId();
@@ -89,13 +91,8 @@ int main()
 	cl_queue_properties queueProperties = CL_QUEUE_PROFILING_ENABLE;
 #pragma warning(suppress : 4996)
 	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
-	
-	cl_program program = getProgram(context, "Sum.ocl");
-	int buildStatus = buildProgram(program, deviceId);
-	if (buildStatus != 0)
-		return buildStatus;
 
-	runSumKernel(context, program, queue, "arraySum");
+	runSumKernel(context, deviceId, queue);
 	
 	return 0;
 }
