@@ -59,7 +59,7 @@ void runSumKernel(cl_context context, cl_device_id deviceId, cl_command_queue qu
 	printf("Kernel execution time: %i us\n", kernelExecTime);
 }
 
-int main()
+void runMulKernel(cl_context context, cl_device_id deviceId, cl_command_queue queue)
 {
 	const int rowsCount = 4;
 	const int colsCount = 2;
@@ -82,8 +82,10 @@ int main()
 	int* matrixB1D = convertTo1D(matrixB, elsCount, colsCount);
 
 	int* matrixCorrectResult = multiply(matrixA1D, matrixB1D, rowsCount, colsCount, elsCount);
+}
 
-
+int main()
+{
 	cl_device_id deviceId = getDeviceId();
 
 	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
@@ -92,7 +94,8 @@ int main()
 #pragma warning(suppress : 4996)
 	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
 
-	runSumKernel(context, deviceId, queue);
+	//runSumKernel(context, deviceId, queue);
+	runMulKernel(context, deviceId, queue);
 	
 	return 0;
 }
