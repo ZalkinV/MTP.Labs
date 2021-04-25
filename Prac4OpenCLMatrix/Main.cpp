@@ -61,27 +61,27 @@ void runSumKernel(cl_context context, cl_device_id deviceId, cl_command_queue qu
 
 void runMulKernel(cl_context context, cl_device_id deviceId, cl_command_queue queue)
 {
-	const int rowsCount = 4;
-	const int colsCount = 2;
-	const int elsCount = 3;
-	int** matrixA = new int* [rowsCount]
+	int rowsCount = 4;
+	int colsCount = 2;
+	int elsCount = 3;
+	int** matrixA2D = new int* [rowsCount]
 	{
 		new int[] {1, 2, 3},
 		new int[] {4, 5, 6},
 		new int[] {7, 8, 9},
 		new int[] {1, 5, 9},
 	};
-	int** matrixB = new int* [elsCount]
+	int** matrixB2D = new int* [elsCount]
 	{
 		new int[] {1, 2},
 		new int[] {3, 4},
 		new int[] {5, 6},
 	};
 
-	int* matrixA1D = convertTo1D(matrixA, rowsCount, elsCount);
-	int* matrixB1D = convertTo1D(matrixB, elsCount, colsCount);
+	int* matrixA = convertTo1D(matrixA2D, rowsCount, elsCount);
+	int* matrixB = convertTo1D(matrixB2D, elsCount, colsCount);
 
-	int* matrixCorrectResult = multiply(matrixA1D, matrixB1D, rowsCount, colsCount, elsCount);
+	int* matrixCorrectResult = multiply(matrixA, matrixB, rowsCount, colsCount, elsCount);
 }
 
 int main()
