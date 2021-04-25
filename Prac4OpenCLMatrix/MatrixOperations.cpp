@@ -56,7 +56,8 @@ int* convertTo1D(int** matrix, int rowsCount, int colsCount)
 	{
 		for (int iCol = 0; iCol < colsCount; iCol++)
 		{
-			matrix1D[iRow * rowsCount + iCol] = matrix[iRow][iCol];
+			int index1D = iRow * colsCount + iCol;
+			matrix1D[index1D] = matrix[iRow][iCol];
 		}
 	}
 	
