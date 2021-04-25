@@ -2,6 +2,7 @@
 
 #include "OpenCLOperations.h"
 #include "MatrixOperations.h"
+#include <vector>
 
 
 void runSumKernel(cl_context context, cl_program program, cl_command_queue queue, const char* kernelName)
@@ -56,13 +57,15 @@ void runSumKernel(cl_context context, cl_program program, cl_command_queue queue
 
 int main()
 {
-	const int rowsCount = 2;
+	const int rowsCount = 4;
 	const int colsCount = 2;
 	const int elsCount = 3;
 	int** matrixA = new int* [rowsCount]
 	{
 		new int[] {1, 2, 3},
-		new int[] {4, 5, 6}
+		new int[] {4, 5, 6},
+		new int[] {7, 8, 9},
+		new int[] {1, 5, 9},
 	};
 	int** matrixB = new int* [elsCount]
 	{
@@ -71,7 +74,12 @@ int main()
 		new int[] {5, 6},
 	};
 
-	int** matrixResult = multiply(matrixA, matrixB, rowsCount, colsCount, elsCount);
+	int* matrixA1D = convertTo1D(matrixA, rowsCount, elsCount);
+	int* matrixB1D = convertTo1D(matrixB, elsCount, colsCount);
+
+	int* matrixResult = multiply(matrixA1D, matrixB1D, rowsCount, colsCount, elsCount);
+	std::vector<int> matrixRes;
+	matrixRes.assign(matrixResult, matrixResult + rowsCount * colsCount);
 
 
 	cl_device_id deviceId = getDeviceId();
