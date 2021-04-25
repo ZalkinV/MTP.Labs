@@ -35,13 +35,13 @@ int* multiply(int* matrixA, int* matrixB, int rowsCount, int colsCount, int elsC
 			int elSum = 0;
 			for (int iEl = 0; iEl < elsCount; iEl++)
 			{
-				int indexA = iRow * rowsCount + iEl;
+				int indexA = iRow * elsCount + iEl;
 				int indexB = iEl * colsCount + iCol;
 				int elMul = matrixA[indexA] * matrixB[indexB];
 				elSum += elMul;
 			}
 
-			int indexRes = iRow * rowsCount + iCol;
+			int indexRes = iRow * colsCount + iCol;
 			matrixRes[indexRes] = elSum;
 		}
 	}
