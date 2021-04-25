@@ -126,8 +126,7 @@ void runMulKernel(cl_context context, cl_device_id deviceId, cl_command_queue qu
 	clReleaseMemObject(bufferA);
 	clReleaseMemObject(bufferB);
 	clReleaseMemObject(bufferC);
-	clReleaseCommandQueue(queue);
-	clReleaseContext(context);
+	clReleaseProgram(program);
 
 	printMatrix(matrixC, rowsCount, colsCount);
 
@@ -137,6 +136,7 @@ void runMulKernel(cl_context context, cl_device_id deviceId, cl_command_queue qu
 
 	int kernelExecTime = getElapsedTimeUs(kernelStartEvent);
 	printf("Kernel execution time: %i us\n", kernelExecTime);
+	clReleaseEvent(kernelStartEvent);
 }
 
 int main()
@@ -150,6 +150,10 @@ int main()
 
 	//runSumKernel(context, deviceId, queue);
 	runMulKernel(context, deviceId, queue);
+
+	clReleaseCommandQueue(queue);
+	clReleaseContext(context);
+	clReleaseDevice(deviceId);
 	
 	return 0;
 }
