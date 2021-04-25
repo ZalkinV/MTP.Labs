@@ -129,15 +129,7 @@ void runMulKernel(cl_context context, cl_device_id deviceId, cl_command_queue qu
 	clReleaseCommandQueue(queue);
 	clReleaseContext(context);
 
-	for (int iRow = 0; iRow < rowsCount; iRow++)
-	{
-		for (int iCol = 0; iCol < colsCount; iCol++)
-		{
-			int indexC = iRow * colsCount + iCol;
-			printf("%i ", matrixC[indexC]);
-		}
-		printf("\n");
-	}
+	printMatrix(matrixC, rowsCount, colsCount);
 
 	delete[] matrixA;
 	delete[] matrixB;

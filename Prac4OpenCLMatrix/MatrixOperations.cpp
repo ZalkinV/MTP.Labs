@@ -1,4 +1,5 @@
 #include "MatrixOperations.h"
+#include <stdio.h>
 
 int** multiply(int** matrixA, int** matrixB, int rowsCount, int colsCount, int elsCount)
 {
@@ -62,4 +63,17 @@ int* convertTo1D(int** matrix, int rowsCount, int colsCount)
 	}
 	
 	return matrix1D;
+}
+
+void printMatrix(int* matrix, int rowsCount, int colsCount)
+{
+	for (int iRow = 0; iRow < rowsCount; iRow++)
+	{
+		for (int iCol = 0; iCol < colsCount; iCol++)
+		{
+			int indexC = iRow * colsCount + iCol;
+			printf("%i ", matrix[indexC]);
+		}
+		printf("\n");
+	}
 }
