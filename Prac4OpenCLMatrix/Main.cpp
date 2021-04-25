@@ -63,9 +63,9 @@ void runSumKernel(cl_context context, cl_device_id deviceId, cl_command_queue qu
 
 void runMulKernel(cl_context context, cl_device_id deviceId, cl_command_queue queue)
 {
-	int rowsCount = 4;
-	int colsCount = 2;
-	int elsCount = 3;
+	size_t rowsCount = 4;
+	size_t colsCount = 2;
+	size_t elsCount = 3;
 	int** matrixA2D = new int* [rowsCount]
 	{
 		new int[] {1, 2, 3},
@@ -115,9 +115,9 @@ void runMulKernel(cl_context context, cl_device_id deviceId, cl_command_queue qu
 
 
 	cl_uint workDim = 2;
-	size_t globalWorkSize = matrixCSize;
+	size_t* globalWorkSize = new size_t[] { rowsCount, colsCount };
 	cl_event kernelStartEvent;
-	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, &globalWorkSize, NULL, NULL, NULL, &kernelStartEvent);
+	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, globalWorkSize, NULL, NULL, NULL, &kernelStartEvent);
 
 
 	int* matrixC = new int[matrixCSize];
