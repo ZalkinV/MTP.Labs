@@ -10,7 +10,8 @@ private:
 	int width, height;
 	int byteSize;
 	int bytesCount;
-	byte* bytes;
+	byte* initialBytes;
+	byte* resultBytes;
 
 	NetpbmImage(NetpbmFormat format, int width, int height, int byteSize, byte* bytes);
 
@@ -18,8 +19,9 @@ private:
 	static byte scaleColor(byte value, byte min, byte max);
 
 public:
-	static NetpbmImage* read(char* filename);
+	static NetpbmImage* read(const char* filename);
 	void autoBrightness();
+	void autoBrightnessScheduleTest(int chunkSize);
 	void autoBrightnessST();
 	void write(char* filename);
 	~NetpbmImage();

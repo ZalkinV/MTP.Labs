@@ -18,8 +18,11 @@ NetpbmImage::NetpbmImage(NetpbmFormat format, int width, int height, int byteSiz
 	this->width = width;
 	this->height = height;
 	this->byteSize = byteSize;
-	this->bytes = bytes;
+	this->initialBytes = bytes;
 	this->bytesCount = NetpbmImage::calculateBytesCount(format, width, height);
+	
+	this->resultBytes = new byte[this->bytesCount];
+	memcpy(this->resultBytes, bytes, this->bytesCount);
 }
 
 int NetpbmImage::calculateBytesCount(NetpbmFormat format, int width, int height)
@@ -31,7 +34,7 @@ int NetpbmImage::calculateBytesCount(NetpbmFormat format, int width, int height)
 	return bytesCount;
 }
 
-NetpbmImage* NetpbmImage::read(char* filename)
+NetpbmImage* NetpbmImage::read(const char* filename)
 {
 	FILE* file = fopen(filename, "rb");
 	if (file == NULL)
@@ -55,26 +58,49 @@ NetpbmImage* NetpbmImage::read(char* filename)
 	return image;
 }
 
-void NetpbmImage::autoBrightness()
+void NetpbmImage::autoBrightnessScheduleTest(int chunkSize)
 {
 	int thresholdPixelsCount = (this->width * this->height) / 256;
 	BytesQueue bytesQueue(thresholdPixelsCount);
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(static, chunkSize)
 	for (int i = 0; i < this->bytesCount; i++)
 	{
-		bytesQueue.push(this->bytes[i]);
+		bytesQueue.push(this->initialBytes[i]);
 	}
 
 	byte minThreshold = bytesQueue.topMin();
 	byte maxThreshold = bytesQueue.topMax();
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(static, chunkSize)
 	for (int i = 0; i < this->bytesCount; i++)
 	{
-		byte curByte = this->bytes[i];
+		byte curByte = this->initialBytes[i];
 		byte newByte = scaleColor(curByte, minThreshold, maxThreshold);
-		this->bytes[i] = newByte;
+		this->resultBytes[i] = newByte;
+	}
+}
+
+void NetpbmImage::autoBrightness()
+{
+	int thresholdPixelsCount = (this->width * this->height) / 256;
+	BytesQueue bytesQueue(thresholdPixelsCount);
+
+#pragma omp parallel for schedule(guided)
+	for (int i = 0; i < this->bytesCount; i++)
+	{
+		bytesQueue.push(this->initialBytes[i]);
+	}
+
+	byte minThreshold = bytesQueue.topMin();
+	byte maxThreshold = bytesQueue.topMax();
+
+#pragma omp parallel for schedule(dynamic, 32)
+	for (int i = 0; i < this->bytesCount; i++)
+	{
+		byte curByte = this->initialBytes[i];
+		byte newByte = scaleColor(curByte, minThreshold, maxThreshold);
+		this->resultBytes[i] = newByte;
 	}
 }
 
@@ -85,7 +111,7 @@ void NetpbmImage::autoBrightnessST()
 
 	for (int i = 0; i < this->bytesCount; i++)
 	{
-		bytesQueue.push(this->bytes[i]);
+		bytesQueue.push(this->initialBytes[i]);
 	}
 
 	byte minThreshold = bytesQueue.topMin();
@@ -93,9 +119,9 @@ void NetpbmImage::autoBrightnessST()
 
 	for (int i = 0; i < this->bytesCount; i++)
 	{
-		byte curByte = this->bytes[i];
+		byte curByte = this->initialBytes[i];
 		byte newByte = scaleColor(curByte, minThreshold, maxThreshold);
-		this->bytes[i] = newByte;
+		this->resultBytes[i] = newByte;
 	}
 }
 
@@ -119,12 +145,13 @@ void NetpbmImage::write(char* filename)
 
 	int valuesCount = fprintf(file, HEADER_FORMAT, this->format, this->width, this->height, this->byteSize, '\n');
 	
-	fwrite(this->bytes, sizeof(byte), this->bytesCount, file);
+	fwrite(this->resultBytes, sizeof(byte), this->bytesCount, file);
 
 	fclose(file);
 }
 
 NetpbmImage::~NetpbmImage()
 {
-	delete[] this->bytes;
+	delete[] this->initialBytes;
+	delete[] this->resultBytes;
 }
