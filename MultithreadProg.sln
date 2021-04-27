@@ -9,11 +9,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Prac2OmpRaceCondition", "Pr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Prac3OpenCL", "Prac3OpenCL\Prac3OpenCL.vcxproj", "{60C238F8-DFC5-4859-A209-D089A9C451E0}"
 EndProject
-<<<<<<< HEAD
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab1MatrixDeterminant", "Lab1MatrixDeterminant\Lab1MatrixDeterminant.vcxproj", "{4AF86DA6-31F9-4223-851A-8FADEE254F5D}"
-=======
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab2AutoBrightness", "Lab2AutoBrightness\Lab2AutoBrightness.vcxproj", "{9C8F8423-CA45-46CD-B50E-823F76038C30}"
->>>>>>> b7dbfce (L2. Create Lab2AutoBrightness)
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Prac4OpenCLMatrix", "Prac4OpenCLMatrix\Prac4OpenCLMatrix.vcxproj", "{F8DC3398-0677-4417-A14C-38F446DF219A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,7 +46,6 @@ Global
 		{60C238F8-DFC5-4859-A209-D089A9C451E0}.Release|x64.Build.0 = Release|x64
 		{60C238F8-DFC5-4859-A209-D089A9C451E0}.Release|x86.ActiveCfg = Release|Win32
 		{60C238F8-DFC5-4859-A209-D089A9C451E0}.Release|x86.Build.0 = Release|Win32
-<<<<<<< HEAD
 		{4AF86DA6-31F9-4223-851A-8FADEE254F5D}.Debug|x64.ActiveCfg = Debug|x64
 		{4AF86DA6-31F9-4223-851A-8FADEE254F5D}.Debug|x64.Build.0 = Debug|x64
 		{4AF86DA6-31F9-4223-851A-8FADEE254F5D}.Debug|x86.ActiveCfg = Debug|Win32
@@ -56,7 +54,6 @@ Global
 		{4AF86DA6-31F9-4223-851A-8FADEE254F5D}.Release|x64.Build.0 = Release|x64
 		{4AF86DA6-31F9-4223-851A-8FADEE254F5D}.Release|x86.ActiveCfg = Release|Win32
 		{4AF86DA6-31F9-4223-851A-8FADEE254F5D}.Release|x86.Build.0 = Release|Win32
-=======
 		{9C8F8423-CA45-46CD-B50E-823F76038C30}.Debug|x64.ActiveCfg = Debug|x64
 		{9C8F8423-CA45-46CD-B50E-823F76038C30}.Debug|x64.Build.0 = Debug|x64
 		{9C8F8423-CA45-46CD-B50E-823F76038C30}.Debug|x86.ActiveCfg = Debug|Win32
@@ -65,7 +62,14 @@ Global
 		{9C8F8423-CA45-46CD-B50E-823F76038C30}.Release|x64.Build.0 = Release|x64
 		{9C8F8423-CA45-46CD-B50E-823F76038C30}.Release|x86.ActiveCfg = Release|Win32
 		{9C8F8423-CA45-46CD-B50E-823F76038C30}.Release|x86.Build.0 = Release|Win32
->>>>>>> b7dbfce (L2. Create Lab2AutoBrightness)
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Debug|x64.ActiveCfg = Debug|x64
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Debug|x64.Build.0 = Debug|x64
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Debug|x86.ActiveCfg = Debug|Win32
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Debug|x86.Build.0 = Debug|Win32
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Release|x64.ActiveCfg = Release|x64
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Release|x64.Build.0 = Release|x64
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Release|x86.ActiveCfg = Release|Win32
+		{F8DC3398-0677-4417-A14C-38F446DF219A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

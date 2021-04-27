@@ -1,0 +1,16 @@
+kernel void sum(
+	global const int *a, // input buffer
+	global const int *b, // input buffer
+	global int *c) // output buffer
+{
+  *c = *a + *b;
+}
+
+kernel void arraySum(
+	global const int *a,
+	global const int *b,
+	global int *c)
+{
+  uint kernelId = get_global_id(0);
+  c[kernelId] = a[kernelId] + b[kernelId];
+}
