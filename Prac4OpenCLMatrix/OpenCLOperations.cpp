@@ -27,8 +27,8 @@ cl_device_id getDeviceId()
 			if (defaultDeviceId == NULL)
 				defaultDeviceId = deviceId;
 
-			int isIntegrated = 0;
-			clGetDeviceInfo(deviceId, CL_DEVICE_HOST_UNIFIED_MEMORY, sizeof(int), &isIntegrated, NULL);
+			cl_bool isIntegrated = false;
+			clGetDeviceInfo(deviceId, CL_DEVICE_HOST_UNIFIED_MEMORY, sizeof(cl_bool), &isIntegrated, NULL);
 
 			if (!isIntegrated)
 				return deviceId;
