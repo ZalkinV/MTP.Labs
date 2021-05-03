@@ -4,6 +4,44 @@
 #include "Timer.h"
 
 
+mtype* runMulKernel(
+	cl_uint deviceIndex,
+	mtype* firstMatrix, mtype* secondMatrix,
+	int firstRowsCount, int colsRowsCount, int secondColsCount,
+	int implementationNumber,
+	float* kernelExecTime,
+	float* fullElapsedTime)
+{
+	cl_device_id deviceId = getDeviceId(deviceIndex);
+	printDeviceInfo(deviceId);
+
+	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
+
+	cl_command_queue_properties queueProperties = CL_QUEUE_PROFILING_ENABLE;
+	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
+
+
+	mtype* resultMatrix = NULL;
+	switch (implementationNumber)
+	{
+	case 1:
+		resultMatrix = runFirstImplementation(
+			context, deviceId, queue,
+			firstMatrix, secondMatrix,
+			firstRowsCount, colsRowsCount, secondColsCount,
+			kernelExecTime, fullElapsedTime);
+		break;
+	default:
+		break;
+	}
+
+	clReleaseCommandQueue(queue);
+	clReleaseContext(context);
+	clReleaseDevice(deviceId);
+
+	return resultMatrix;
+}
+
 mtype* runFirstImplementation(
 	cl_context context, cl_device_id deviceId, cl_command_queue queue,
 	mtype* firstMatrix, mtype* secondMatrix,
@@ -59,45 +97,6 @@ mtype* runFirstImplementation(
 	clReleaseMemObject(secondBuffer);
 	clReleaseMemObject(resultBuffer);
 	clReleaseProgram(program);
-
-	return resultMatrix;
-}
-
-
-mtype* runMulKernel(
-	cl_uint deviceIndex,
-	mtype* firstMatrix, mtype* secondMatrix,
-	int firstRowsCount, int colsRowsCount, int secondColsCount,
-	int implementationNumber,
-	float* kernelExecTime,
-	float* fullElapsedTime)
-{
-	cl_device_id deviceId = getDeviceId(deviceIndex);
-	printDeviceInfo(deviceId);
-
-	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
-
-	cl_command_queue_properties queueProperties = CL_QUEUE_PROFILING_ENABLE;
-	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
-	
-
-	mtype* resultMatrix = NULL;
-	switch (implementationNumber)
-	{
-	case 1:
-		resultMatrix = runFirstImplementation(
-			context, deviceId, queue,
-			firstMatrix, secondMatrix,
-			firstRowsCount, colsRowsCount, secondColsCount,
-			kernelExecTime, fullElapsedTime);
-		break;
-	default:
-		break;
-	}
-
-	clReleaseCommandQueue(queue);
-	clReleaseContext(context);
-	clReleaseDevice(deviceId);
 
 	return resultMatrix;
 }
