@@ -6,24 +6,24 @@ void runMulKernel(cl_context context, cl_device_id deviceId, cl_command_queue qu
 	size_t rowsCount = 4;
 	size_t colsCount = 2;
 	size_t elsCount = 3;
-	int** matrixA2D = new int* [rowsCount]
+	mtype** matrixA2D = new mtype* [rowsCount]
 	{
-		new int[] {1, 2, 3},
-			new int[] {4, 5, 6},
-			new int[] {7, 8, 9},
-			new int[] {1, 5, 9},
+		new mtype[] {1, 2, 3},
+		new mtype[] {4, 5, 6},
+		new mtype[] {7, 8, 9},
+		new mtype[] {1, 5, 9},
 	};
-	int** matrixB2D = new int* [elsCount]
+	mtype** matrixB2D = new mtype* [elsCount]
 	{
-		new int[] {1, 2},
-			new int[] {3, 4},
-			new int[] {5, 6},
+		new mtype[] {1, 2},
+		new mtype[] {3, 4},
+		new mtype[] {5, 6},
 	};
 
-	int* matrixA = convertTo1D(matrixA2D, rowsCount, elsCount);
-	int* matrixB = convertTo1D(matrixB2D, elsCount, colsCount);
+	mtype* matrixA = convertTo1D(matrixA2D, rowsCount, elsCount);
+	mtype* matrixB = convertTo1D(matrixB2D, elsCount, colsCount);
 
-	int* matrixCorrectResult = multiply(matrixA, matrixB, rowsCount, colsCount, elsCount);
+	mtype* matrixCorrectResult = multiply(matrixA, matrixB, rowsCount, colsCount, elsCount);
 
 
 	const char* kernelName = "matrixMul";
@@ -60,7 +60,7 @@ void runMulKernel(cl_context context, cl_device_id deviceId, cl_command_queue qu
 	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, globalWorkSize, NULL, NULL, NULL, &kernelStartEvent);
 
 
-	int* matrixC = new int[matrixCSize];
+	mtype* matrixC = new mtype[matrixCSize];
 	err = clEnqueueReadBuffer(queue, bufferC, true, NULL, bufferCSize, matrixC, NULL, NULL, NULL);
 
 	clReleaseMemObject(bufferA);

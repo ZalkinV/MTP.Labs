@@ -3,20 +3,20 @@
 #include "MatrixOperations.h"
 
 
-int** multiply(int** matrixA, int** matrixB, int rowsCount, int colsCount, int elsCount)
+mtype** multiply(mtype** matrixA, mtype** matrixB, int rowsCount, int colsCount, int elsCount)
 {
-	int** matrixRes = new int* [rowsCount];
+	mtype** matrixRes = new mtype* [rowsCount];
 	for (int iRow = 0; iRow < rowsCount; iRow++)
-		matrixRes[iRow] = new int[colsCount];
+		matrixRes[iRow] = new mtype[colsCount];
 
 	for (int iRow = 0; iRow < rowsCount; iRow++)
 	{
 		for (int iCol = 0; iCol < colsCount; iCol++)
 		{
-			int elSum = 0;
+			mtype elSum = 0;
 			for (int iEl = 0; iEl < elsCount; iEl++)
 			{
-				int elMul = matrixA[iRow][iEl] * matrixB[iEl][iCol];
+				mtype elMul = matrixA[iRow][iEl] * matrixB[iEl][iCol];
 				elSum += elMul;
 			}
 
@@ -27,20 +27,20 @@ int** multiply(int** matrixA, int** matrixB, int rowsCount, int colsCount, int e
 	return matrixRes;
 }
 
-int* multiply(int* matrixA, int* matrixB, int rowsCount, int colsCount, int elsCount)
+mtype* multiply(mtype* matrixA, mtype* matrixB, int rowsCount, int colsCount, int elsCount)
 {
-	int* matrixRes = new int[rowsCount * colsCount];
+	mtype* matrixRes = new mtype[rowsCount * colsCount];
 
 	for (int iRow = 0; iRow < rowsCount; iRow++)
 	{
 		for (int iCol = 0; iCol < colsCount; iCol++)
 		{
-			int elSum = 0;
+			mtype elSum = 0;
 			for (int iEl = 0; iEl < elsCount; iEl++)
 			{
 				int indexA = iRow * elsCount + iEl;
 				int indexB = iEl * colsCount + iCol;
-				int elMul = matrixA[indexA] * matrixB[indexB];
+				mtype elMul = matrixA[indexA] * matrixB[indexB];
 				elSum += elMul;
 			}
 
@@ -52,9 +52,9 @@ int* multiply(int* matrixA, int* matrixB, int rowsCount, int colsCount, int elsC
 	return matrixRes;
 }
 
-int* convertTo1D(int** matrix, int rowsCount, int colsCount)
+mtype* convertTo1D(mtype** matrix, int rowsCount, int colsCount)
 {
-	int* matrix1D = new int[rowsCount * colsCount];
+	mtype* matrix1D = new mtype[rowsCount * colsCount];
 	for (int iRow = 0; iRow < rowsCount; iRow++)
 	{
 		for (int iCol = 0; iCol < colsCount; iCol++)
@@ -67,14 +67,14 @@ int* convertTo1D(int** matrix, int rowsCount, int colsCount)
 	return matrix1D;
 }
 
-void printMatrix(int* matrix, int rowsCount, int colsCount)
+void printMatrix(mtype* matrix, int rowsCount, int colsCount)
 {
 	for (int iRow = 0; iRow < rowsCount; iRow++)
 	{
 		for (int iCol = 0; iCol < colsCount; iCol++)
 		{
 			int indexC = iRow * colsCount + iCol;
-			printf("%i ", matrix[indexC]);
+			printf("%f ", matrix[indexC]);
 		}
 		printf("\n");
 	}
