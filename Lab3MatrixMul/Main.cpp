@@ -27,7 +27,7 @@ int getImplementationNumber(char* str)
 	return parsedValue;
 }
 
-int main(int argc, char* argv[])
+void labTask(int argc, char* argv[])
 {
 	if (argc < 5)
 		throw exception("Wrong count of arguments");
@@ -49,6 +49,19 @@ int main(int argc, char* argv[])
 	clReleaseCommandQueue(queue);
 	clReleaseContext(context);
 	clReleaseDevice(deviceId);
+}
+
+int main(int argc, char* argv[])
+{
+	try
+	{
+		labTask(argc, argv);
+	}
+	catch (const exception& e)
+	{
+		fprintf(stderr, "%s\n", e.what());
+		return 1;
+	}
 	
 	return 0;
 }
