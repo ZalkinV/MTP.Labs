@@ -1,14 +1,14 @@
 kernel void matrixMul(
-	global const int* matrixA,
-	global const int* matrixB,
+	global const float* matrixA,
+	global const float* matrixB,
 	int colsCount,
 	int elsCount,
-	global int* matrixResult)
+	global float* matrixResult)
 {
 	int iRow = get_global_id(0);
 	int iCol = get_global_id(1);
 
-	int elValue = 0;
+	float elValue = 0;
 	for (int iEl = 0; iEl < elsCount; iEl++)
 	{
 		elValue += matrixA[iRow * elsCount + iEl] * matrixB[iEl * colsCount + iCol];
