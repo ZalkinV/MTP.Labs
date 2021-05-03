@@ -29,8 +29,8 @@ mtype* runFirstImplementation(
 	cl_uint iArg = 0;
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &firstBuffer);
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &secondBuffer);
-	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &secondColsCount);
 	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &colsRowsCount);
+	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &secondColsCount);
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &resultBuffer);
 
 
