@@ -10,4 +10,5 @@ mtype* runMulKernel(
 	cl_uint deviceIndex,
 	mtype* firstMatrix, mtype* secondMatrix,
 	int firstRowsCount, int colsRowsCount, int secondColsCount,
-	int implementationNumber);
+	int implementationNumber,
+	float* kernelExecTime);

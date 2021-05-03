@@ -68,12 +68,13 @@ void labTask(int argc, char* argv[])
 	int firstRowsCount = 0; int colsRowsCount = 0; int secondColsCount = 0;
 	readMatrices(inputFileName, &firstMatrix, &secondMatrix, &firstRowsCount, &colsRowsCount, &secondColsCount);
 
+	float kernelExecTime = 0;
 	Timer timer;
 	timer.start();
-	mtype* resultMatrix = runMulKernel(deviceIndex, firstMatrix, secondMatrix, firstRowsCount, colsRowsCount, secondColsCount, implementationNumber);
+	mtype* resultMatrix = runMulKernel(deviceIndex, firstMatrix, secondMatrix, firstRowsCount, colsRowsCount, secondColsCount, implementationNumber, &kernelExecTime);
 	timer.stop();
 	float fullElapsedTime = timer.getMs();
-	printf("\nTime: %f\t%f\n", 0.0, fullElapsedTime);
+	printf("\nTime: %f\t%f\n", kernelExecTime, fullElapsedTime);
 	
 	fprintMatrix(outputFileName, resultMatrix, firstRowsCount, secondColsCount);
 

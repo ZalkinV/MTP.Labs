@@ -6,7 +6,8 @@
 mtype* runFirstImplementation(
 	cl_context context, cl_device_id deviceId, cl_command_queue queue,
 	mtype* firstMatrix, mtype* secondMatrix,
-	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount)
+	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount,
+	float* kernelExecTime)
 {
 	const char* kernelName = "matrixMul";
 	cl_program program = getProgram(context, "Mul.ocl");
@@ -50,8 +51,7 @@ mtype* runFirstImplementation(
 	clReleaseMemObject(resultBuffer);
 	clReleaseProgram(program);
 
-	float kernelExecTime = getElapsedTimeMs(kernelStartEvent);
-	printf("Kernel execution time: %f ms\n", kernelExecTime);
+	*kernelExecTime = getElapsedTimeMs(kernelStartEvent);
 	clReleaseEvent(kernelStartEvent);
 
 	return resultMatrix;
@@ -62,7 +62,8 @@ mtype* runMulKernel(
 	cl_uint deviceIndex,
 	mtype* firstMatrix, mtype* secondMatrix,
 	int firstRowsCount, int colsRowsCount, int secondColsCount,
-	int implementationNumber)
+	int implementationNumber,
+	float* kernelExecTime)
 {
 	cl_device_id deviceId = getDeviceId(deviceIndex);
 	printDeviceInfo(deviceId);
@@ -72,11 +73,12 @@ mtype* runMulKernel(
 	cl_command_queue_properties queueProperties = CL_QUEUE_PROFILING_ENABLE;
 	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
 	
+
 	mtype* resultMatrix = NULL;
 	switch (implementationNumber)
 	{
 	case 1:
-		resultMatrix = runFirstImplementation(context, deviceId, queue, firstMatrix, secondMatrix, firstRowsCount, colsRowsCount, secondColsCount);
+		resultMatrix = runFirstImplementation(context, deviceId, queue, firstMatrix, secondMatrix, firstRowsCount, colsRowsCount, secondColsCount, kernelExecTime);
 		break;
 	default:
 		break;
