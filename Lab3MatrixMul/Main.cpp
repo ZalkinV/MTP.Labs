@@ -76,11 +76,15 @@ void labTask(int argc, char* argv[])
 	cl_command_queue_properties queueProperties = CL_QUEUE_PROFILING_ENABLE;
 	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
 
-	runMulKernel(context, deviceId, queue);
+	mtype* resultMatrix = runMulKernel(context, deviceId, queue, firstMatrix, secondMatrix, firstRowsCount, colsRowsCount, secondColsCount, implementationNumber);
 
 	clReleaseCommandQueue(queue);
 	clReleaseContext(context);
 	clReleaseDevice(deviceId);
+
+	delete[] resultMatrix;
+	delete[] firstMatrix;
+	delete[] secondMatrix;
 }
 
 int main(int argc, char* argv[])
