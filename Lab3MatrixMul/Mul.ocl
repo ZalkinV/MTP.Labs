@@ -1,6 +1,6 @@
-kernel void matrixMul(
-	global const float* matrixA,
-	global const float* matrixB,
+kernel void firstImpl(
+	global const float* firstMatrix,
+	global const float* secondMatrix,
 	int colsRowsCount,
 	int colsCount,
 	global float* matrixResult)
@@ -11,7 +11,7 @@ kernel void matrixMul(
 	float elValue = 0;
 	for (int iEl = 0; iEl < colsRowsCount; iEl++)
 	{
-		elValue += matrixA[iRow * colsRowsCount + iEl] * matrixB[iEl * colsCount + iCol];
+		elValue += firstMatrix[iRow * colsRowsCount + iEl] * secondMatrix[iEl * colsCount + iCol];
 	}
 
 	matrixResult[iRow * colsCount + iCol] = elValue;

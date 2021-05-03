@@ -27,7 +27,7 @@ mtype* runMulKernel(
 	switch (implementationNumber)
 	{
 	case 1:
-		strcpy(kernelName, "matrixMul");
+		strcpy(kernelName, "firstImpl");
 		globalWorkSize = new size_t[]{ firstRowsCount, secondColsCount };
 		localWorkSize = NULL;
 		break;
