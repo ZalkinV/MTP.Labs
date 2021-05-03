@@ -30,7 +30,7 @@ int getImplementationNumber(char* str)
 
 void readMatrices(
 	char* fileName,
-	mtype* firstMatrix, mtype* secondMatrix,
+	mtype** firstMatrix, mtype** secondMatrix,
 	int* firstRowsCount, int* colsRowsCount, int* secondColsCount)
 {
 	ifstream file(fileName);
@@ -40,17 +40,17 @@ void readMatrices(
 	file >> *secondColsCount >> *colsRowsCount >> * firstRowsCount;
 	
 	int firstMatrixCount = *firstRowsCount * *colsRowsCount;
-	firstMatrix = new mtype[firstMatrixCount];
+	*firstMatrix = new mtype[firstMatrixCount];
 	for (size_t i = 0; i < firstMatrixCount; i++)
 	{
-		file >> firstMatrix[i];
+		file >> (*firstMatrix)[i];
 	}
 	
 	int secondMatrixCount = *colsRowsCount * *secondColsCount;
-	secondMatrix = new mtype[secondMatrixCount];
+	*secondMatrix = new mtype[secondMatrixCount];
 	for (size_t i = 0; i < secondMatrixCount; i++)
 	{
-		file >> secondMatrix[i];
+		file >> (*secondMatrix)[i];
 	}
 }
 
@@ -66,7 +66,7 @@ void labTask(int argc, char* argv[])
 
 	mtype* firstMatrix = NULL; mtype* secondMatrix = NULL;
 	int firstRowsCount = 0; int colsRowsCount = 0; int secondColsCount = 0;
-	readMatrices(inputFileName, firstMatrix, secondMatrix, &firstRowsCount, &colsRowsCount, &secondColsCount);
+	readMatrices(inputFileName, &firstMatrix, &secondMatrix, &firstRowsCount, &colsRowsCount, &secondColsCount);
 
 
 	cl_device_id deviceId = getDeviceId(deviceIndex);
