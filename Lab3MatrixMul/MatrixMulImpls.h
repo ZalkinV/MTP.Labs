@@ -9,11 +9,12 @@
 mtype* runMulKernel(
 	cl_uint deviceIndex,
 	mtype* firstMatrix, mtype* secondMatrix,
-	int firstRowsCount, int colsRowsCount, int secondColsCount,
+	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount,
 	int implementationNumber,
 	float* kernelExecTime, float* fullElapsedTime);
 
-mtype* runFirstImplementation(
+mtype* runImplementation(
+	const char* kernelName, const size_t* globalWorkSize, const size_t* localWorkSize,
 	cl_context context, cl_device_id deviceId, cl_command_queue queue,
 	mtype* firstMatrix, mtype* secondMatrix,
 	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount,

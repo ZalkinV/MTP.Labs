@@ -1,4 +1,5 @@
 #define CL_TARGET_OPENCL_VERSION 120
+#define _CRT_SECURE_NO_WARNINGS
 
 #include "MatrixMulImpls.h"
 #include "Timer.h"
@@ -7,7 +8,7 @@
 mtype* runMulKernel(
 	cl_uint deviceIndex,
 	mtype* firstMatrix, mtype* secondMatrix,
-	int firstRowsCount, int colsRowsCount, int secondColsCount,
+	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount,
 	int implementationNumber,
 	float* kernelExecTime,
 	float* fullElapsedTime)
@@ -20,20 +21,26 @@ mtype* runMulKernel(
 	cl_command_queue_properties queueProperties = CL_QUEUE_PROFILING_ENABLE;
 	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
 
-
-	mtype* resultMatrix = NULL;
+	char* kernelName = new char[32];
+	size_t* globalWorkSize = NULL;
+	size_t* localWorkSize = NULL;
 	switch (implementationNumber)
 	{
 	case 1:
-		resultMatrix = runFirstImplementation(
-			context, deviceId, queue,
-			firstMatrix, secondMatrix,
-			firstRowsCount, colsRowsCount, secondColsCount,
-			kernelExecTime, fullElapsedTime);
+		strcpy(kernelName, "matrixMul");
+		globalWorkSize = new size_t[]{ firstRowsCount, secondColsCount };
+		localWorkSize = NULL;
 		break;
 	default:
 		break;
 	}
+
+	mtype* resultMatrix = runImplementation(
+		kernelName, globalWorkSize, localWorkSize,
+		context, deviceId, queue,
+		firstMatrix, secondMatrix,
+		firstRowsCount, colsRowsCount, secondColsCount,
+		kernelExecTime, fullElapsedTime);
 
 	clReleaseCommandQueue(queue);
 	clReleaseContext(context);
@@ -42,13 +49,13 @@ mtype* runMulKernel(
 	return resultMatrix;
 }
 
-mtype* runFirstImplementation(
+mtype* runImplementation(
+	const char* kernelName, const size_t* globalWorkSize, const size_t* localWorkSize,
 	cl_context context, cl_device_id deviceId, cl_command_queue queue,
 	mtype* firstMatrix, mtype* secondMatrix,
 	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount,
 	float* kernelExecTime, float* fullElapsedTime)
 {
-	const char* kernelName = "matrixMul";
 	cl_program program = getProgram(context, "Mul.ocl");
 	int buildStatus = buildProgram(program, deviceId);
 
@@ -80,9 +87,8 @@ mtype* runFirstImplementation(
 
 
 	cl_uint workDim = 2;
-	size_t* globalWorkSize = new size_t[]{ firstRowsCount, secondColsCount };
 	cl_event kernelStartEvent;
-	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, globalWorkSize, NULL, NULL, NULL, &kernelStartEvent);
+	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, globalWorkSize, localWorkSize, NULL, NULL, &kernelStartEvent);
 
 
 	mtype* resultMatrix = new mtype[resultMatrixSize];
