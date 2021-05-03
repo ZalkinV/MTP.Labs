@@ -50,8 +50,8 @@ mtype* runFirstImplementation(
 	clReleaseMemObject(resultBuffer);
 	clReleaseProgram(program);
 
-	int kernelExecTime = getElapsedTimeUs(kernelStartEvent);
-	printf("Kernel execution time: %i us\n", kernelExecTime);
+	float kernelExecTime = getElapsedTimeMs(kernelStartEvent);
+	printf("Kernel execution time: %f ms\n", kernelExecTime);
 	clReleaseEvent(kernelStartEvent);
 
 	return resultMatrix;

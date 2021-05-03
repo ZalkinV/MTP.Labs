@@ -119,7 +119,7 @@ int buildProgram(cl_program program, cl_device_id deviceId)
 	return compilationErr;
 }
 
-int getElapsedTimeUs(cl_event event)
+float getElapsedTimeMs(cl_event event)
 {
 	cl_int err = 0;
 
@@ -127,7 +127,8 @@ int getElapsedTimeUs(cl_event event)
 	err = clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &startTime, NULL);
 	err = clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &endTime, NULL);
 
-	int elapsedTimeUs = (endTime - startTime) / 1000;
+	float elapsedTimeNs = (float)(endTime - startTime);
+	float elapsedTimeMs =  elapsedTimeNs / 1000 / 1000;
 
-	return elapsedTimeUs;
+	return elapsedTimeMs;
 }
