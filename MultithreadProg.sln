@@ -10,9 +10,12 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Prac3OpenCL", "Prac3OpenCL\Prac3OpenCL.vcxproj", "{60C238F8-DFC5-4859-A209-D089A9C451E0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab1MatrixDeterminant", "Lab1MatrixDeterminant\Lab1MatrixDeterminant.vcxproj", "{4AF86DA6-31F9-4223-851A-8FADEE254F5D}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab2AutoBrightness", "Lab2AutoBrightness\Lab2AutoBrightness.vcxproj", "{9C8F8423-CA45-46CD-B50E-823F76038C30}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Prac4OpenCLMatrix", "Prac4OpenCLMatrix\Prac4OpenCLMatrix.vcxproj", "{F8DC3398-0677-4417-A14C-38F446DF219A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab3MatrixMul", "Lab3MatrixMul\Lab3MatrixMul.vcxproj", "{93A1E550-29E1-41B4-961F-43B4066036FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +73,14 @@ Global
 		{F8DC3398-0677-4417-A14C-38F446DF219A}.Release|x64.Build.0 = Release|x64
 		{F8DC3398-0677-4417-A14C-38F446DF219A}.Release|x86.ActiveCfg = Release|Win32
 		{F8DC3398-0677-4417-A14C-38F446DF219A}.Release|x86.Build.0 = Release|Win32
+		{93A1E550-29E1-41B4-961F-43B4066036FB}.Debug|x64.ActiveCfg = Debug|x64
+		{93A1E550-29E1-41B4-961F-43B4066036FB}.Debug|x64.Build.0 = Debug|x64
+		{93A1E550-29E1-41B4-961F-43B4066036FB}.Debug|x86.ActiveCfg = Debug|Win32
+		{93A1E550-29E1-41B4-961F-43B4066036FB}.Debug|x86.Build.0 = Debug|Win32
+		{93A1E550-29E1-41B4-961F-43B4066036FB}.Release|x64.ActiveCfg = Release|x64
+		{93A1E550-29E1-41B4-961F-43B4066036FB}.Release|x64.Build.0 = Release|x64
+		{93A1E550-29E1-41B4-961F-43B4066036FB}.Release|x86.ActiveCfg = Release|Win32
+		{93A1E550-29E1-41B4-961F-43B4066036FB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
