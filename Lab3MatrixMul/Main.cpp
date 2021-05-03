@@ -1,9 +1,10 @@
 #define CL_TARGET_OPENCL_VERSION 120
 
 #include <exception>
+#include <fstream>
+#include <string>
 
 #include "MatrixMulImpls.h"
-#include <string>
 
 using namespace std;
 
@@ -27,15 +28,45 @@ int getImplementationNumber(char* str)
 	return parsedValue;
 }
 
+void readMatrices(
+	char* fileName,
+	float* firstMatrix, float* secondMatrix,
+	int* firstRowsCount, int* colsRowsCount, int* secondColsCount)
+{
+	ifstream file(fileName);
+	if (!file)
+		throw runtime_error("Cannot open file '" + string(fileName) + "'");
+
+	file >> *secondColsCount >> *colsRowsCount >> * firstRowsCount;
+	
+	int firstMatrixCount = *firstRowsCount * *colsRowsCount;
+	firstMatrix = new float[firstMatrixCount];
+	for (size_t i = 0; i < firstMatrixCount; i++)
+	{
+		file >> firstMatrix[i];
+	}
+	
+	int secondMatrixCount = *colsRowsCount * *secondColsCount;
+	secondMatrix = new float[secondMatrixCount];
+	for (size_t i = 0; i < secondMatrixCount; i++)
+	{
+		file >> secondMatrix[i];
+	}
+}
+
 void labTask(int argc, char* argv[])
 {
 	if (argc < 5)
 		throw exception("Wrong count of arguments");
 
 	int deviceIndex = getDeviceIndex(argv[1]);
-	char* inputFilename = argv[2];
-	char* outputFilename = argv[3];
+	char* inputFileName = argv[2];
+	char* outputFileName = argv[3];
 	int implementationNumber = getImplementationNumber(argv[4]);
+
+	float* firstMatrix = NULL; float* secondMatrix = NULL;
+	int firstRowsCount = 0; int colsRowsCount = 0; int secondColsCount = 0;
+	readMatrices(inputFileName, firstMatrix, secondMatrix, &firstRowsCount, &colsRowsCount, &secondColsCount);
 
 	cl_device_id deviceId = getDeviceId(deviceIndex);
 
