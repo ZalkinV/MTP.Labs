@@ -3,8 +3,10 @@
 #include <string>
 
 #include "MatrixMulImpls.h"
+#include "Timer.h"
 
 using namespace std;
+
 
 int getDeviceIndex(char* str)
 {
@@ -66,7 +68,13 @@ void labTask(int argc, char* argv[])
 	int firstRowsCount = 0; int colsRowsCount = 0; int secondColsCount = 0;
 	readMatrices(inputFileName, &firstMatrix, &secondMatrix, &firstRowsCount, &colsRowsCount, &secondColsCount);
 
+	Timer timer;
+	timer.start();
 	mtype* resultMatrix = runMulKernel(deviceIndex, firstMatrix, secondMatrix, firstRowsCount, colsRowsCount, secondColsCount, implementationNumber);
+	timer.stop();
+	float fullElapsedTime = timer.getMs();
+	printf("\nTime: %f\t%f\n", 0.0, fullElapsedTime);
+	
 	fprintMatrix(outputFileName, resultMatrix, firstRowsCount, secondColsCount);
 
 
