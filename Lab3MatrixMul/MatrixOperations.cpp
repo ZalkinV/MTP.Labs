@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdio.h>
 
 #include "MatrixOperations.h"
@@ -79,4 +81,22 @@ void printMatrix(mtype* matrix, int rowsCount, int colsCount)
 		}
 		printf("\n");
 	}
+}
+
+void fprintMatrix(char* fileName, mtype* matrix, int rowsCount, int colsCount)
+{
+	FILE* file = fopen(fileName, "w");
+	
+	fprintf(file, "%i %i\n", colsCount, rowsCount);
+	for (int iRow = 0; iRow < rowsCount; iRow++)
+	{
+		for (int iCol = 0; iCol < colsCount; iCol++)
+		{
+			int indexC = iRow * colsCount + iCol;
+			fprintf(file, "%f ", matrix[indexC]);
+		}
+		fprintf(file, "\n");
+	}
+
+	fclose(file);
 }

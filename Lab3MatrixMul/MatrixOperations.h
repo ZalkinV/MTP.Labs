@@ -6,3 +6,4 @@ mtype** multiply(mtype** matrixA, mtype** matrixB, int rowsCount, int colsCount,
 mtype* multiply(mtype* matrixA, mtype* matrixB, int rowsCount, int colsCount, int elsCount);
 mtype* convertTo1D(mtype** matrix, int rowsCount, int colsCount);
 void printMatrix(mtype* matrix, int rowsCount, int colsCount);
+void fprintMatrix(char* fileName, mtype* matrix, int rowsCount, int colsCount);

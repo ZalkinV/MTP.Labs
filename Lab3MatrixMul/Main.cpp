@@ -77,7 +77,7 @@ void labTask(int argc, char* argv[])
 	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
 
 	mtype* resultMatrix = runMulKernel(context, deviceId, queue, firstMatrix, secondMatrix, firstRowsCount, colsRowsCount, secondColsCount, implementationNumber);
-	printMatrix(resultMatrix, firstRowsCount, secondColsCount);
+	fprintMatrix(outputFileName, resultMatrix, firstRowsCount, secondColsCount);
 
 	clReleaseCommandQueue(queue);
 	clReleaseContext(context);
