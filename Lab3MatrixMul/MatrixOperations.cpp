@@ -69,6 +69,7 @@ mtype* convertTo1D(mtype** matrix, int rowsCount, int colsCount)
 
 void printMatrix(mtype* matrix, int rowsCount, int colsCount)
 {
+	printf("%i %i\n", colsCount, rowsCount);
 	for (int iRow = 0; iRow < rowsCount; iRow++)
 	{
 		for (int iCol = 0; iCol < colsCount; iCol++)
