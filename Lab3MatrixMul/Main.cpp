@@ -30,7 +30,7 @@ int getImplementationNumber(char* str)
 void readMatrices(
 	char* fileName,
 	mtype** firstMatrix, mtype** secondMatrix,
-	int* firstRowsCount, int* colsRowsCount, int* secondColsCount)
+	size_t* firstRowsCount, size_t* colsRowsCount, size_t* secondColsCount)
 {
 	ifstream file(fileName);
 	if (!file)
@@ -38,14 +38,14 @@ void readMatrices(
 
 	file >> *secondColsCount >> *colsRowsCount >> * firstRowsCount;
 	
-	int firstMatrixCount = *firstRowsCount * *colsRowsCount;
+	size_t firstMatrixCount = *firstRowsCount * *colsRowsCount;
 	*firstMatrix = new mtype[firstMatrixCount];
 	for (size_t i = 0; i < firstMatrixCount; i++)
 	{
 		file >> (*firstMatrix)[i];
 	}
 	
-	int secondMatrixCount = *colsRowsCount * *secondColsCount;
+	size_t secondMatrixCount = *colsRowsCount * *secondColsCount;
 	*secondMatrix = new mtype[secondMatrixCount];
 	for (size_t i = 0; i < secondMatrixCount; i++)
 	{
@@ -64,7 +64,7 @@ void labTask(int argc, char* argv[])
 	int implementationNumber = getImplementationNumber(argv[4]);
 
 	mtype* firstMatrix = NULL; mtype* secondMatrix = NULL;
-	int firstRowsCount = 0; int colsRowsCount = 0; int secondColsCount = 0;
+	size_t firstRowsCount = 0; size_t colsRowsCount = 0; size_t secondColsCount = 0;
 	readMatrices(inputFileName, &firstMatrix, &secondMatrix, &firstRowsCount, &colsRowsCount, &secondColsCount);
 
 	float kernelExecTime = 0;
