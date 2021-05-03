@@ -7,7 +7,7 @@
 
 
 mtype* runMulKernel(
-	cl_context context, cl_device_id deviceId, cl_command_queue queue,
+	cl_uint deviceIndex,
 	mtype* firstMatrix, mtype* secondMatrix,
 	int firstRowsCount, int colsRowsCount, int secondColsCount,
 	int implementationNumber);

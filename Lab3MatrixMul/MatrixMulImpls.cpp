@@ -1,3 +1,5 @@
+#define CL_TARGET_OPENCL_VERSION 120
+
 #include "MatrixMulImpls.h"
 
 
@@ -57,13 +59,20 @@ mtype* runFirstImplementation(
 
 
 mtype* runMulKernel(
-	cl_context context, cl_device_id deviceId, cl_command_queue queue,
+	cl_uint deviceIndex,
 	mtype* firstMatrix, mtype* secondMatrix,
 	int firstRowsCount, int colsRowsCount, int secondColsCount,
 	int implementationNumber)
 {
-	mtype* resultMatrix = NULL;
+	cl_device_id deviceId = getDeviceId(deviceIndex);
+	printDeviceInfo(deviceId);
 
+	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
+
+	cl_command_queue_properties queueProperties = CL_QUEUE_PROFILING_ENABLE;
+	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
+	
+	mtype* resultMatrix = NULL;
 	switch (implementationNumber)
 	{
 	case 1:
@@ -72,6 +81,10 @@ mtype* runMulKernel(
 	default:
 		break;
 	}
+
+	clReleaseCommandQueue(queue);
+	clReleaseContext(context);
+	clReleaseDevice(deviceId);
 
 	return resultMatrix;
 }
