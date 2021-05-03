@@ -86,7 +86,7 @@ void runMulKernel(cl_context context, cl_device_id deviceId, cl_command_queue qu
 
 int main(int argc, char* argv[])
 {
-	cl_device_id deviceId = getDeviceId();
+	cl_device_id deviceId = getDeviceId(0);
 
 	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
 
