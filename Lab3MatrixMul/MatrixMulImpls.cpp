@@ -1,13 +1,14 @@
 #define CL_TARGET_OPENCL_VERSION 120
 
 #include "MatrixMulImpls.h"
+#include "Timer.h"
 
 
 mtype* runFirstImplementation(
 	cl_context context, cl_device_id deviceId, cl_command_queue queue,
 	mtype* firstMatrix, mtype* secondMatrix,
 	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount,
-	float* kernelExecTime)
+	float* kernelExecTime, float* fullElapsedTime)
 {
 	const char* kernelName = "matrixMul";
 	cl_program program = getProgram(context, "Mul.ocl");
@@ -16,6 +17,9 @@ mtype* runFirstImplementation(
 	cl_int err = 0;
 
 	cl_kernel kernel = clCreateKernel(program, kernelName, &err);
+
+	Timer timer;
+	timer.start();
 
 	size_t firstBufferSize = firstRowsCount * colsRowsCount * sizeof(mtype);
 	cl_mem firstBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, firstBufferSize, NULL, &err);
@@ -46,13 +50,15 @@ mtype* runFirstImplementation(
 	mtype* resultMatrix = new mtype[resultMatrixSize];
 	err = clEnqueueReadBuffer(queue, resultBuffer, true, NULL, resultBufferSize, resultMatrix, NULL, NULL, NULL);
 
+	timer.stop();
+	*fullElapsedTime = timer.getMs();
+	*kernelExecTime = getElapsedTimeMs(kernelStartEvent);
+
+	clReleaseEvent(kernelStartEvent);
 	clReleaseMemObject(firstBuffer);
 	clReleaseMemObject(secondBuffer);
 	clReleaseMemObject(resultBuffer);
 	clReleaseProgram(program);
-
-	*kernelExecTime = getElapsedTimeMs(kernelStartEvent);
-	clReleaseEvent(kernelStartEvent);
 
 	return resultMatrix;
 }
@@ -63,7 +69,8 @@ mtype* runMulKernel(
 	mtype* firstMatrix, mtype* secondMatrix,
 	int firstRowsCount, int colsRowsCount, int secondColsCount,
 	int implementationNumber,
-	float* kernelExecTime)
+	float* kernelExecTime,
+	float* fullElapsedTime)
 {
 	cl_device_id deviceId = getDeviceId(deviceIndex);
 	printDeviceInfo(deviceId);
@@ -78,7 +85,11 @@ mtype* runMulKernel(
 	switch (implementationNumber)
 	{
 	case 1:
-		resultMatrix = runFirstImplementation(context, deviceId, queue, firstMatrix, secondMatrix, firstRowsCount, colsRowsCount, secondColsCount, kernelExecTime);
+		resultMatrix = runFirstImplementation(
+			context, deviceId, queue,
+			firstMatrix, secondMatrix,
+			firstRowsCount, colsRowsCount, secondColsCount,
+			kernelExecTime, fullElapsedTime);
 		break;
 	default:
 		break;

@@ -11,4 +11,5 @@ mtype* runMulKernel(
 	mtype* firstMatrix, mtype* secondMatrix,
 	int firstRowsCount, int colsRowsCount, int secondColsCount,
 	int implementationNumber,
-	float* kernelExecTime);
+	float* kernelExecTime,
+	float* fullElapsedTime);
