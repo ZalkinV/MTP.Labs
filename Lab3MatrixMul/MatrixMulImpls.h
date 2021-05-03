@@ -1,7 +1,5 @@
 #pragma once
 
-#include <CL/opencl.h>
-
 #include "OpenCLOperations.h"
 #include "MatrixOperations.h"
 
