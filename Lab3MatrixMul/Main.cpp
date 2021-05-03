@@ -68,8 +68,8 @@ void labTask(int argc, char* argv[])
 	int firstRowsCount = 0; int colsRowsCount = 0; int secondColsCount = 0;
 	readMatrices(inputFileName, &firstMatrix, &secondMatrix, &firstRowsCount, &colsRowsCount, &secondColsCount);
 
-
 	cl_device_id deviceId = getDeviceId(deviceIndex);
+	printDeviceInfo(deviceId);
 
 	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
 

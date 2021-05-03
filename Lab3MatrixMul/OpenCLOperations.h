@@ -7,6 +7,8 @@
 
 cl_device_id getDeviceId(cl_uint deviceIndex);
 
+void printDeviceInfo(cl_device_id deviceId);
+
 void fillDevicesByType(
 	const cl_platform_id* platformsIds,
 	cl_uint platformsCount,

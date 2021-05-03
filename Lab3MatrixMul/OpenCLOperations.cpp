@@ -25,6 +25,28 @@ cl_device_id getDeviceId(cl_uint deviceIndex)
 	return selectedDeviceId;
 }
 
+void printDeviceInfo(cl_device_id deviceId)
+{
+	printf("Selected device:");
+	printf("Id='%p'", deviceId);
+
+	size_t vendorNameSize = 0;
+	clGetDeviceInfo(deviceId, CL_DEVICE_VENDOR, 0, NULL, &vendorNameSize);
+	char* vendorName = new char[vendorNameSize];
+	clGetDeviceInfo(deviceId, CL_DEVICE_VENDOR, vendorNameSize, vendorName, NULL);
+	printf(" VendorName='%s'", vendorName);
+	delete[] vendorName;
+
+	size_t nameSize = 0;
+	clGetDeviceInfo(deviceId, CL_DEVICE_NAME, 0, NULL, &nameSize);
+	char* name = new char[nameSize];
+	clGetDeviceInfo(deviceId, CL_DEVICE_NAME, nameSize, name, NULL);
+	printf(" Name='%s'", name);
+	delete[] name;
+
+	printf("\n");
+}
+
 void fillDevicesByType(
 	const cl_platform_id* platformsIds,
 	cl_uint platformsCount,
