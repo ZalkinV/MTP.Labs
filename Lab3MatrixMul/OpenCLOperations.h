@@ -2,6 +2,8 @@
 #include <iostream>
 #include <CL/opencl.h>
 
+#include "ErrorThrower.h"
+
 #define MAX_DEVICES_COUNT 32
 
 

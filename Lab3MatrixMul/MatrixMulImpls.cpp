@@ -16,10 +16,11 @@ mtype* runMulKernel(
 	cl_device_id deviceId = getDeviceId(deviceIndex);
 	printDeviceInfo(deviceId);
 
-	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
+	cl_int err = 0;
+	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, &err); tryThrowErr(err);
 
 	cl_command_queue_properties queueProperties = CL_QUEUE_PROFILING_ENABLE;
-	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, NULL);
+	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, &err); tryThrowErr(err);
 
 	char* kernelName = new char[32];
 	size_t* globalWorkSize = NULL;
@@ -42,9 +43,9 @@ mtype* runMulKernel(
 		firstRowsCount, colsRowsCount, secondColsCount,
 		kernelExecTime, fullElapsedTime);
 
-	clReleaseCommandQueue(queue);
-	clReleaseContext(context);
-	clReleaseDevice(deviceId);
+	err = clReleaseCommandQueue(queue); tryThrowErr(err);
+	err = clReleaseContext(context); tryThrowErr(err);
+	err = clReleaseDevice(deviceId); tryThrowErr(err);
 
 	return resultMatrix;
 }
@@ -56,53 +57,54 @@ mtype* runImplementation(
 	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount,
 	float* kernelExecTime, float* fullElapsedTime)
 {
-	cl_program program = getProgram(context, "Mul.ocl");
-	int buildStatus = buildProgram(program, deviceId);
-
 	cl_int err = 0;
 
-	cl_kernel kernel = clCreateKernel(program, kernelName, &err);
+	cl_program program = getProgram(context, "Mul.ocl");
+	err = buildProgram(program, deviceId); tryThrowErr(err);
+
+
+	cl_kernel kernel = clCreateKernel(program, kernelName, &err); tryThrowErr(err);
 
 	Timer timer;
 	timer.start();
 
 	size_t firstBufferSize = firstRowsCount * colsRowsCount * sizeof(mtype);
-	cl_mem firstBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, firstBufferSize, NULL, &err);
-	err = clEnqueueWriteBuffer(queue, firstBuffer, false, 0, firstBufferSize, firstMatrix, NULL, NULL, NULL);
+	cl_mem firstBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, firstBufferSize, NULL, &err); tryThrowErr(err);
+	err = clEnqueueWriteBuffer(queue, firstBuffer, false, 0, firstBufferSize, firstMatrix, NULL, NULL, NULL); tryThrowErr(err);
 
 	size_t secondBufferSize = colsRowsCount * secondColsCount * sizeof(mtype);
-	cl_mem secondBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, secondBufferSize, NULL, &err);
-	err = clEnqueueWriteBuffer(queue, secondBuffer, false, 0, secondBufferSize, secondMatrix, NULL, NULL, NULL);
+	cl_mem secondBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, secondBufferSize, NULL, &err); tryThrowErr(err);
+	err = clEnqueueWriteBuffer(queue, secondBuffer, false, 0, secondBufferSize, secondMatrix, NULL, NULL, NULL); tryThrowErr(err);
 
 	size_t resultMatrixSize = firstRowsCount * secondColsCount;
 	size_t resultBufferSize = resultMatrixSize * sizeof(mtype);
-	cl_mem resultBuffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, resultBufferSize, NULL, &err);
+	cl_mem resultBuffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, resultBufferSize, NULL, &err); tryThrowErr(err);
 
 	cl_uint iArg = 0;
-	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &firstBuffer);
-	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &secondBuffer);
-	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &colsRowsCount);
-	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &secondColsCount);
-	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &resultBuffer);
+	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &firstBuffer); tryThrowErr(err);
+	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &secondBuffer); tryThrowErr(err);
+	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &colsRowsCount); tryThrowErr(err);
+	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &secondColsCount); tryThrowErr(err);
+	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &resultBuffer); tryThrowErr(err);
 
 
 	cl_uint workDim = 2;
 	cl_event kernelStartEvent;
-	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, globalWorkSize, localWorkSize, NULL, NULL, &kernelStartEvent);
+	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, globalWorkSize, localWorkSize, NULL, NULL, &kernelStartEvent); tryThrowErr(err);
 
 
 	mtype* resultMatrix = new mtype[resultMatrixSize];
-	err = clEnqueueReadBuffer(queue, resultBuffer, true, NULL, resultBufferSize, resultMatrix, NULL, NULL, NULL);
+	err = clEnqueueReadBuffer(queue, resultBuffer, true, NULL, resultBufferSize, resultMatrix, NULL, NULL, NULL); tryThrowErr(err);
 
 	timer.stop();
 	*fullElapsedTime = timer.getMs();
 	*kernelExecTime = getElapsedTimeMs(kernelStartEvent);
 
-	clReleaseEvent(kernelStartEvent);
-	clReleaseMemObject(firstBuffer);
-	clReleaseMemObject(secondBuffer);
-	clReleaseMemObject(resultBuffer);
-	clReleaseProgram(program);
+	err = clReleaseEvent(kernelStartEvent); tryThrowErr(err);
+	err = clReleaseMemObject(firstBuffer); tryThrowErr(err);
+	err = clReleaseMemObject(secondBuffer); tryThrowErr(err);
+	err = clReleaseMemObject(resultBuffer); tryThrowErr(err);
+	err = clReleaseProgram(program); tryThrowErr(err);
 
 	return resultMatrix;
 }

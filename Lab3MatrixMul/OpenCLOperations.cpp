@@ -5,10 +5,12 @@
 
 cl_device_id getDeviceId(cl_uint deviceIndex)
 {
+	cl_int err = 0;
+
 	cl_uint platformCount = 0;
-	clGetPlatformIDs(0, NULL, &platformCount);
+	err = clGetPlatformIDs(0, NULL, &platformCount); tryThrowErr(err);
 	cl_platform_id* platformsIds = new cl_platform_id[platformCount];
-	clGetPlatformIDs(platformCount, platformsIds, NULL);
+	err = clGetPlatformIDs(platformCount, platformsIds, NULL); tryThrowErr(err);
 
 	cl_uint nextDeviceIndex = 0;
 	cl_device_id* devicesIds = new cl_device_id[MAX_DEVICES_COUNT];
@@ -27,20 +29,22 @@ cl_device_id getDeviceId(cl_uint deviceIndex)
 
 void printDeviceInfo(cl_device_id deviceId)
 {
+	cl_int err = 0;
+
 	printf("Selected device:");
 	printf("Id='%p'", deviceId);
 
 	size_t vendorNameSize = 0;
-	clGetDeviceInfo(deviceId, CL_DEVICE_VENDOR, 0, NULL, &vendorNameSize);
+	err = clGetDeviceInfo(deviceId, CL_DEVICE_VENDOR, 0, NULL, &vendorNameSize); tryThrowErr(err);
 	char* vendorName = new char[vendorNameSize];
-	clGetDeviceInfo(deviceId, CL_DEVICE_VENDOR, vendorNameSize, vendorName, NULL);
+	err = clGetDeviceInfo(deviceId, CL_DEVICE_VENDOR, vendorNameSize, vendorName, NULL); tryThrowErr(err);
 	printf(" VendorName='%s'", vendorName);
 	delete[] vendorName;
 
 	size_t nameSize = 0;
-	clGetDeviceInfo(deviceId, CL_DEVICE_NAME, 0, NULL, &nameSize);
+	err = clGetDeviceInfo(deviceId, CL_DEVICE_NAME, 0, NULL, &nameSize); tryThrowErr(err);
 	char* name = new char[nameSize];
-	clGetDeviceInfo(deviceId, CL_DEVICE_NAME, nameSize, name, NULL);
+	err = clGetDeviceInfo(deviceId, CL_DEVICE_NAME, nameSize, name, NULL); tryThrowErr(err);
 	printf(" Name='%s'", name);
 	delete[] name;
 
@@ -55,21 +59,23 @@ void fillDevicesByType(
 	cl_bool isIntegrated,
 	cl_uint* startIndex)
 {
+	cl_int err = 0;
+
 	for (size_t iPlatform = 0; iPlatform < platformsCount; iPlatform++)
 	{
 		cl_platform_id platformId = platformsIds[iPlatform];
 
 		cl_uint devicesCount = 0;
-		clGetDeviceIDs(platformId, deviceType, 0, NULL, &devicesCount);
+		err = clGetDeviceIDs(platformId, deviceType, 0, NULL, &devicesCount);
 		cl_device_id* curPlatformDevicesIds = new cl_device_id[devicesCount];
-		clGetDeviceIDs(platformId, deviceType, devicesCount, curPlatformDevicesIds, NULL);
+		err = clGetDeviceIDs(platformId, deviceType, devicesCount, curPlatformDevicesIds, NULL);
 
 		for (cl_uint iDevice = 0; iDevice < devicesCount; iDevice++)
 		{
 			cl_device_id deviceId = curPlatformDevicesIds[iDevice];
 
 			cl_bool isInteg = false;
-			clGetDeviceInfo(deviceId, CL_DEVICE_HOST_UNIFIED_MEMORY, sizeof(cl_bool), &isInteg, NULL);
+			err = clGetDeviceInfo(deviceId, CL_DEVICE_HOST_UNIFIED_MEMORY, sizeof(cl_bool), &isInteg, NULL); tryThrowErr(err);
 			if (isInteg == isIntegrated)
 			{
 				devicesIds[*startIndex] = deviceId;
@@ -95,7 +101,8 @@ cl_program getProgram(cl_context context, const char* sourceFilename)
 
 	fclose(file);
 
-	cl_program program = clCreateProgramWithSource(context, 1, (const char**)sourceCode, &fileSize, NULL);
+	cl_int err = 0;
+	cl_program program = clCreateProgramWithSource(context, 1, (const char**)sourceCode, &fileSize, &err); tryThrowErr(err);
 
 	delete[] sourceCode[0];
 	delete[] sourceCode;
@@ -103,7 +110,7 @@ cl_program getProgram(cl_context context, const char* sourceFilename)
 	return program;
 }
 
-int buildProgram(cl_program program, cl_device_id deviceId)
+cl_int buildProgram(cl_program program, cl_device_id deviceId)
 {
 	cl_int compilationErr = clBuildProgram(program, 1, &deviceId, "", NULL, NULL);
 
