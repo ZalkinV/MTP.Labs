@@ -64,12 +64,12 @@ void labTask(int argc, char* argv[])
 	char* outputFileName = argv[3];
 	int implementationNumber = getImplementationNumber(argv[4]);
 
+	cl_device_id deviceId = getDeviceId(deviceIndex);
+	printDeviceInfo(deviceId);
+
 	mtype* firstMatrix = NULL; mtype* secondMatrix = NULL;
 	int firstRowsCount = 0; int colsRowsCount = 0; int secondColsCount = 0;
 	readMatrices(inputFileName, &firstMatrix, &secondMatrix, &firstRowsCount, &colsRowsCount, &secondColsCount);
-
-	cl_device_id deviceId = getDeviceId(deviceIndex);
-	printDeviceInfo(deviceId);
 
 	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, NULL);
 
