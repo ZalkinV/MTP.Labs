@@ -84,7 +84,6 @@ mtype* runImplementation(
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &firstBuffer); tryThrowErr(err);
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &secondBuffer); tryThrowErr(err);
 	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &colsRowsCount); tryThrowErr(err);
-	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &secondColsCount); tryThrowErr(err);
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &resultBuffer); tryThrowErr(err);
 
 
