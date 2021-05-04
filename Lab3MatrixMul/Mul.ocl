@@ -18,3 +18,30 @@ kernel void firstImpl(
 
 	matrixResult[iRow * colsCount + iCol] = elValue;
 }
+
+kernel void secondImpl(
+	global const float* firstMatrix,
+	global const float* secondMatrix,
+	int colsRowsCount,
+	global float* matrixResult)
+{
+	int colsCount = get_global_size(1);
+
+	int iRow = get_global_id(0);
+	int iCol = get_global_id(1);
+
+	int localRowsCount = get_local_size(0);
+	int localColsCount = get_local_size(1);
+
+	local float firstMatrixLocal[localRowsCount][localColsCount];
+	local float secondMatrixLocal[localColsCount][localRowsCount];
+
+
+	float elValue = 0;
+	for (int iEl = 0; iEl < colsRowsCount; iEl++)
+	{
+		elValue += firstMatrix[iRow * colsRowsCount + iEl] * secondMatrix[iEl * colsCount + iCol];
+	}
+
+	matrixResult[iRow * colsCount + iCol] = elValue;
+}

@@ -30,6 +30,9 @@ mtype* runMulKernel(
 		strcpy(kernelName, "firstImpl");
 		localWorkSize = NULL;
 		break;
+	case 2:
+		strcpy(kernelName, "secondImpl");
+		localWorkSize = new size_t[]{ 2, 2 };
 	default:
 		break;
 	}
