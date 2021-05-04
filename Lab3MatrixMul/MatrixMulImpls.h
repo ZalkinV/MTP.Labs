@@ -12,7 +12,7 @@ mtype* runMulKernel(
 	float* kernelExecTime, float* fullElapsedTime);
 
 mtype* runImplementation(
-	const char* kernelName, const size_t* globalWorkSize, const size_t* localWorkSize,
+	const char* kernelName, const size_t* localWorkSize,
 	cl_context context, cl_device_id deviceId, cl_command_queue queue,
 	mtype* firstMatrix, mtype* secondMatrix,
 	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount,

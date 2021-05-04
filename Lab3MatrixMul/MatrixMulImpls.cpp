@@ -23,13 +23,11 @@ mtype* runMulKernel(
 	cl_command_queue queue = clCreateCommandQueue(context, deviceId, queueProperties, &err); tryThrowErr(err);
 
 	char* kernelName = new char[32];
-	size_t* globalWorkSize = NULL;
 	size_t* localWorkSize = NULL;
 	switch (implementationNumber)
 	{
 	case 1:
 		strcpy(kernelName, "firstImpl");
-		globalWorkSize = new size_t[]{ firstRowsCount, secondColsCount };
 		localWorkSize = NULL;
 		break;
 	default:
@@ -37,7 +35,7 @@ mtype* runMulKernel(
 	}
 
 	mtype* resultMatrix = runImplementation(
-		kernelName, globalWorkSize, localWorkSize,
+		kernelName, localWorkSize,
 		context, deviceId, queue,
 		firstMatrix, secondMatrix,
 		firstRowsCount, colsRowsCount, secondColsCount,
@@ -51,7 +49,7 @@ mtype* runMulKernel(
 }
 
 mtype* runImplementation(
-	const char* kernelName, const size_t* globalWorkSize, const size_t* localWorkSize,
+	const char* kernelName, const size_t* localWorkSize,
 	cl_context context, cl_device_id deviceId, cl_command_queue queue,
 	mtype* firstMatrix, mtype* secondMatrix,
 	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount,
@@ -87,8 +85,9 @@ mtype* runImplementation(
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &resultBuffer); tryThrowErr(err);
 
 
-	cl_uint workDim = 2;
 	cl_event kernelStartEvent;
+	cl_uint workDim = 2;
+	size_t* globalWorkSize = new size_t[]{ firstRowsCount, secondColsCount };
 	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, globalWorkSize, localWorkSize, NULL, NULL, &kernelStartEvent); tryThrowErr(err);
 
 
