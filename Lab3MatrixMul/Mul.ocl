@@ -31,8 +31,14 @@ kernel void secondImpl(
 	int iRow = get_global_id(0);
 	int iCol = get_global_id(1);
 
-	local float firstMatrixLocal[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
-	local float secondMatrixLocal[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+	int iGroupRow = get_group_id(0);
+	int iGroupCol = get_group_id(1);
+
+	int iRowLoc = get_local_id(0);
+	int iColLoc = get_local_id(1);
+
+	local float fMatLoc[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+	local float sMatLoc[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
 
 
 	float elValue = 0;
@@ -41,5 +47,5 @@ kernel void secondImpl(
 		elValue += firstMatrix[iRow * colsRowsCount + iEl] * secondMatrix[iEl * colsCount + iCol];
 	}
 
-	matrixResult[iRow * colsCount + iCol] = elValue;
+	matrixResult[iRow * colsCount + iCol] = iGroupRow * 10 + iGroupCol;
 }
