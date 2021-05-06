@@ -37,15 +37,25 @@ kernel void secondImpl(
 	int iRowLoc = get_local_id(0);
 	int iColLoc = get_local_id(1);
 
-	local float fMatLoc[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
-	local float sMatLoc[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+	local float fMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
 
 
-	float elValue = 0;
-	for (int iEl = 0; iEl < colsRowsCount; iEl++)
+	int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
+
+	int fMatIndex = iRow * colsRowsCount	+ iGroupCol * LOCAL_GROUP_SIZE				+ iColLoc;
+	int sMatIndex = iRowLoc * colsCount		+ iGroupCol * LOCAL_GROUP_SIZE * colsCount	+ iColLoc;
+	fMatGroup[iRowLoc][iColLoc] = firstMatrix[fMatIndex];
+	sMatGroup[iRowLoc][iColLoc] = secondMatrix[sMatIndex];
+	/*
+	for (int i = 0; i < LOCAL_GROUP_SIZE; i++)
 	{
-		elValue += firstMatrix[iRow * colsRowsCount + iEl] * secondMatrix[iEl * colsCount + iCol];
+		for (int j = 0; j < LOCAL_GROUP_SIZE; j++)
+		{
+			matrixResult[iRow * colsCount + iCol] = iGroupRow * 10 + iGroupCol;
+		}
 	}
+	*/
 
-	matrixResult[iRow * colsCount + iCol] = iGroupRow * 10 + iGroupCol;
+	matrixResult[iRow * colsCount + iCol] = fsSubMatCount;
 }
