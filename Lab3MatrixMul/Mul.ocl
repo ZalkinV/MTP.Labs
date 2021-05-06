@@ -24,7 +24,7 @@ kernel void secondImpl(
 	global const float* firstMatrix,
 	global const float* secondMatrix,
 	int colsRowsCount,
-	global float* matrixResult)
+	global float* resultMatrix)
 {
 	int colsCount = get_global_size(1);
 
@@ -56,20 +56,10 @@ kernel void secondImpl(
 
 		fMatGroup[iRowLoc][iColLoc] = firstMatrix[fMatIndex];
 		sMatGroup[iRowLoc][iColLoc] = secondMatrix[sMatIndex];
-	}
 
-	int fMatIndex = iRow * colsRowsCount	+ iGroupCol * LOCAL_GROUP_SIZE				+ iColLoc;
-	int sMatIndex = iRowLoc * colsCount		+ iGroupCol * LOCAL_GROUP_SIZE * colsCount	+ iColLoc;
-	
-	/*
-	for (int i = 0; i < LOCAL_GROUP_SIZE; i++)
-	{
-		for (int j = 0; j < LOCAL_GROUP_SIZE; j++)
+		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
 		{
-			matrixResult[iRow * colsCount + iCol] = iGroupRow * 10 + iGroupCol;
+			resultMatrix[iRow * colsCount + iCol] += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc];
 		}
 	}
-	*/
-
-	matrixResult[iRow * colsCount + iCol] = fsSubMatCount;
 }
