@@ -57,9 +57,11 @@ kernel void secondImpl(
 		fMatGroup[iRowLoc][iColLoc] = firstMatrix[fMatIndex];
 		sMatGroup[iRowLoc][iColLoc] = secondMatrix[sMatIndex];
 
+		float elValue = 0;
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
 		{
-			resultMatrix[iRow * colsCount + iCol] += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc];
+			elValue += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc];
 		}
+		resultMatrix[iRow * colsCount + iCol] += elValue;
 	}
 }
