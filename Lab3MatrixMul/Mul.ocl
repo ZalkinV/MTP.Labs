@@ -53,20 +53,22 @@ kernel void secondImpl(
 						iSubMat * colsCount * LOCAL_GROUP_SIZE +		// go inside column of current local group
 						iRowLoc * colsCount +							// skip previous rows inside group
 						iColLoc;										// go inside local group for current element
+
 		
-		int fMatRow = iGroupRow * colsRowsCount * LOCAL_GROUP_SIZE + iRowLoc;
+		int fMatRow = iGroupRow * LOCAL_GROUP_SIZE + iRowLoc;
 		int fMatCol = iSubMat * LOCAL_GROUP_SIZE + iColLoc;
 		if (fMatRow < rowsCount && fMatCol < colsRowsCount)
 			fMatGroup[iRowLoc][iColLoc] = firstMatrix[fMatIndex];
 		else
 			fMatGroup[iRowLoc][iColLoc] = 0;
 
-		int sMatRow = iSubMat * colsCount * LOCAL_GROUP_SIZE + iRowLoc;
+		int sMatRow = iSubMat * LOCAL_GROUP_SIZE + iRowLoc;
 		int sMatCol = iGroupCol * LOCAL_GROUP_SIZE + iColLoc;
 		if (sMatRow < colsRowsCount && sMatCol < colsCount)
 			sMatGroup[iRowLoc][iColLoc] = secondMatrix[sMatIndex];
 		else
 			sMatGroup[iRowLoc][iColLoc] = 0;
+
 
 		float elValue = 0;
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
