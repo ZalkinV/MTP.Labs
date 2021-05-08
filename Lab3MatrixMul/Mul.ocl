@@ -19,7 +19,6 @@ kernel void firstImpl(
 	matrixResult[iRow * colsCount + iCol] = elValue;
 }
 
-#define LOCAL_GROUP_SIZE 2
 kernel void secondImpl(
 	global const float* firstMatrix,
 	global const float* secondMatrix,

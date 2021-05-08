@@ -4,8 +4,6 @@
 #include "MatrixMulImpls.h"
 #include "Timer.h"
 
-#define LOCAL_GROUP_SIZE 2
-
 
 mtype* runMulKernel(
 	cl_uint deviceIndex,
