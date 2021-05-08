@@ -41,6 +41,8 @@ kernel void secondImpl(
 	local float fMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
 	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
 
+	int fMatElCount = colsRowsCount * rowsCount;
+	int sMatElCount = colsRowsCount * colsCount;
 
 	int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
 	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
@@ -55,16 +57,14 @@ kernel void secondImpl(
 						iRowLoc * colsCount +							// skip previous rows inside group
 						iColLoc;										// go inside local group for current element
 		
-		int fMatRowReal = iGroupRow * LOCAL_GROUP_SIZE + iSubMat * LOCAL_GROUP_SIZE + iRowLoc;
-		int fMatColReal = iGroupCol * LOCAL_GROUP_SIZE + iSubMat * LOCAL_GROUP_SIZE + iColLoc;
-		if (fMatRowReal < rowsCount && fMatColReal < colsRowsCount)
+		int fMatMaxIndexInRow = (iRow + 1) * colsRowsCount;
+		if (fMatIndex <= fMatMaxIndexInRow && fMatIndex < fMatElCount)
 			fMatGroup[iRowLoc][iColLoc] = firstMatrix[fMatIndex];
 		else
 			fMatGroup[iRowLoc][iColLoc] = 0;
 
-		int sMatRowReal = fMatColReal;
-		int sMatColReal = fMatRowReal;
-		if (sMatRowReal < colsRowsCount && sMatColReal < colsCount)
+		int sMatMaxIndexInRow = (iRow + 1) * colsCount;
+		if (sMatIndex <= sMatMaxIndexInRow && sMatIndex < sMatElCount)
 			sMatGroup[iRowLoc][iColLoc] = secondMatrix[sMatIndex];
 		else
 			sMatGroup[iRowLoc][iColLoc] = 0;
