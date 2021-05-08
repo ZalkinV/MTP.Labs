@@ -42,6 +42,9 @@ kernel void secondImpl(
 	local float fMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
 	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
 
+
+	float elValue = 0;
+
 	const int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
 	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
 	{
@@ -60,13 +63,12 @@ kernel void secondImpl(
 			sMatGroup[iRowLoc][iColLoc] = 0;
 
 
-		float elValue = 0;
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
 		{
 			elValue += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc];
 		}
-
-		if (iRow < rowsCount && iCol < colsCount)
-			resultMatrix[iRow * colsCount + iCol] += elValue;
 	}
+
+	if (iRow < rowsCount && iCol < colsCount)
+		resultMatrix[iRow * colsCount + iCol] = elValue;
 }
