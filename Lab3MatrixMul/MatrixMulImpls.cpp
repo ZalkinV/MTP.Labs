@@ -4,6 +4,8 @@
 #include "MatrixMulImpls.h"
 #include "Timer.h"
 
+#define LOCAL_GROUP_SIZE 2
+
 
 mtype* runMulKernel(
 	cl_uint deviceIndex,
@@ -32,7 +34,7 @@ mtype* runMulKernel(
 		break;
 	case 2:
 		strcpy(kernelName, "secondImpl");
-		localWorkSize = new size_t[]{ 2, 2 };
+		localWorkSize = new size_t[]{ LOCAL_GROUP_SIZE, LOCAL_GROUP_SIZE };
 	default:
 		break;
 	}
