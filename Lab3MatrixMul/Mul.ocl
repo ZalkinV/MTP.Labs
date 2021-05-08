@@ -1,11 +1,11 @@
 kernel void firstImpl(
 	global const float* firstMatrix,
 	global const float* secondMatrix,
+	int rowsCount,
 	int colsRowsCount,
+	int colsCount,
 	global float* matrixResult)
 {
-	int colsCount = get_global_size(1);
-	
 	int iRow = get_global_id(0);
 	int iCol = get_global_id(1);
 
@@ -23,11 +23,13 @@ kernel void firstImpl(
 kernel void secondImpl(
 	global const float* firstMatrix,
 	global const float* secondMatrix,
+	int rowsCount,
 	int colsRowsCount,
+	int colsCount,
 	global float* resultMatrix)
 {
-	int rowsCount = get_global_size(0);
-	int colsCount = get_global_size(1);
+	int globalRowsCount = get_global_size(0);
+	int globalColsCount = get_global_size(1);
 
 	int iRow = get_global_id(0);
 	int iCol = get_global_id(1);
@@ -64,6 +66,8 @@ kernel void secondImpl(
 		{
 			elValue += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc];
 		}
-		resultMatrix[iRow * colsCount + iCol] += elValue;
+
+		if (iRow < rowsCount && iCol < colsCount)
+			resultMatrix[iRow * colsCount + iCol] += elValue;
 	}
 }

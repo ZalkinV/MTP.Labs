@@ -86,13 +86,23 @@ mtype* runImplementation(
 	cl_uint iArg = 0;
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &firstBuffer); tryThrowErr(err);
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &secondBuffer); tryThrowErr(err);
+	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &firstRowsCount); tryThrowErr(err);
 	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &colsRowsCount); tryThrowErr(err);
+	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &secondColsCount); tryThrowErr(err);
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &resultBuffer); tryThrowErr(err);
 
 
 	cl_event kernelStartEvent;
 	cl_uint workDim = 2;
-	size_t* globalWorkSize = new size_t[]{ firstRowsCount, secondColsCount };
+	
+	size_t globalWorkRowsCount = firstRowsCount;
+	size_t globalWorkColsCount = secondColsCount;
+	if (localWorkSize != NULL)
+	{
+		globalWorkRowsCount = firstRowsCount + (firstRowsCount - firstRowsCount % localWorkSize[0]);
+		globalWorkColsCount = secondColsCount + (secondColsCount - secondColsCount % localWorkSize[1]);
+	}
+	size_t* globalWorkSize = new size_t[]{ globalWorkRowsCount, globalWorkColsCount };
 	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, globalWorkSize, localWorkSize, NULL, NULL, &kernelStartEvent); tryThrowErr(err);
 
 
