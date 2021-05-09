@@ -104,8 +104,8 @@ mtype* runImplementation(
 	size_t globalWorkColsCount = secondColsCount;
 	if (localWorkSize != NULL)
 	{
-		globalWorkRowsCount = firstRowsCount + (firstRowsCount - firstRowsCount % localWorkSize[0]);
-		globalWorkColsCount = secondColsCount + (secondColsCount - secondColsCount % localWorkSize[1]);
+		globalWorkRowsCount = roundToNextDivisible(firstRowsCount, localWorkSize[0]);
+		globalWorkColsCount = roundToNextDivisible(secondColsCount, localWorkSize[1]);
 	}
 	size_t* globalWorkSize = new size_t[]{ globalWorkRowsCount, globalWorkColsCount };
 	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, globalWorkSize, localWorkSize, NULL, NULL, &kernelStartEvent); tryThrowErr(err);
@@ -125,4 +125,9 @@ mtype* runImplementation(
 	err = clReleaseProgram(program); tryThrowErr(err);
 
 	return resultMatrix;
+}
+
+size_t roundToNextDivisible(size_t value, size_t divider)
+{
+	return value + (value - value % divider);
 }

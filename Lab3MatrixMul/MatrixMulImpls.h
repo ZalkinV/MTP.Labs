@@ -17,3 +17,5 @@ mtype* runImplementation(
 	mtype* firstMatrix, mtype* secondMatrix,
 	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount,
 	float* kernelExecTime, float* fullElapsedTime);
+
+size_t roundToNextDivisible(size_t value, size_t divider);
