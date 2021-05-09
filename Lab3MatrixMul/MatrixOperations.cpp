@@ -103,32 +103,28 @@ mtype* readMatrix(FILE* file, const size_t rowsCount, const size_t colsCount)
 
 void printMatrix(const mtype* matrix, const size_t rowsCount, const size_t colsCount)
 {
-	printf("%i %i\n", colsCount, rowsCount);
-	for (size_t iRow = 0; iRow < rowsCount; iRow++)
-	{
-		for (size_t iCol = 0; iCol < colsCount; iCol++)
-		{
-			size_t indexC = iRow * colsCount + iCol;
-			printf("%f ", matrix[indexC]);
-		}
-		printf("\n");
-	}
+	printMatrixToStream(stdout, matrix, rowsCount, colsCount);
 }
 
 void fprintMatrix(const char* fileName, const mtype* matrix, const size_t rowsCount, const size_t colsCount)
 {
 	FILE* file = fopen(fileName, "w");
 	
-	fprintf(file, "%i %i\n", colsCount, rowsCount);
+	printMatrixToStream(file, matrix, rowsCount, colsCount);
+
+	fclose(file);
+}
+
+void printMatrixToStream(FILE* stream, const mtype* matrix, const size_t rowsCount, const size_t colsCount)
+{
+	fprintf(stream, "%i %i\n", colsCount, rowsCount);
 	for (size_t iRow = 0; iRow < rowsCount; iRow++)
 	{
 		for (size_t iCol = 0; iCol < colsCount; iCol++)
 		{
 			size_t indexC = iRow * colsCount + iCol;
-			fprintf(file, "%f ", matrix[indexC]);
+			fprintf(stream, "%f ", matrix[indexC]);
 		}
-		fprintf(file, "\n");
+		fprintf(stream, "\n");
 	}
-
-	fclose(file);
 }

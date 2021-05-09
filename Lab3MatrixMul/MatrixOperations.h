@@ -15,3 +15,4 @@ mtype* readMatrix(FILE* file, const size_t rowsCount, const size_t colsCount);
 
 void printMatrix(const mtype* matrix, const size_t rowsCount, const size_t colsCount);
 void fprintMatrix(const char* fileName, const mtype* matrix, const size_t rowsCount, const size_t colsCount);
+void printMatrixToStream(FILE* stream, const mtype* matrix, const size_t rowsCount, const size_t colsCount);
