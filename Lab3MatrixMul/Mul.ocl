@@ -123,8 +123,8 @@ kernel void thirdImpl(
 			const int iVectorEl = iVector * vectorsCount;
 			const float4 fMatRow = (float4)(fMatGroup[iRowLoc][iVectorEl], fMatGroup[iRowLoc][iVectorEl + 1], fMatGroup[iRowLoc][iVectorEl + 2], fMatGroup[iRowLoc][iVectorEl + 3]);
 			const float4 sMatCol = (float4)(sMatGroup[iVectorEl][iColLoc], sMatGroup[iVectorEl + 1][iColLoc], sMatGroup[iVectorEl + 2][iColLoc], sMatGroup[iVectorEl + 3][iColLoc]);
-			const float4 rVector = fMatRow * fMatCol;
-			elValue += rVector.s0 + rVector.s1 + rVector.s3 + rVector.s3;
+			const float4 rVector = fMatRow * sMatCol;
+			elValue += rVector.s0 + rVector.s1 + rVector.s2 + rVector.s3;
 		}
 	}
 
