@@ -18,36 +18,6 @@ int getDeviceIndex(char* str)
 	return parsedValue;
 }
 
-mtype* readMatrix(FILE* file, const size_t rowsCount, const size_t colsCount)
-{
-	int err = 0;
-	size_t elementsCount = rowsCount * colsCount;
-	mtype* matrix = new mtype[elementsCount];
-	for (size_t i = 0; i < elementsCount; i++)
-	{
-		err = fscanf(file, "%f", &matrix[i]);
-	}
-
-	return matrix;
-}
-
-void readMatrices(
-	char* fileName,
-	mtype** firstMatrix, mtype** secondMatrix,
-	size_t* firstRowsCount, size_t* colsRowsCount, size_t* secondColsCount)
-{
-	FILE* file = fopen(fileName, "r");
-	if (file == NULL)
-		throw runtime_error("Cannot open file '" + string(fileName) + "'");
-
-	int err = fscanf(file, "%i %i %i", secondColsCount, colsRowsCount, firstRowsCount);
-	
-	*firstMatrix = readMatrix(file, *firstRowsCount, *colsRowsCount);
-	*secondMatrix = readMatrix(file, *colsRowsCount, *secondColsCount);
-
-	fclose(file);
-}
-
 void labTask(int argc, char* argv[])
 {
 	if (argc < 5)
