@@ -33,6 +33,11 @@ mtype* runMulKernel(
 	case 2:
 		strcpy(kernelName, "secondImpl");
 		localWorkSize = new size_t[]{ LOCAL_GROUP_SIZE, LOCAL_GROUP_SIZE };
+		break;
+	case 3:
+		strcpy(kernelName, "thirdImpl");
+		localWorkSize = new size_t[]{ LOCAL_GROUP_SIZE, LOCAL_GROUP_SIZE };
+		break;
 	default:
 		break;
 	}

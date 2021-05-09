@@ -72,3 +72,57 @@ kernel void secondImpl(
 	if (iRow < rowsCount && iCol < colsCount)
 		resultMatrix[iRow * colsCount + iCol] = elValue;
 }
+
+kernel void thirdImpl(
+	global const float* firstMatrix,
+	global const float* secondMatrix,
+	const int rowsCount,
+	const int colsRowsCount,
+	const int colsCount,
+	global float* resultMatrix)
+{
+	const int globalRowsCount = get_global_size(0);
+	const int globalColsCount = get_global_size(1);
+
+	const int iRow = get_global_id(0);
+	const int iCol = get_global_id(1);
+
+	const int iGroupRow = get_group_id(0);
+	const int iGroupCol = get_group_id(1);
+
+	const int iRowLoc = get_local_id(0);
+	const int iColLoc = get_local_id(1);
+
+	local float fMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+
+
+	float elValue = 0;
+
+	const int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
+	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
+	{
+		const int fMatRow = iGroupRow * LOCAL_GROUP_SIZE + iRowLoc;
+		const int fMatCol = iSubMat * LOCAL_GROUP_SIZE + iColLoc;
+		if (fMatRow < rowsCount && fMatCol < colsRowsCount)
+			fMatGroup[iRowLoc][iColLoc] = firstMatrix[fMatRow * colsRowsCount + fMatCol];
+		else
+			fMatGroup[iRowLoc][iColLoc] = 0;
+
+		const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + iRowLoc;
+		const int sMatCol = iGroupCol * LOCAL_GROUP_SIZE + iColLoc;
+		if (sMatRow < colsRowsCount && sMatCol < colsCount)
+			sMatGroup[iRowLoc][iColLoc] = secondMatrix[sMatRow * colsCount + sMatCol];
+		else
+			sMatGroup[iRowLoc][iColLoc] = 0;
+
+
+		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
+		{
+			elValue += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc];
+		}
+	}
+
+	if (iRow < rowsCount && iCol < colsCount)
+		resultMatrix[iRow * colsCount + iCol] = elValue;
+}
