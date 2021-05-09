@@ -17,16 +17,6 @@ int getDeviceIndex(char* str)
 	return parsedValue;
 }
 
-int getImplementationNumber(char* str)
-{
-	int parsedValue = stoi(str);
-
-	if (parsedValue < 1 || 3 < parsedValue)
-		throw runtime_error("Implementation number cannot be less than 1 and greater than 3");
-
-	return parsedValue;
-}
-
 void readMatrices(
 	char* fileName,
 	mtype** firstMatrix, mtype** secondMatrix,
@@ -61,7 +51,7 @@ void labTask(int argc, char* argv[])
 	int deviceIndex = getDeviceIndex(argv[1]);
 	char* inputFileName = argv[2];
 	char* outputFileName = argv[3];
-	int implementationNumber = getImplementationNumber(argv[4]);
+	int implementationNumber = stoi(argv[4]);
 
 	mtype* firstMatrix = NULL; mtype* secondMatrix = NULL;
 	size_t firstRowsCount = 0; size_t colsRowsCount = 0; size_t secondColsCount = 0;

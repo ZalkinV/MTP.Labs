@@ -4,6 +4,8 @@
 #include "MatrixMulImpls.h"
 #include "Timer.h"
 
+using namespace std;
+
 
 mtype* runMulKernel(
 	cl_uint deviceIndex,
@@ -39,7 +41,7 @@ mtype* runMulKernel(
 		localWorkSize = new size_t[]{ LOCAL_GROUP_SIZE, LOCAL_GROUP_SIZE };
 		break;
 	default:
-		break;
+		throw runtime_error("Implementation with number '" + to_string(implementationNumber) + "' does not exist");
 	}
 
 	mtype* resultMatrix = runImplementation(
