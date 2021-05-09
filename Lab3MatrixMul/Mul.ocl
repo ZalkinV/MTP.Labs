@@ -117,14 +117,28 @@ kernel void thirdImpl(
 			sMatGroup[iRowLoc][iColLoc] = 0;
 			
 
-		const int vectorsCount = LOCAL_GROUP_SIZE / 4;
+		const int vectorsCount = LOCAL_GROUP_SIZE / 8;
 		for (int iVector = 0; iVector < vectorsCount; iVector++)
 		{
 			const int iVectorEl = iVector * vectorsCount;
-			const float4 fMatRow = (float4)(fMatGroup[iRowLoc][iVectorEl], fMatGroup[iRowLoc][iVectorEl + 1], fMatGroup[iRowLoc][iVectorEl + 2], fMatGroup[iRowLoc][iVectorEl + 3]);
-			const float4 sMatCol = (float4)(sMatGroup[iVectorEl][iColLoc], sMatGroup[iVectorEl + 1][iColLoc], sMatGroup[iVectorEl + 2][iColLoc], sMatGroup[iVectorEl + 3][iColLoc]);
-			const float4 rVector = fMatRow * sMatCol;
-			elValue += rVector.s0 + rVector.s1 + rVector.s2 + rVector.s3;
+			const float8 fMatRow = (float8)(fMatGroup[iRowLoc][iVectorEl + 0],
+											fMatGroup[iRowLoc][iVectorEl + 1],
+											fMatGroup[iRowLoc][iVectorEl + 2],
+											fMatGroup[iRowLoc][iVectorEl + 3],
+											fMatGroup[iRowLoc][iVectorEl + 4],
+											fMatGroup[iRowLoc][iVectorEl + 5],
+											fMatGroup[iRowLoc][iVectorEl + 6],
+											fMatGroup[iRowLoc][iVectorEl + 7]);
+			const float8 sMatCol = (float8)(sMatGroup[iVectorEl + 0][iColLoc],
+											sMatGroup[iVectorEl + 1][iColLoc],
+											sMatGroup[iVectorEl + 2][iColLoc],
+											sMatGroup[iVectorEl + 3][iColLoc],
+											sMatGroup[iVectorEl + 4][iColLoc],
+											sMatGroup[iVectorEl + 5][iColLoc],
+											sMatGroup[iVectorEl + 6][iColLoc],
+											sMatGroup[iVectorEl + 7][iColLoc]);
+			const float8 rVector = fMatRow * sMatCol;
+			elValue += rVector.s0 + rVector.s1 + rVector.s2 + rVector.s3 + rVector.s4 + rVector.s5 + rVector.s6 + rVector.s7;
 		}
 	}
 
