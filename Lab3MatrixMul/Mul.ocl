@@ -97,7 +97,7 @@ kernel void thirdImpl(
 	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
 
 
-	float elValue = 0;
+	float8 resVector = (float8)(0, 0, 0, 0, 0, 0, 0, 0);
 
 	const int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
 	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
@@ -137,11 +137,10 @@ kernel void thirdImpl(
 											sMatGroup[iVectorEl + 5][iColLoc],
 											sMatGroup[iVectorEl + 6][iColLoc],
 											sMatGroup[iVectorEl + 7][iColLoc]);
-			const float8 rVector = fMatRow * sMatCol;
-			elValue += rVector.s0 + rVector.s1 + rVector.s2 + rVector.s3 + rVector.s4 + rVector.s5 + rVector.s6 + rVector.s7;
+			resVector = fMatRow * sMatCol;
 		}
 	}
 
 	if (iRow < rowsCount && iCol < colsCount)
-		resultMatrix[iRow * colsCount + iCol] = elValue;
+		resultMatrix[iRow * colsCount + iCol] = resVector.s0 + resVector.s1 + resVector.s2 + resVector.s3 + resVector.s4 + resVector.s5 + resVector.s6 + resVector.s7;
 }
