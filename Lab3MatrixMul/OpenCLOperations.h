@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include <CL/opencl.h>
 
 #include "ErrorThrower.h"

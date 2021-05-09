@@ -1,6 +1,7 @@
-#include <exception>
-#include <fstream>
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <string>
+#include <stdexcept>
 
 #include "MatrixMulImpls.h"
 
@@ -17,30 +18,34 @@ int getDeviceIndex(char* str)
 	return parsedValue;
 }
 
+mtype* readMatrix(FILE* file, const size_t rowsCount, const size_t colsCount)
+{
+	int err = 0;
+	size_t elementsCount = rowsCount * colsCount;
+	mtype* matrix = new mtype[elementsCount];
+	for (size_t i = 0; i < elementsCount; i++)
+	{
+		err = fscanf(file, "%f", &matrix[i]);
+	}
+
+	return matrix;
+}
+
 void readMatrices(
 	char* fileName,
 	mtype** firstMatrix, mtype** secondMatrix,
 	size_t* firstRowsCount, size_t* colsRowsCount, size_t* secondColsCount)
 {
-	ifstream file(fileName);
-	if (!file)
+	FILE* file = fopen(fileName, "r");
+	if (file == NULL)
 		throw runtime_error("Cannot open file '" + string(fileName) + "'");
 
-	file >> *secondColsCount >> *colsRowsCount >> * firstRowsCount;
+	int err = fscanf(file, "%i %i %i", secondColsCount, colsRowsCount, firstRowsCount);
 	
-	size_t firstMatrixCount = *firstRowsCount * *colsRowsCount;
-	*firstMatrix = new mtype[firstMatrixCount];
-	for (size_t i = 0; i < firstMatrixCount; i++)
-	{
-		file >> (*firstMatrix)[i];
-	}
-	
-	size_t secondMatrixCount = *colsRowsCount * *secondColsCount;
-	*secondMatrix = new mtype[secondMatrixCount];
-	for (size_t i = 0; i < secondMatrixCount; i++)
-	{
-		file >> (*secondMatrix)[i];
-	}
+	*firstMatrix = readMatrix(file, *firstRowsCount, *colsRowsCount);
+	*secondMatrix = readMatrix(file, *colsRowsCount, *secondColsCount);
+
+	fclose(file);
 }
 
 void labTask(int argc, char* argv[])
