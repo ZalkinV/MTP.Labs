@@ -13,5 +13,5 @@ void readMatrices(
 	size_t* firstRowsCount, size_t* colsRowsCount, size_t* secondColsCount);
 mtype* readMatrix(FILE* file, const size_t rowsCount, const size_t colsCount);
 
-void printMatrix(mtype* matrix, int rowsCount, int colsCount);
-void fprintMatrix(char* fileName, mtype* matrix, int rowsCount, int colsCount);
+void printMatrix(const mtype* matrix, const size_t rowsCount, const size_t colsCount);
+void fprintMatrix(const char* fileName, const mtype* matrix, const size_t rowsCount, const size_t colsCount);

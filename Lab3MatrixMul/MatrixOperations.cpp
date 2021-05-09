@@ -101,30 +101,30 @@ mtype* readMatrix(FILE* file, const size_t rowsCount, const size_t colsCount)
 	return matrix;
 }
 
-void printMatrix(mtype* matrix, int rowsCount, int colsCount)
+void printMatrix(const mtype* matrix, const size_t rowsCount, const size_t colsCount)
 {
 	printf("%i %i\n", colsCount, rowsCount);
-	for (int iRow = 0; iRow < rowsCount; iRow++)
+	for (size_t iRow = 0; iRow < rowsCount; iRow++)
 	{
-		for (int iCol = 0; iCol < colsCount; iCol++)
+		for (size_t iCol = 0; iCol < colsCount; iCol++)
 		{
-			int indexC = iRow * colsCount + iCol;
+			size_t indexC = iRow * colsCount + iCol;
 			printf("%f ", matrix[indexC]);
 		}
 		printf("\n");
 	}
 }
 
-void fprintMatrix(char* fileName, mtype* matrix, int rowsCount, int colsCount)
+void fprintMatrix(const char* fileName, const mtype* matrix, const size_t rowsCount, const size_t colsCount)
 {
 	FILE* file = fopen(fileName, "w");
 	
 	fprintf(file, "%i %i\n", colsCount, rowsCount);
-	for (int iRow = 0; iRow < rowsCount; iRow++)
+	for (size_t iRow = 0; iRow < rowsCount; iRow++)
 	{
-		for (int iCol = 0; iCol < colsCount; iCol++)
+		for (size_t iCol = 0; iCol < colsCount; iCol++)
 		{
-			int indexC = iRow * colsCount + iCol;
+			size_t indexC = iRow * colsCount + iCol;
 			fprintf(file, "%f ", matrix[indexC]);
 		}
 		fprintf(file, "\n");
