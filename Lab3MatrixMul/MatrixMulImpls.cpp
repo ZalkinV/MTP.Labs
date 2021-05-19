@@ -26,6 +26,7 @@ mtype* runMulKernel(
 
 	char* kernelName = new char[32];
 	size_t* localWorkSize = NULL;
+	size_t localWorkRowsColsCount = LOCAL_GROUP_SIZE;
 	size_t globalWorkRowsCount = firstRowsCount;
 	size_t globalWorkColsCount = secondColsCount;
 
@@ -33,17 +34,18 @@ mtype* runMulKernel(
 	{
 	case 1:
 		strcpy(kernelName, "firstImpl");
-		localWorkSize = NULL;
 		break;
 	case 2:
 		strcpy(kernelName, "secondImpl");
-		localWorkSize = new size_t[]{ LOCAL_GROUP_SIZE, LOCAL_GROUP_SIZE };
+		localWorkSize = new size_t[]{ localWorkRowsColsCount, localWorkRowsColsCount };
 		break;
 	case 3:
 		strcpy(kernelName, "thirdImpl");
-		localWorkSize = new size_t[]{ LOCAL_GROUP_SIZE, LOCAL_GROUP_SIZE };
 		globalWorkRowsCount /= VEC_SIZE;
 		globalWorkColsCount /= VEC_SIZE;
+
+		localWorkRowsColsCount /= VEC_SIZE;
+		localWorkSize = new size_t[]{ localWorkRowsColsCount , localWorkRowsColsCount };
 		break;
 	default:
 		throw runtime_error("Implementation with number '" + to_string(implementationNumber) + "' does not exist");

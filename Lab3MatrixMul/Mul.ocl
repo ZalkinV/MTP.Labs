@@ -165,8 +165,8 @@ kernel void thirdImpl(
 	const int iRowLoc = get_local_id(0);
 	const int iColLoc = get_local_id(1);
 
-	local float fMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
-	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+	local float fMatGroup[LOCAL_GROUP_SIZE * VEC_SIZE][LOCAL_GROUP_SIZE * VEC_SIZE];
+	local float sMatGroup[LOCAL_GROUP_SIZE * VEC_SIZE][LOCAL_GROUP_SIZE * VEC_SIZE];
 
 
 	float4 elsValues;
