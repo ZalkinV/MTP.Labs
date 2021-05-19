@@ -114,8 +114,8 @@ cl_program getProgram(cl_context context, const char* sourceFilename)
 
 cl_int buildProgram(cl_program program, cl_device_id deviceId)
 {
-	char options[32];
-	sprintf(options, "-D LOCAL_GROUP_SIZE=%i", LOCAL_GROUP_SIZE);
+	char options[64];
+	sprintf(options, "-D LOCAL_GROUP_SIZE=%i -D VEC_SIZE=%i", LOCAL_GROUP_SIZE, VEC_SIZE);
 	cl_int compilationErr = clBuildProgram(program, 1, &deviceId, options, NULL, NULL);
 
 	if (compilationErr != 0)

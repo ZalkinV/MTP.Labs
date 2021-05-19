@@ -145,7 +145,6 @@ kernel void secondVectorImpl(
 		resultMatrix[iRow * colsCount + iCol] = resVector.s0 + resVector.s1 + resVector.s2 + resVector.s3 + resVector.s4 + resVector.s5 + resVector.s6 + resVector.s7;
 }
 
-#define VEC_SIZE 2
 kernel void thirdImpl(
 	global const float* firstMatrix,
 	global const float* secondMatrix,

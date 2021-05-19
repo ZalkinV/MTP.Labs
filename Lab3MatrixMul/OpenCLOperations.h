@@ -5,6 +5,7 @@
 
 
 #define LOCAL_GROUP_SIZE 4
+#define VEC_SIZE 2
 #define MAX_DEVICES_COUNT 32
 
 
