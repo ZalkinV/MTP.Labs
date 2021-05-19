@@ -26,6 +26,7 @@ mtype* runMulKernel(
 
 	char* kernelName = new char[32];
 	size_t* localWorkSize = NULL;
+	size_t* globalWorkSize = new size_t[2];
 	size_t localWorkRowsColsCount = LOCAL_GROUP_SIZE;
 	size_t globalWorkRowsCount = firstRowsCount;
 	size_t globalWorkColsCount = secondColsCount;
@@ -37,26 +38,32 @@ mtype* runMulKernel(
 		break;
 	case 2:
 		strcpy(kernelName, "secondImpl");
-		localWorkSize = new size_t[]{ localWorkRowsColsCount, localWorkRowsColsCount };
+		localWorkSize = new size_t[2];
 		break;
 	case 3:
 		strcpy(kernelName, "thirdImpl");
 		globalWorkRowsCount /= VEC_SIZE;
 		globalWorkColsCount /= VEC_SIZE;
 
+		localWorkSize = new size_t[2];
 		localWorkRowsColsCount /= VEC_SIZE;
-		localWorkSize = new size_t[]{ localWorkRowsColsCount , localWorkRowsColsCount };
 		break;
 	default:
 		throw runtime_error("Implementation with number '" + to_string(implementationNumber) + "' does not exist");
 	}
 
+
 	if (localWorkSize != NULL)
 	{
-		globalWorkRowsCount = roundToNextDivisible(globalWorkRowsCount, localWorkSize[0]);
-		globalWorkColsCount = roundToNextDivisible(globalWorkColsCount, localWorkSize[1]);
+		globalWorkRowsCount = roundToNextDivisible(globalWorkRowsCount, localWorkRowsColsCount);
+		globalWorkColsCount = roundToNextDivisible(globalWorkColsCount, localWorkRowsColsCount);
+
+		localWorkSize[0] = localWorkRowsColsCount;
+		localWorkSize[1] = localWorkRowsColsCount;
 	}
-	size_t* globalWorkSize = new size_t[]{ globalWorkRowsCount, globalWorkColsCount };
+	globalWorkSize[0] = globalWorkRowsCount;
+	globalWorkSize[1] = globalWorkColsCount;
+
 
 	mtype* resultMatrix = runImplementation(
 		kernelName, globalWorkSize, localWorkSize,
