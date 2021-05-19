@@ -26,6 +26,9 @@ mtype* runMulKernel(
 
 	char* kernelName = new char[32];
 	size_t* localWorkSize = NULL;
+	size_t globalWorkRowsCount = firstRowsCount;
+	size_t globalWorkColsCount = secondColsCount;
+
 	switch (implementationNumber)
 	{
 	case 1:
@@ -39,13 +42,22 @@ mtype* runMulKernel(
 	case 3:
 		strcpy(kernelName, "thirdImpl");
 		localWorkSize = new size_t[]{ LOCAL_GROUP_SIZE, LOCAL_GROUP_SIZE };
+		globalWorkRowsCount /= VEC_SIZE;
+		globalWorkColsCount /= VEC_SIZE;
 		break;
 	default:
 		throw runtime_error("Implementation with number '" + to_string(implementationNumber) + "' does not exist");
 	}
 
+	if (localWorkSize != NULL)
+	{
+		globalWorkRowsCount = roundToNextDivisible(globalWorkRowsCount, localWorkSize[0]);
+		globalWorkColsCount = roundToNextDivisible(globalWorkColsCount, localWorkSize[1]);
+	}
+	size_t* globalWorkSize = new size_t[]{ globalWorkRowsCount, globalWorkColsCount };
+
 	mtype* resultMatrix = runImplementation(
-		kernelName, localWorkSize,
+		kernelName, globalWorkSize, localWorkSize,
 		context, deviceId, queue,
 		firstMatrix, secondMatrix,
 		firstRowsCount, colsRowsCount, secondColsCount,
@@ -59,7 +71,7 @@ mtype* runMulKernel(
 }
 
 mtype* runImplementation(
-	const char* kernelName, const size_t* localWorkSize,
+	const char* kernelName, const size_t* globalWorkSize, const size_t* localWorkSize,
 	cl_context context, cl_device_id deviceId, cl_command_queue queue,
 	mtype* firstMatrix, mtype* secondMatrix,
 	size_t firstRowsCount, size_t colsRowsCount, size_t secondColsCount,
@@ -100,14 +112,6 @@ mtype* runImplementation(
 	cl_event kernelStartEvent;
 	cl_uint workDim = 2;
 	
-	size_t globalWorkRowsCount = firstRowsCount;
-	size_t globalWorkColsCount = secondColsCount;
-	if (localWorkSize != NULL)
-	{
-		globalWorkRowsCount = roundToNextDivisible(firstRowsCount, localWorkSize[0]);
-		globalWorkColsCount = roundToNextDivisible(secondColsCount, localWorkSize[1]);
-	}
-	size_t* globalWorkSize = new size_t[]{ globalWorkRowsCount, globalWorkColsCount };
 	err = clEnqueueNDRangeKernel(queue, kernel, workDim, NULL, globalWorkSize, localWorkSize, NULL, NULL, &kernelStartEvent); tryThrowErr(err);
 
 
