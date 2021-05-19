@@ -191,12 +191,16 @@ kernel void thirdImpl(
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl += VEC_SIZE)
 		{
 			float4 fMatVector;
-			fMatVector.s01 = fMatGroup[iRowLoc][iEl];
-			fMatVector.s23 = fMatGroup[iRowLoc + 1][iEl];
+			fMatVector.s0 = fMatGroup[iRowLoc][iEl];
+			fMatVector.s1 = fMatGroup[iRowLoc][iEl + 1];
+			fMatVector.s2 = fMatGroup[iRowLoc + 1][iEl];
+			fMatVector.s3 = fMatGroup[iRowLoc + 1][iEl + 1];
 
 			float4 sMatVector;
-			sMatVector.s02 = sMatGroup[iEl][iColLoc];
-			sMatVector.s13 = sMatGroup[iEl][iColLoc + 1];
+			sMatVector.s0 = sMatGroup[iEl][iColLoc];
+			sMatVector.s2 = sMatGroup[iEl + 1][iColLoc];
+			sMatVector.s1 = sMatGroup[iEl][iColLoc + 1];
+			sMatVector.s3 = sMatGroup[iEl + 1][iColLoc + 1];
 
 			elsValues += fMatVector * sMatVector;
 			/*elValue += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc];
