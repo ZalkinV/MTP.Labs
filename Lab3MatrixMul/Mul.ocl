@@ -73,7 +73,7 @@ kernel void secondImpl(
 		resultMatrix[iRow * colsCount + iCol] = elValue;
 }
 
-kernel void thirdImpl(
+kernel void secondVectorImpl(
 	global const float* firstMatrix,
 	global const float* secondMatrix,
 	const int rowsCount,
@@ -143,4 +143,75 @@ kernel void thirdImpl(
 
 	if (iRow < rowsCount && iCol < colsCount)
 		resultMatrix[iRow * colsCount + iCol] = resVector.s0 + resVector.s1 + resVector.s2 + resVector.s3 + resVector.s4 + resVector.s5 + resVector.s6 + resVector.s7;
+}
+
+#define VEC_SIZE 2
+kernel void thirdImpl(
+	global const float* firstMatrix,
+	global const float* secondMatrix,
+	const int rowsCount,
+	const int colsRowsCount,
+	const int colsCount,
+	global float* resultMatrix)
+{
+	const int globalRowsCount = get_global_size(0);
+	const int globalColsCount = get_global_size(1);
+
+	const int iRow = get_global_id(0) * VEC_SIZE;
+	const int iCol = get_global_id(1) * VEC_SIZE;
+
+	const int iGroupRow = get_group_id(0);
+	const int iGroupCol = get_group_id(1);
+
+	const int iRowLoc = get_local_id(0);
+	const int iColLoc = get_local_id(1);
+
+	local float fMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+
+
+	float4 elsValues;
+
+	const int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
+	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
+	{
+		const int fMatRow = iGroupRow * LOCAL_GROUP_SIZE + iRowLoc;
+		const int fMatCol = iSubMat * LOCAL_GROUP_SIZE + iColLoc;
+		if (fMatRow < rowsCount && fMatCol < colsRowsCount)
+			fMatGroup[iRowLoc][iColLoc] = firstMatrix[fMatRow * colsRowsCount + fMatCol];
+		else
+			fMatGroup[iRowLoc][iColLoc] = 0;
+
+		const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + iRowLoc;
+		const int sMatCol = iGroupCol * LOCAL_GROUP_SIZE + iColLoc;
+		if (sMatRow < colsRowsCount && sMatCol < colsCount)
+			sMatGroup[iRowLoc][iColLoc] = secondMatrix[sMatRow * colsCount + sMatCol];
+		else
+			sMatGroup[iRowLoc][iColLoc] = 0;
+
+		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl += VEC_SIZE)
+		{
+			float4 fMatVector;
+			fMatVector.s01 = fMatGroup[iRowLoc][iEl];
+			fMatVector.s23 = fMatGroup[iRowLoc + 1][iEl];
+
+			float4 sMatVector;
+			sMatVector.s02 = sMatGroup[iEl][iColLoc];
+			sMatVector.s13 = sMatGroup[iEl][iColLoc + 1];
+
+			elsValues += fMatVector * sMatVector;
+			/*elValue += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc];
+			elValue += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc + 1];
+			elValue += fMatGroup[iRowLoc + 1][iEl] * sMatGroup[iEl][iColLoc];
+			elValue += fMatGroup[iRowLoc + 1][iEl] * sMatGroup[iEl][iColLoc + 1];*/
+		}
+	}
+
+	if (iRow < rowsCount && iCol < colsCount)
+	{
+		resultMatrix[iRow * colsCount + iCol] = elsValues.s0;		
+		resultMatrix[iRow * colsCount + (iCol + 1)] = elsValues.s1;		
+		resultMatrix[(iRow + 1) * colsCount + iCol] = elsValues.s2;		
+		resultMatrix[(iRow + 1) * colsCount + (iCol + 1)] = elsValues.s3;		
+	}
 }
