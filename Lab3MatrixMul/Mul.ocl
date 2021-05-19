@@ -137,7 +137,7 @@ kernel void thirdImpl(
 											sMatGroup[iVectorEl + 5][iColLoc],
 											sMatGroup[iVectorEl + 6][iColLoc],
 											sMatGroup[iVectorEl + 7][iColLoc]);
-			resVector = fMatRow * sMatCol;
+			resVector += fMatRow * sMatCol;
 		}
 	}
 
