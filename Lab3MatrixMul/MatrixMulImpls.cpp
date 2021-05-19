@@ -133,10 +133,14 @@ mtype* runImplementation(
 
 size_t roundToNextDivisible(size_t value, size_t divider)
 {
-	size_t closestDivisible = divider;
-
-	if (value > divider)
-		closestDivisible = value + (value - value % divider);
+	if (value <= divider)
+		return divider;
 	
-	return closestDivisible;
+	if (value % divider == 0)
+		return value;
+
+	size_t lowDivideResult = value / divider;
+	size_t highClosestDivisable = (lowDivideResult + 1) * divider;
+	
+	return highClosestDivisable;
 }
