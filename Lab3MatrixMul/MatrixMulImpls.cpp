@@ -40,6 +40,10 @@ mtype* runMulKernel(
 		strcpy(kernelName, "secondImpl");
 		localWorkSize = new size_t[2];
 		break;
+	case 23:
+		strcpy(kernelName, "secondVectorImpl");
+		localWorkSize = new size_t[2];
+		break;
 	case 3:
 		strcpy(kernelName, "thirdImpl");
 		globalWorkRowsCount /= VEC_SIZE;
