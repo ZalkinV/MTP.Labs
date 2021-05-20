@@ -174,19 +174,25 @@ kernel void thirdImpl(
 	const int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
 	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
 	{
-		const int fMatRow = iGroupRow * LOCAL_GROUP_SIZE + iRowLoc;
-		const int fMatCol = iSubMat * LOCAL_GROUP_SIZE + iColLoc;
-		if (fMatRow < rowsCount && fMatCol < colsRowsCount)
-			fMatGroup[iRowLoc][iColLoc] = firstMatrix[fMatRow * colsRowsCount + fMatCol];
-		else
-			fMatGroup[iRowLoc][iColLoc] = 0;
+		for (int iVecEl = 0; iVecEl < VEC_SIZE * VEC_SIZE; iVecEl++)
+		{
+			const uint vecRowShift = iVecEl / VEC_SIZE;
+			const uint vecColShift = iVecEl % VEC_SIZE;
 
-		const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + iRowLoc;
-		const int sMatCol = iGroupCol * LOCAL_GROUP_SIZE + iColLoc;
-		if (sMatRow < colsRowsCount && sMatCol < colsCount)
-			sMatGroup[iRowLoc][iColLoc] = secondMatrix[sMatRow * colsCount + sMatCol];
-		else
-			sMatGroup[iRowLoc][iColLoc] = 0;
+			const int fMatRow = iGroupRow * LOCAL_GROUP_SIZE + iRowLoc * VEC_SIZE + vecRowShift;
+			const int fMatCol = iSubMat * LOCAL_GROUP_SIZE + iColLoc * VEC_SIZE + vecColShift;
+			if (fMatRow < rowsCount && fMatCol < colsRowsCount)
+				fMatGroup[iRowLoc + vecRowShift][iColLoc + vecColShift] = firstMatrix[fMatRow * colsRowsCount + fMatCol];
+			else
+				fMatGroup[iRowLoc + vecRowShift][iColLoc + vecColShift] = 0;
+
+			const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + iRowLoc * VEC_SIZE + (iVecEl / VEC_SIZE);
+			const int sMatCol = iGroupCol * LOCAL_GROUP_SIZE + iColLoc * VEC_SIZE + (iVecEl % VEC_SIZE);
+			if (sMatRow < colsRowsCount && sMatCol < colsCount)
+				sMatGroup[iRowLoc + vecRowShift][iColLoc + vecColShift] = secondMatrix[sMatRow * colsCount + sMatCol];
+			else
+				sMatGroup[iRowLoc + vecRowShift][iColLoc + vecColShift] = 0;
+		}
 
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
 		{
