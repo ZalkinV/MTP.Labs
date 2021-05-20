@@ -192,17 +192,23 @@ kernel void thirdImpl(
 				sMatGroup[vecRowShift][vecColShift] = secondMatrix[sMatRow * colsCount + sMatCol];
 			else
 				sMatGroup[vecRowShift][vecColShift] = 0;
+
+			if (iRow == 1 && iCol == 0)
+			{
+			printf("r=%d c=%d", iRow, iCol);
+			printf("fr=%d fc=%d \t sr=%d sc=%d", fMatRow, fMatCol, sMatRow, sMatCol);
+			}
 		}
 
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
 		{
 			float4 fMatVector;
-			fMatVector.s01 = fMatGroup[iRowLoc][iEl];
-			fMatVector.s23 = fMatGroup[iRowLoc + 1][iEl];
+			fMatVector.s01 = fMatGroup[iRowLoc * VEC_SIZE][iEl];
+			fMatVector.s23 = fMatGroup[iRowLoc * VEC_SIZE + 1][iEl];
 
 			float4 sMatVector;
-			sMatVector.s02 = sMatGroup[iEl][iColLoc];
-			sMatVector.s13 = sMatGroup[iEl][iColLoc + 1];
+			sMatVector.s02 = sMatGroup[iEl][iColLoc * VEC_SIZE];
+			sMatVector.s13 = sMatGroup[iEl][iColLoc * VEC_SIZE + 1];
 
 			elsValues += fMatVector * sMatVector;
 
