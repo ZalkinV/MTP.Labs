@@ -97,7 +97,7 @@ kernel void secondVectorImpl(
 	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
 
 
-	float8 resVector = (float8)(0, 0, 0, 0, 0, 0, 0, 0);
+	float8 resVector;
 
 	const int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
 	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
