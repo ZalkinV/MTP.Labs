@@ -7,6 +7,17 @@
 
 using namespace std;
 
+/*
+* Useful links:
+* Инструкция по настройке проекта в Visual Studio для работы с OpenCL - https://www.notion.so/Visual-Studio-OpenCL-cad4d748972b4464bb0c7f2d09b17cc9
+* OpenCL. Как начать - https://habr.com/ru/post/261323/
+* OpenCL on Visual Studio : Configuration tutorial for the confused - https://medium.com/@pratikone/opencl-on-visual-studio-configuration-tutorial-for-the-confused-3ec1c2b5f0ca
+* Introduction to OpenCL Programming - http://developer.amd.com/wordpress/media/2013/01/Introduction_to_OpenCL_Programming-201005.pdf
+* Tutorial: OpenCL SGEMM tuning for Kepler - https://cnugteren.github.io/tutorial/pages/page1.html
+* Case study: matrix multiplication - http://www.cmsoft.com.br/opencl-tutorial/case-study-matrix-multiplication/
+* Matrix Multiplication with OpenCL - https://www.fz-juelich.de/SharedDocs/Downloads/IAS/JSC/EN/slides/opencl/opencl-08-matmul.pdf?__blob=publicationFile
+*/
+
 
 int getDeviceIndex(char* str)
 {
