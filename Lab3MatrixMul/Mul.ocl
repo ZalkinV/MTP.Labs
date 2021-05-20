@@ -192,12 +192,6 @@ kernel void thirdImpl(
 				sMatGroup[vecRowShift][vecColShift] = secondMatrix[sMatRow * colsCount + sMatCol];
 			else
 				sMatGroup[vecRowShift][vecColShift] = 0;
-
-			if (iRow == 1 && iCol == 0)
-			{
-			printf("r=%d c=%d", iRow, iCol);
-			printf("fr=%d fc=%d \t sr=%d sc=%d", fMatRow, fMatCol, sMatRow, sMatCol);
-			}
 		}
 
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
@@ -211,11 +205,6 @@ kernel void thirdImpl(
 			sMatVector.s13 = sMatGroup[iEl][iColLoc * VEC_SIZE + 1];
 
 			elsValues += fMatVector * sMatVector;
-
-			/*elValue += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc];
-			elValue += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc + 1];
-			elValue += fMatGroup[iRowLoc + 1][iEl] * sMatGroup[iEl][iColLoc];
-			elValue += fMatGroup[iRowLoc + 1][iEl] * sMatGroup[iEl][iColLoc + 1];*/
 		}
 	}
 
@@ -225,17 +214,9 @@ kernel void thirdImpl(
 		const uint iS1 = iRow * VEC_SIZE * colsCount + (iCol * VEC_SIZE + 1);
 		const uint iS2 = (iRow * VEC_SIZE + 1) * colsCount + iCol * VEC_SIZE;
 		const uint iS3 = (iRow * VEC_SIZE + 1) * colsCount + (iCol * VEC_SIZE + 1);
-		printf("r=%d c=%d: %d %d %d %d", iRow, iCol, iS0, iS1, iS2, iS3);
 		resultMatrix[iS0] = elsValues.s0;		
 		resultMatrix[iS1] = elsValues.s1;		
 		resultMatrix[iS2] = elsValues.s2;		
 		resultMatrix[iS3] = elsValues.s3;	
-		
-		/*for (int iResEl = 0; iResEl < VEC_SIZE * VEC_SIZE; iResEl++)
-		{
-			const uint vecRowShift = iRow * VEC_SIZE + iResEl / VEC_SIZE;
-			const uint vecColShift = iCol * VEC_SIZE + iResEl % VEC_SIZE;
-			resultMatrix[iRow * colsCount + vecRowShift + vecColShift] = 
-		}*/
 	}
 }
