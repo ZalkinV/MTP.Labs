@@ -156,14 +156,14 @@ kernel void thirdImpl(
 	const int globalRowsCount = get_global_size(0);
 	const int globalColsCount = get_global_size(1);
 
-	const int iRow = get_global_id(0);
-	const int iCol = get_global_id(1);
+	const int iRow = get_global_id(0) * VEC_SIZE;
+	const int iCol = get_global_id(1) * VEC_SIZE;
 
 	const int iGroupRow = get_group_id(0);
 	const int iGroupCol = get_group_id(1);
 
-	const int iRowLoc = get_local_id(0);
-	const int iColLoc = get_local_id(1);
+	const int iRowLoc = get_local_id(0) * VEC_SIZE;
+	const int iColLoc = get_local_id(1) * VEC_SIZE;
 
 	local float fMatGroup[LOCAL_GROUP_SIZE * VEC_SIZE][LOCAL_GROUP_SIZE * VEC_SIZE];
 	local float sMatGroup[LOCAL_GROUP_SIZE * VEC_SIZE][LOCAL_GROUP_SIZE * VEC_SIZE];
@@ -176,8 +176,8 @@ kernel void thirdImpl(
 	{
 		for (int iVecEl = 0; iVecEl < VEC_SIZE * VEC_SIZE; iVecEl++)
 		{
-			const uint vecRowShift = iRowLoc * VEC_SIZE + iVecEl / VEC_SIZE;
-			const uint vecColShift = iColLoc * VEC_SIZE + iVecEl % VEC_SIZE;
+			const uint vecRowShift = iRowLoc + iVecEl / VEC_SIZE;
+			const uint vecColShift = iColLoc + iVecEl % VEC_SIZE;
 
 			const int fMatRow = iGroupRow * LOCAL_GROUP_SIZE + vecRowShift;
 			const int fMatCol = iSubMat * LOCAL_GROUP_SIZE + vecColShift;
@@ -197,12 +197,12 @@ kernel void thirdImpl(
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
 		{
 			float4 fMatVector;
-			fMatVector.s01 = fMatGroup[iRowLoc * VEC_SIZE][iEl];
-			fMatVector.s23 = fMatGroup[iRowLoc * VEC_SIZE + 1][iEl];
+			fMatVector.s01 = fMatGroup[iRowLoc][iEl];
+			fMatVector.s23 = fMatGroup[iRowLoc + 1][iEl];
 
 			float4 sMatVector;
-			sMatVector.s02 = sMatGroup[iEl][iColLoc * VEC_SIZE];
-			sMatVector.s13 = sMatGroup[iEl][iColLoc * VEC_SIZE + 1];
+			sMatVector.s02 = sMatGroup[iEl][iColLoc];
+			sMatVector.s13 = sMatGroup[iEl][iColLoc + 1];
 
 			elsValues += fMatVector * sMatVector;
 		}
@@ -210,10 +210,10 @@ kernel void thirdImpl(
 
 	if (iRow < rowsCount && iCol < colsCount)
 	{
-		const uint iS0 = iRow * VEC_SIZE * colsCount + iCol * VEC_SIZE;
-		const uint iS1 = iRow * VEC_SIZE * colsCount + (iCol * VEC_SIZE + 1);
-		const uint iS2 = (iRow * VEC_SIZE + 1) * colsCount + iCol * VEC_SIZE;
-		const uint iS3 = (iRow * VEC_SIZE + 1) * colsCount + (iCol * VEC_SIZE + 1);
+		const uint iS0 = iRow * colsCount + iCol;
+		const uint iS1 = iRow * colsCount + (iCol + 1);
+		const uint iS2 = (iRow + 1) * colsCount + iCol;
+		const uint iS3 = (iRow + 1) * colsCount + (iCol + 1);
 		resultMatrix[iS0] = elsValues.s0;		
 		resultMatrix[iS1] = elsValues.s1;		
 		resultMatrix[iS2] = elsValues.s2;		
