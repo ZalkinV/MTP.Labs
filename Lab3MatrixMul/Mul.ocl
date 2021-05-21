@@ -208,15 +208,30 @@ kernel void thirdImpl(
 		}
 	}
 
-	if (iRow < rowsCount && iCol < colsCount)
+	if (iRow < rowsCount)
 	{
-		const uint iS0 = iRow * colsCount + iCol;
-		const uint iS1 = iRow * colsCount + (iCol + 1);
-		const uint iS2 = (iRow + 1) * colsCount + iCol;
-		const uint iS3 = (iRow + 1) * colsCount + (iCol + 1);
-		resultMatrix[iS0] = elsValues.s0;		
-		resultMatrix[iS1] = elsValues.s1;		
-		resultMatrix[iS2] = elsValues.s2;		
-		resultMatrix[iS3] = elsValues.s3;	
+		if (iCol < colsCount)
+		{
+			const uint iS0 = iRow * colsCount + iCol;
+			resultMatrix[iS0] = elsValues.s0;
+		}
+		if (iCol + 1 < colsCount)
+		{
+			const uint iS1 = iRow * colsCount + (iCol + 1);
+			resultMatrix[iS1] = elsValues.s1;
+		}
+	}
+	if (iRow + 1 < rowsCount)
+	{
+		if (iCol < colsCount)
+		{
+			const uint iS2 = (iRow + 1) * colsCount + iCol;
+			resultMatrix[iS2] = elsValues.s2;
+		}
+		if (iCol + 1 < colsCount)
+		{
+			const uint iS3 = (iRow + 1) * colsCount + (iCol + 1);
+			resultMatrix[iS3] = elsValues.s3;
+		}
 	}
 }
