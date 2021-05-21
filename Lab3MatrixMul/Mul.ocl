@@ -208,27 +208,32 @@ kernel void thirdImpl(
 		}
 	}
 
-	if (iRow < rowsCount)
+
+	const bool isCurrRowOk = iRow < rowsCount;
+	const bool isNextRowOk = iRow + 1 < rowsCount;
+	const bool isCurrColOk = iCol < colsCount;
+	const bool isNextColOk = iCol + 1 < colsCount;
+	if (isCurrRowOk)
 	{
-		if (iCol < colsCount)
+		if (isCurrColOk)
 		{
 			const uint iS0 = iRow * colsCount + iCol;
 			resultMatrix[iS0] = elsValues.s0;
 		}
-		if (iCol + 1 < colsCount)
+		if (isNextColOk)
 		{
 			const uint iS1 = iRow * colsCount + (iCol + 1);
 			resultMatrix[iS1] = elsValues.s1;
 		}
 	}
-	if (iRow + 1 < rowsCount)
+	if (isNextRowOk)
 	{
-		if (iCol < colsCount)
+		if (isCurrColOk)
 		{
 			const uint iS2 = (iRow + 1) * colsCount + iCol;
 			resultMatrix[iS2] = elsValues.s2;
 		}
-		if (iCol + 1 < colsCount)
+		if (isNextColOk)
 		{
 			const uint iS3 = (iRow + 1) * colsCount + (iCol + 1);
 			resultMatrix[iS3] = elsValues.s3;
