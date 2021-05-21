@@ -50,7 +50,6 @@ mtype* runMulKernel(
 		globalWorkColsCount /= VEC_SIZE;
 
 		localWorkSize = new size_t[2];
-		localWorkRowsColsCount /= VEC_SIZE;
 		break;
 	default:
 		throw runtime_error("Implementation with number '" + to_string(implementationNumber) + "' does not exist");
