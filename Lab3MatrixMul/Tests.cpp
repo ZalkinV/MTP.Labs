@@ -17,6 +17,9 @@ void testOnDifferentSizes()
 		{2, 2, 2},
 		{2, 4, 7},
 		{7, 3, 5},
+		{17, 1, 17}, // FAIL on indexes >= 17 for 3 impl
+		{33, 1, 1}, // FAIL on indexes >= 17 for 3 impl
+		{1, 1, 17}, // FAIL on indexes >= 17 for 3 impl
 	};
 
 	size_t sizesCount = sizeof(sizes) / sizeof(*sizes);
@@ -39,6 +42,10 @@ void testOnDifferentSizes()
 		if (!isEqual)
 		{
 			printWrongMatricesInfo(expected, actual, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
+		}
+		else
+		{
+			printf("%ix%ix%i passed!\n", rowsCount, colsRowsCount, colsCount);
 		}
 
 		delete[] firstMatrix;
@@ -66,7 +73,12 @@ bool equals(mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t co
 	for (size_t i = 0; i < length; i++)
 	{
 		if (firstMatrix[i] != secondMatrix[i])
+		{
+			size_t iRow = i / colsCount;
+			size_t iCol = i % colsCount;
+			printf("First error at: %i %i\n", iRow, iCol);
 			return false;
+		}
 	}
 
 	return true;
