@@ -123,7 +123,7 @@ void printMatrixToStream(FILE* stream, const mtype* matrix, const size_t rowsCou
 		for (size_t iCol = 0; iCol < colsCount; iCol++)
 		{
 			size_t indexC = iRow * colsCount + iCol;
-			fprintf(stream, "%f ", matrix[indexC]);
+			fprintf(stream, "%i ", (int)matrix[indexC]);
 		}
 		fprintf(stream, "\n");
 	}

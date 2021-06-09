@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "MatrixMulImpls.h"
+#include "Tests.h"
 
 using namespace std;
 
@@ -60,7 +61,8 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		labTask(argc, argv);
+		//labTask(argc, argv);
+		testOnDifferentSizes();
 	}
 	catch (const exception& e)
 	{
