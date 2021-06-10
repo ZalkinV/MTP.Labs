@@ -1,6 +1,7 @@
 #pragma once
 #include "TypeDefs.h"
 
+void startTests();
 void testOnDifferentSizes();
 mtype* createRandMatrix(size_t rowsCount, size_t colsCount);
 bool equals(mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t colsCount);

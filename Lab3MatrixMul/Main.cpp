@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
 	try
 	{
 		//labTask(argc, argv);
-		testOnDifferentSizes();
+		startTests();
 	}
 	catch (const exception& e)
 	{

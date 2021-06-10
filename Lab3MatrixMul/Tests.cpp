@@ -5,6 +5,11 @@
 #include "MatrixOperations.h"
 
 
+void startTests()
+{
+	testOnDifferentSizes();
+}
+
 void testOnDifferentSizes()
 {
 	srand(0);
