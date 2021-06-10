@@ -76,6 +76,19 @@ mtype* createRandMatrix(size_t rowsCount, size_t colsCount)
 	return matrix;
 }
 
+mtype* createSequentialMatrix(size_t rowsCount, size_t colsCount)
+{
+	size_t length = rowsCount * colsCount;
+	mtype* matrix = new mtype[length];
+
+	for (size_t i = 0; i < length; i++)
+	{
+		matrix[i] = i;
+	}
+
+	return matrix;
+}
+
 bool equals(mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t colsCount)
 {
 	size_t length = rowsCount * colsCount;
