@@ -10,6 +10,23 @@ void startTests()
 	testOnDifferentSizes();
 }
 
+void runTest(int implNumber, mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t colsRowsCount, size_t colsCount)
+{
+	float kernelTime = 0; float fullTime = 0;
+	mtype* expected = multiply(firstMatrix, secondMatrix, rowsCount, colsCount, colsRowsCount);
+	mtype* actual = runMulKernel(1, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount, implNumber, &kernelTime, &fullTime);
+
+	bool isEqual = equals(expected, actual, rowsCount, colsCount);
+	if (!isEqual)
+	{
+		printWrongMatricesInfo(expected, actual, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
+	}
+	else
+	{
+		printf("%ix%ix%i passed!\n", rowsCount, colsRowsCount, colsCount);
+	}
+}
+
 void testOnDifferentSizes()
 {
 	srand(0);
@@ -39,19 +56,7 @@ void testOnDifferentSizes()
 		mtype* firstMatrix = createRandMatrix(rowsCount, colsRowsCount);
 		mtype* secondMatrix = createRandMatrix(colsRowsCount, colsCount);
 
-		float kernelTime = 0; float fullTime = 0;
-		mtype* expected = multiply(firstMatrix, secondMatrix, rowsCount, colsCount, colsRowsCount);
-		mtype* actual = runMulKernel(1, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount, 3, &kernelTime, &fullTime);
-		
-		bool isEqual = equals(expected, actual, rowsCount, colsCount);
-		if (!isEqual)
-		{
-			printWrongMatricesInfo(expected, actual, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
-		}
-		else
-		{
-			printf("%ix%ix%i passed!\n", rowsCount, colsRowsCount, colsCount);
-		}
+		runTest(3, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
 
 		delete[] firstMatrix;
 		delete[] secondMatrix;
