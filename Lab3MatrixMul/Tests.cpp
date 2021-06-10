@@ -7,7 +7,8 @@
 
 void startTests()
 {
-	testOnDifferentSizes();
+	testThirdImplOn17x1x1Size();
+	//testOnDifferentSizes();
 }
 
 void runTest(int implNumber, mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t colsRowsCount, size_t colsCount)
@@ -61,6 +62,21 @@ void testOnDifferentSizes()
 		delete[] firstMatrix;
 		delete[] secondMatrix;
 	}
+}
+
+void testThirdImplOn17x1x1Size()
+{
+	size_t rowsCount = 1;
+	size_t colsRowsCount = 1;
+	size_t colsCount = 17;
+
+	mtype* firstMatrix = new mtype[rowsCount * colsRowsCount] { 2 };
+	mtype* secondMatrix = createSequentialMatrix(colsRowsCount, colsCount);
+
+	runTest(3, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
+
+	delete[] firstMatrix;
+	delete[] secondMatrix;
 }
 
 mtype* createRandMatrix(size_t rowsCount, size_t colsCount)
