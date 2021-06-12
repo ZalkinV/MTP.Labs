@@ -46,8 +46,8 @@ mtype* runMulKernel(
 		break;
 	case 3:
 		strcpy(kernelName, "thirdImpl");
-		globalWorkRowsCount /= VEC_SIZE;
-		globalWorkColsCount /= VEC_SIZE;
+		globalWorkRowsCount = (int)ceil((float)globalWorkRowsCount / VEC_SIZE);
+		globalWorkColsCount = (int)ceil((float)globalWorkColsCount / VEC_SIZE);
 
 		localWorkSize = new size_t[2];
 		break;
