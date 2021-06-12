@@ -7,7 +7,7 @@
 
 void startTests()
 {
-	testThirdImplOn1x1xNSize(17);
+	testThirdImplOn1x1xNSize(5);
 	//testOnDifferentSizes();
 }
 

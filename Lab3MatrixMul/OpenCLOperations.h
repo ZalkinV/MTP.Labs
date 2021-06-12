@@ -4,7 +4,7 @@
 #include "ErrorThrower.h"
 
 
-#define LOCAL_GROUP_SIZE 8
+#define LOCAL_GROUP_SIZE 2
 #define VEC_SIZE 2
 #define MAX_DEVICES_COUNT 32
 
