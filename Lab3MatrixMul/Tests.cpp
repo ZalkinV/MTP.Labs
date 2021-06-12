@@ -9,7 +9,7 @@
 void startTests()
 {
 	testThirdImplOn1x1xNSize(5);
-	//testOnDifferentSizes();
+	testOnDifferentSizes();
 }
 
 void runTest(int implNumber, mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t colsRowsCount, size_t colsCount)
@@ -38,12 +38,20 @@ void testOnDifferentSizes()
 		{1, 1, 1},
 		{1, 4, 1},
 		{1, 2, 3},
+		{1, 1, 17},
 		{2, 2, 2},
 		{2, 4, 7},
+		{3, 21, 716},
 		{7, 3, 5},
-		{17, 1, 17}, // FAIL on indexes >= 17 for 3 impl
-		{33, 1, 1}, // FAIL on indexes >= 17 for 3 impl
-		{1, 1, 17}, // FAIL on indexes >= 17 for 3 impl
+		{7, 1, 7},
+		{15, 15, 15},
+		{16, 1, 17},
+		{16, 1, 17},
+		{17, 1, 17},
+		{17, 17, 17},
+		{33, 1, 1},
+		{75, 61, 98},
+		{512, 512, 512},
 	};
 
 	size_t sizesCount = sizeof(sizes) / sizeof(*sizes);
