@@ -3,6 +3,7 @@
 #include "Tests.h"
 #include "MatrixMulImpls.h"
 #include "MatrixOperations.h"
+#include <math.h>
 
 
 void startTests()
@@ -107,10 +108,10 @@ mtype* createSequentialMatrix(size_t rowsCount, size_t colsCount)
 bool equals(mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t colsCount)
 {
 	size_t length = rowsCount * colsCount;
-
+	
 	for (size_t i = 0; i < length; i++)
 	{
-		if (firstMatrix[i] != secondMatrix[i])
+		if (fabs(firstMatrix[i] - secondMatrix[i]) > CL_FLT_EPSILON)
 		{
 			size_t iRow = i / colsCount;
 			size_t iCol = i % colsCount;
