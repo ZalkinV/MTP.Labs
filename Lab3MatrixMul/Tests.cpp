@@ -59,18 +59,19 @@ void testOnDifferentSizes()
 
 	for (size_t i = 0; i < sizesCount; i++)
 	{
-		size_t rowsCount = sizes[i][0];
-		size_t colsRowsCount = sizes[i][1];
-		size_t colsCount = sizes[i][2];
-
-		mtype* firstMatrix = createRandMatrix(rowsCount, colsRowsCount);
-		mtype* secondMatrix = createRandMatrix(colsRowsCount, colsCount);
-
-		runTest(3, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
-
-		delete[] firstMatrix;
-		delete[] secondMatrix;
+		testOnRandomMatricesWithSize(sizes[i][0], sizes[i][1], sizes[i][2]);
 	}
+}
+
+void testOnRandomMatricesWithSize(size_t rowsCount, size_t colsRowsCount, size_t colsCount)
+{
+	mtype* firstMatrix = createRandMatrix(rowsCount, colsRowsCount);
+	mtype* secondMatrix = createRandMatrix(colsRowsCount, colsCount);
+
+	runTest(3, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
+
+	delete[] firstMatrix;
+	delete[] secondMatrix;
 }
 
 void testThirdImplOn1x1xNSize(size_t colsCount)
