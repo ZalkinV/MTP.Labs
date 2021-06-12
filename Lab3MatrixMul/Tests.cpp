@@ -7,7 +7,7 @@
 
 void startTests()
 {
-	testThirdImplOn17x1x1Size();
+	testThirdImplOn1x1xNSize(17);
 	//testOnDifferentSizes();
 }
 
@@ -64,11 +64,10 @@ void testOnDifferentSizes()
 	}
 }
 
-void testThirdImplOn17x1x1Size()
+void testThirdImplOn1x1xNSize(size_t colsCount)
 {
 	size_t rowsCount = 1;
 	size_t colsRowsCount = 1;
-	size_t colsCount = 17;
 
 	mtype* firstMatrix = new mtype[rowsCount * colsRowsCount] { 2 };
 	mtype* secondMatrix = createSequentialMatrix(colsRowsCount, colsCount);
