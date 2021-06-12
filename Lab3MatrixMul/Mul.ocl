@@ -188,6 +188,10 @@ kernel void thirdImpl(
 
 			const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + vecRowShift;
 			const int sMatCol = iGroupCol * LOCAL_GROUP_SIZE + vecColShift;
+			
+			if (iRow == 0 && iCol == 4)
+				printf("smc=%i igc=%i", sMatCol, iGroupCol * LOCAL_GROUP_SIZE);
+
 			if (sMatRow < colsRowsCount && sMatCol < colsCount)
 				sMatGroup[vecRowShift][vecColShift] = secondMatrix[sMatRow * colsCount + sMatCol];
 			else
@@ -207,6 +211,8 @@ kernel void thirdImpl(
 			elsValues += fMatVector * sMatVector;
 		}
 	}
+	if (iRow == 0)
+		printf("---------------\n%i %i: %f %f %f %f\n---------------", iRow, iCol, elsValues.s0, elsValues.s1, elsValues.s2, elsValues.s3);
 
 
 	const bool isCurrRowOk = iRow < rowsCount;
