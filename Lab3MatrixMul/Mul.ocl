@@ -159,8 +159,8 @@ kernel void thirdImpl(
 	const int iRow = get_global_id(0) * VEC_SIZE;
 	const int iCol = get_global_id(1) * VEC_SIZE;
 
-	const int iGroupRow = get_group_id(0);
-	const int iGroupCol = get_group_id(1);
+	const int iGroupRow = get_group_id(0) * VEC_SIZE;
+	const int iGroupCol = get_group_id(1) * VEC_SIZE;
 
 	const int iRowLoc = get_local_id(0) * VEC_SIZE;
 	const int iColLoc = get_local_id(1) * VEC_SIZE;
@@ -188,10 +188,6 @@ kernel void thirdImpl(
 
 			const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + vecRowShift;
 			const int sMatCol = iGroupCol * LOCAL_GROUP_SIZE + vecColShift;
-			
-			if (iRow == 0 && iCol == 4)
-				printf("smc=%i igc=%i", sMatCol, iGroupCol * LOCAL_GROUP_SIZE);
-
 			if (sMatRow < colsRowsCount && sMatCol < colsCount)
 				sMatGroup[vecRowShift][vecColShift] = secondMatrix[sMatRow * colsCount + sMatCol];
 			else
@@ -211,9 +207,6 @@ kernel void thirdImpl(
 			elsValues += fMatVector * sMatVector;
 		}
 	}
-	if (iRow == 0)
-		printf("---------------\n%i %i: %f %f %f %f\n---------------", iRow, iCol, elsValues.s0, elsValues.s1, elsValues.s2, elsValues.s3);
-
 
 	const bool isCurrRowOk = iRow < rowsCount;
 	const bool isNextRowOk = iRow + 1 < rowsCount;
