@@ -43,22 +43,19 @@ kernel void firstImpl(
 kernel void secondImpl(
 	global const float* firstMatrix,
 	global const float* secondMatrix,
-	const int rowsCount,
-	const int colsRowsCount,
 	const int colsCount,
+	const int colsRowsCount,
+	const int rowsCount,
 	global float* resultMatrix)
 {
-	const int globalRowsCount = get_global_size(0);
-	const int globalColsCount = get_global_size(1);
+	const int iX = get_global_id(0);
+	const int iY = get_global_id(1);
 
-	const int iRow = get_global_id(0);
-	const int iCol = get_global_id(1);
+	const int iGroupX = get_group_id(0);
+	const int iGroupY = get_group_id(1);
 
-	const int iGroupRow = get_group_id(0);
-	const int iGroupCol = get_group_id(1);
-
-	const int iRowLoc = get_local_id(0);
-	const int iColLoc = get_local_id(1);
+	const int iXLoc = get_local_id(0);
+	const int iYLoc = get_local_id(1);
 
 	local float fMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
 	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
@@ -69,29 +66,29 @@ kernel void secondImpl(
 	const int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
 	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
 	{
-		const int fMatRow = iGroupRow * LOCAL_GROUP_SIZE + iRowLoc;
-		const int fMatCol = iSubMat * LOCAL_GROUP_SIZE + iColLoc;
+		const int fMatRow = iGroupY * LOCAL_GROUP_SIZE + iYLoc;
+		const int fMatCol = iSubMat * LOCAL_GROUP_SIZE + iXLoc;
 		if (fMatRow < rowsCount && fMatCol < colsRowsCount)
-			fMatGroup[iRowLoc][iColLoc] = firstMatrix[fMatRow * colsRowsCount + fMatCol];
+			fMatGroup[iYLoc][iXLoc] = firstMatrix[fMatRow * colsRowsCount + fMatCol];
 		else
-			fMatGroup[iRowLoc][iColLoc] = 0;
+			fMatGroup[iYLoc][iXLoc] = 0;
 
-		const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + iRowLoc;
-		const int sMatCol = iGroupCol * LOCAL_GROUP_SIZE + iColLoc;
+		const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + iYLoc;
+		const int sMatCol = iGroupX * LOCAL_GROUP_SIZE + iXLoc;
 		if (sMatRow < colsRowsCount && sMatCol < colsCount)
-			sMatGroup[iRowLoc][iColLoc] = secondMatrix[sMatRow * colsCount + sMatCol];
+			sMatGroup[iYLoc][iXLoc] = secondMatrix[sMatRow * colsCount + sMatCol];
 		else
-			sMatGroup[iRowLoc][iColLoc] = 0;
+			sMatGroup[iYLoc][iXLoc] = 0;
 
 
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
 		{
-			elValue += fMatGroup[iRowLoc][iEl] * sMatGroup[iEl][iColLoc];
+			elValue += fMatGroup[iYLoc][iEl] * sMatGroup[iEl][iXLoc];
 		}
 	}
 
-	if (iRow < rowsCount && iCol < colsCount)
-		resultMatrix[iRow * colsCount + iCol] = elValue;
+	if (iY < rowsCount && iX < colsCount)
+		resultMatrix[iY * colsCount + iX] = elValue;
 }
 
 kernel void secondVectorImpl(
