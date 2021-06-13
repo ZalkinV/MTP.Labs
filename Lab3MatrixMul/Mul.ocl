@@ -94,19 +94,19 @@ kernel void secondImpl(
 kernel void secondVectorImpl(
 	global const float* firstMatrix,
 	global const float* secondMatrix,
-	const int colsCount,
-	const int colsRowsCount,
-	const int rowsCount,
+	const int xCount,
+	const int elsCount,
+	const int yCount,
 	global float* resultMatrix)
 {
-	const int iCol = get_global_id(0);
-	const int iRow = get_global_id(1);
+	const int iX = get_global_id(0);
+	const int iY = get_global_id(1);
 
-	const int iGroupCol = get_group_id(0);
-	const int iGroupRow = get_group_id(1);
+	const int iGroupX = get_group_id(0);
+	const int iGroupY = get_group_id(1);
 
-	const int iColLoc = get_local_id(0);
-	const int iRowLoc = get_local_id(1);
+	const int iXLoc = get_local_id(0);
+	const int iYLoc = get_local_id(1);
 
 	local float fMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
 	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
@@ -114,50 +114,50 @@ kernel void secondVectorImpl(
 
 	float8 resVector;
 
-	const int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
+	const int fsSubMatCount = (int)ceil(elsCount / (float)LOCAL_GROUP_SIZE);
 	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
 	{
-		const int fMatRow = iGroupRow * LOCAL_GROUP_SIZE + iRowLoc;
-		const int fMatCol = iSubMat * LOCAL_GROUP_SIZE + iColLoc;
-		if (fMatRow < rowsCount && fMatCol < colsRowsCount)
-			fMatGroup[iRowLoc][iColLoc] = firstMatrix[fMatRow * colsRowsCount + fMatCol];
+		const int fMatY = iGroupY * LOCAL_GROUP_SIZE + iYLoc;
+		const int fMatX = iSubMat * LOCAL_GROUP_SIZE + iXLoc;
+		if (fMatY < yCount && fMatX < elsCount)
+			fMatGroup[iYLoc][iXLoc] = firstMatrix[fMatY * elsCount + fMatX];
 		else
-			fMatGroup[iRowLoc][iColLoc] = 0;
+			fMatGroup[iYLoc][iXLoc] = 0;
 
-		const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + iRowLoc;
-		const int sMatCol = iGroupCol * LOCAL_GROUP_SIZE + iColLoc;
-		if (sMatRow < colsRowsCount && sMatCol < colsCount)
-			sMatGroup[iRowLoc][iColLoc] = secondMatrix[sMatRow * colsCount + sMatCol];
+		const int sMatY = iSubMat * LOCAL_GROUP_SIZE + iYLoc;
+		const int sMatX = iGroupX * LOCAL_GROUP_SIZE + iXLoc;
+		if (sMatY < elsCount && sMatX < xCount)
+			sMatGroup[iYLoc][iXLoc] = secondMatrix[sMatY * xCount + sMatX];
 		else
-			sMatGroup[iRowLoc][iColLoc] = 0;
+			sMatGroup[iYLoc][iXLoc] = 0;
 			
 
 		const int vectorsCount = LOCAL_GROUP_SIZE / 8;
 		for (int iVector = 0; iVector < vectorsCount; iVector++)
 		{
 			const int iVectorEl = iVector * vectorsCount;
-			const float8 fMatRow = (float8)(fMatGroup[iRowLoc][iVectorEl + 0],
-											fMatGroup[iRowLoc][iVectorEl + 1],
-											fMatGroup[iRowLoc][iVectorEl + 2],
-											fMatGroup[iRowLoc][iVectorEl + 3],
-											fMatGroup[iRowLoc][iVectorEl + 4],
-											fMatGroup[iRowLoc][iVectorEl + 5],
-											fMatGroup[iRowLoc][iVectorEl + 6],
-											fMatGroup[iRowLoc][iVectorEl + 7]);
-			const float8 sMatCol = (float8)(sMatGroup[iVectorEl + 0][iColLoc],
-											sMatGroup[iVectorEl + 1][iColLoc],
-											sMatGroup[iVectorEl + 2][iColLoc],
-											sMatGroup[iVectorEl + 3][iColLoc],
-											sMatGroup[iVectorEl + 4][iColLoc],
-											sMatGroup[iVectorEl + 5][iColLoc],
-											sMatGroup[iVectorEl + 6][iColLoc],
-											sMatGroup[iVectorEl + 7][iColLoc]);
-			resVector += fMatRow * sMatCol;
+			const float8 fMatY = (float8)(	fMatGroup[iYLoc][iVectorEl + 0],
+											fMatGroup[iYLoc][iVectorEl + 1],
+											fMatGroup[iYLoc][iVectorEl + 2],
+											fMatGroup[iYLoc][iVectorEl + 3],
+											fMatGroup[iYLoc][iVectorEl + 4],
+											fMatGroup[iYLoc][iVectorEl + 5],
+											fMatGroup[iYLoc][iVectorEl + 6],
+											fMatGroup[iYLoc][iVectorEl + 7]);
+			const float8 sMatX = (float8)(	sMatGroup[iVectorEl + 0][iXLoc],
+											sMatGroup[iVectorEl + 1][iXLoc],
+											sMatGroup[iVectorEl + 2][iXLoc],
+											sMatGroup[iVectorEl + 3][iXLoc],
+											sMatGroup[iVectorEl + 4][iXLoc],
+											sMatGroup[iVectorEl + 5][iXLoc],
+											sMatGroup[iVectorEl + 6][iXLoc],
+											sMatGroup[iVectorEl + 7][iXLoc]);
+			resVector += fMatY * sMatX;
 		}
 	}
 
-	if (iRow < rowsCount && iCol < colsCount)
-		resultMatrix[iRow * colsCount + iCol] = resVector.s0 + resVector.s1 + resVector.s2 + resVector.s3 + resVector.s4 + resVector.s5 + resVector.s6 + resVector.s7;
+	if (iY < yCount && iX < xCount)
+		resultMatrix[iY * xCount + iX] = resVector.s0 + resVector.s1 + resVector.s2 + resVector.s3 + resVector.s4 + resVector.s5 + resVector.s6 + resVector.s7;
 }
 
 kernel void thirdImpl(
