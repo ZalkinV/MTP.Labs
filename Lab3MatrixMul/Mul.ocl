@@ -1,4 +1,4 @@
-kernel void firstImpl(
+kernel void firstImplOld(
 	global const float* firstMatrix,
 	global const float* secondMatrix,
 	const int rowsCount,
@@ -17,6 +17,27 @@ kernel void firstImpl(
 	}
 
 	matrixResult[iRow * colsCount + iCol] = elValue;
+}
+
+kernel void firstImpl(
+	global const float* firstMatrix,
+	global const float* secondMatrix,
+	const int xCount,
+	const int elsCount,
+	const int yCount,
+	global float* matrixResult)
+{
+	const int iX = get_global_id(0);
+	const int iY = get_global_id(1);
+
+
+	float elValue = 0;
+	for (int iEl = 0; iEl < elsCount; iEl++)
+	{
+		elValue += firstMatrix[iX * elsCount + iEl] * secondMatrix[iEl * yCount + iY];
+	}
+
+	matrixResult[iX * yCount + iY] = elValue;
 }
 
 kernel void secondImpl(

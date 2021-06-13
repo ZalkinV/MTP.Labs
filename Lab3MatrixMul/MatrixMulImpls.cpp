@@ -28,8 +28,8 @@ mtype* runMulKernel(
 	size_t* localWorkSize = NULL;
 	size_t* globalWorkSize = new size_t[2];
 	size_t localWorkRowsColsCount = LOCAL_GROUP_SIZE;
-	size_t globalWorkRowsCount = firstRowsCount;
-	size_t globalWorkColsCount = secondColsCount;
+	size_t globalWorkXCount = secondColsCount;
+	size_t globalWorkYCount = firstRowsCount;
 
 	switch (implementationNumber)
 	{
@@ -46,8 +46,8 @@ mtype* runMulKernel(
 		break;
 	case 3:
 		strcpy(kernelName, "thirdImpl");
-		globalWorkRowsCount = (int)ceil((float)globalWorkRowsCount / VEC_SIZE);
-		globalWorkColsCount = (int)ceil((float)globalWorkColsCount / VEC_SIZE);
+		globalWorkXCount = (int)ceil((float)globalWorkXCount / VEC_SIZE);
+		globalWorkYCount = (int)ceil((float)globalWorkYCount / VEC_SIZE);
 
 		localWorkSize = new size_t[2];
 		break;
@@ -58,14 +58,14 @@ mtype* runMulKernel(
 
 	if (localWorkSize != NULL)
 	{
-		globalWorkRowsCount = roundToNextDivisible(globalWorkRowsCount, localWorkRowsColsCount);
-		globalWorkColsCount = roundToNextDivisible(globalWorkColsCount, localWorkRowsColsCount);
+		globalWorkXCount = roundToNextDivisible(globalWorkXCount, localWorkRowsColsCount);
+		globalWorkYCount = roundToNextDivisible(globalWorkYCount, localWorkRowsColsCount);
 
 		localWorkSize[0] = localWorkRowsColsCount;
 		localWorkSize[1] = localWorkRowsColsCount;
 	}
-	globalWorkSize[0] = globalWorkRowsCount;
-	globalWorkSize[1] = globalWorkColsCount;
+	globalWorkSize[0] = globalWorkXCount;
+	globalWorkSize[1] = globalWorkYCount;
 
 
 	mtype* resultMatrix = runImplementation(
@@ -115,9 +115,9 @@ mtype* runImplementation(
 	cl_uint iArg = 0;
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &firstBuffer); tryThrowErr(err);
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &secondBuffer); tryThrowErr(err);
-	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &firstRowsCount); tryThrowErr(err);
-	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &colsRowsCount); tryThrowErr(err);
 	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &secondColsCount); tryThrowErr(err);
+	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &colsRowsCount); tryThrowErr(err);
+	err = clSetKernelArg(kernel, iArg++, sizeof(size_t), &firstRowsCount); tryThrowErr(err);
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &resultBuffer); tryThrowErr(err);
 
 
