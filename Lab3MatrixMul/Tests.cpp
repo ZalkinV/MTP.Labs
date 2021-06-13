@@ -8,9 +8,9 @@
 
 void startTests()
 {
-	int implNumber = 23;
+	int implNumber = 3;
 	//testThirdImplOn1x1xNSize(5);
-	//testOnDifferentSizes(implNumber);
+	testOnDifferentSizes(implNumber);
 	testOnRandomMatricesWithSize(implNumber, 2, 3, 4);
 	//testMultiplyColumnwise(2, 3, 4);
 }
@@ -49,10 +49,11 @@ void testOnDifferentSizes(int implNumber)
 		{7, 1, 7},
 		{15, 15, 15},
 		{16, 1, 17},
-		{16, 1, 17},
+		{17, 1, 16},
 		{17, 1, 17},
 		{17, 17, 17},
 		{33, 1, 1},
+		{52, 21, 67},
 		{75, 61, 98},
 		{512, 512, 512},
 	};
