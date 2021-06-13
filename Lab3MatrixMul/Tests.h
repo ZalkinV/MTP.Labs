@@ -4,8 +4,8 @@
 void startTests();
 void runTest(int implNumber, mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t colsRowsCount, size_t colsCount);
 
-void testOnDifferentSizes();
-void testOnRandomMatricesWithSize(size_t rowsCount, size_t colsRowsCount, size_t colsCount);
+void testOnDifferentSizes(int implNumber);
+void testOnRandomMatricesWithSize(int implNumber, size_t rowsCount, size_t colsRowsCount, size_t colsCount);
 void testThirdImplOn1x1xNSize(size_t colsCount);
 void testMultiplyColumnwise(size_t rowsCount, size_t colsRowsCount, size_t colsCount);
 

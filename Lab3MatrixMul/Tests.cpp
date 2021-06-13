@@ -8,10 +8,11 @@
 
 void startTests()
 {
+	int implNumber = 3;
 	//testThirdImplOn1x1xNSize(5);
-	//testOnDifferentSizes();
-	//testOnRandomMatricesWithSize(2, 3, 4);
-	testMultiplyColumnwise(2, 3, 4);
+	testOnDifferentSizes(implNumber);
+	testOnRandomMatricesWithSize(implNumber, 2, 3, 4);
+	//testMultiplyColumnwise(2, 3, 4);
 }
 
 void runTest(int implNumber, mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t colsRowsCount, size_t colsCount)
@@ -31,7 +32,7 @@ void runTest(int implNumber, mtype* firstMatrix, mtype* secondMatrix, size_t row
 	}
 }
 
-void testOnDifferentSizes()
+void testOnDifferentSizes(int implNumber)
 {
 	srand(0);
 
@@ -61,16 +62,16 @@ void testOnDifferentSizes()
 
 	for (size_t i = 0; i < sizesCount; i++)
 	{
-		testOnRandomMatricesWithSize(sizes[i][0], sizes[i][1], sizes[i][2]);
+		testOnRandomMatricesWithSize(implNumber, sizes[i][0], sizes[i][1], sizes[i][2]);
 	}
 }
 
-void testOnRandomMatricesWithSize(size_t rowsCount, size_t colsRowsCount, size_t colsCount)
+void testOnRandomMatricesWithSize(int implNumber, size_t rowsCount, size_t colsRowsCount, size_t colsCount)
 {
 	mtype* firstMatrix = createRandMatrix(rowsCount, colsRowsCount);
 	mtype* secondMatrix = createRandMatrix(colsRowsCount, colsCount);
 
-	runTest(3, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
+	runTest(implNumber, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
 
 	delete[] firstMatrix;
 	delete[] secondMatrix;
