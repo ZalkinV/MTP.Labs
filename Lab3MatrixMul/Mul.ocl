@@ -1,13 +1,13 @@
 kernel void firstImplOld(
 	global const float* firstMatrix,
 	global const float* secondMatrix,
-	const int rowsCount,
-	const int colsRowsCount,
 	const int colsCount,
+	const int colsRowsCount,
+	const int rowsCount,
 	global float* matrixResult)
 {
-	const int iRow = get_global_id(0);
-	const int iCol = get_global_id(1);
+	const int iRow = get_global_id(1);
+	const int iCol = get_global_id(0);
 
 
 	float elValue = 0;
