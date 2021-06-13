@@ -8,7 +8,7 @@
 
 void startTests()
 {
-	int implNumber = 2;
+	int implNumber = 23;
 	//testThirdImplOn1x1xNSize(5);
 	//testOnDifferentSizes(implNumber);
 	testOnRandomMatricesWithSize(implNumber, 2, 3, 4);
