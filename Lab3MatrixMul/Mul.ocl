@@ -163,22 +163,19 @@ kernel void secondVectorImpl(
 kernel void thirdImpl(
 	global const float* firstMatrix,
 	global const float* secondMatrix,
-	const int rowsCount,
-	const int colsRowsCount,
 	const int colsCount,
+	const int colsRowsCount,
+	const int rowsCount,
 	global float* resultMatrix)
 {
-	const int globalRowsCount = get_global_size(0);
-	const int globalColsCount = get_global_size(1);
+	const int iCol = get_global_id(0) * VEC_SIZE;
+	const int iRow = get_global_id(1) * VEC_SIZE;
 
-	const int iRow = get_global_id(0) * VEC_SIZE;
-	const int iCol = get_global_id(1) * VEC_SIZE;
+	const int iGroupCol = get_group_id(0) * VEC_SIZE;
+	const int iGroupRow = get_group_id(1) * VEC_SIZE;
 
-	const int iGroupRow = get_group_id(0) * VEC_SIZE;
-	const int iGroupCol = get_group_id(1) * VEC_SIZE;
-
-	const int iRowLoc = get_local_id(0) * VEC_SIZE;
-	const int iColLoc = get_local_id(1) * VEC_SIZE;
+	const int iColLoc = get_local_id(0) * VEC_SIZE;
+	const int iRowLoc = get_local_id(1) * VEC_SIZE;
 
 	local float fMatGroup[LOCAL_GROUP_SIZE * VEC_SIZE][LOCAL_GROUP_SIZE * VEC_SIZE];
 	local float sMatGroup[LOCAL_GROUP_SIZE * VEC_SIZE][LOCAL_GROUP_SIZE * VEC_SIZE];
