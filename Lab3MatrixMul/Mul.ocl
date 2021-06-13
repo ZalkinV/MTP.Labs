@@ -163,19 +163,19 @@ kernel void secondVectorImpl(
 kernel void thirdImpl(
 	global const float* firstMatrix,
 	global const float* secondMatrix,
-	const int colsCount,
-	const int colsRowsCount,
-	const int rowsCount,
+	const int xCount,
+	const int elsCount,
+	const int yCount,
 	global float* resultMatrix)
 {
-	const int iCol = get_global_id(0) * VEC_SIZE;
-	const int iRow = get_global_id(1) * VEC_SIZE;
+	const int iX = get_global_id(0) * VEC_SIZE;
+	const int iY = get_global_id(1) * VEC_SIZE;
 
-	const int iGroupCol = get_group_id(0) * VEC_SIZE;
-	const int iGroupRow = get_group_id(1) * VEC_SIZE;
+	const int iGroupX = get_group_id(0) * VEC_SIZE;
+	const int iGroupY = get_group_id(1) * VEC_SIZE;
 
-	const int iColLoc = get_local_id(0) * VEC_SIZE;
-	const int iRowLoc = get_local_id(1) * VEC_SIZE;
+	const int iXLoc = get_local_id(0) * VEC_SIZE;
+	const int iYLoc = get_local_id(1) * VEC_SIZE;
 
 	local float fMatGroup[LOCAL_GROUP_SIZE * VEC_SIZE][LOCAL_GROUP_SIZE * VEC_SIZE];
 	local float sMatGroup[LOCAL_GROUP_SIZE * VEC_SIZE][LOCAL_GROUP_SIZE * VEC_SIZE];
@@ -183,70 +183,70 @@ kernel void thirdImpl(
 
 	float4 elsValues;
 
-	const int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
+	const int fsSubMatCount = (int)ceil(elsCount / (float)LOCAL_GROUP_SIZE);
 	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
 	{
 		for (int iVecEl = 0; iVecEl < VEC_SIZE * VEC_SIZE; iVecEl++)
 		{
-			const uint vecRowShift = iRowLoc + iVecEl / VEC_SIZE;
-			const uint vecColShift = iColLoc + iVecEl % VEC_SIZE;
+			const uint vecYShift = iYLoc + iVecEl / VEC_SIZE;
+			const uint vecXShift = iXLoc + iVecEl % VEC_SIZE;
 
-			const int fMatRow = iGroupRow * LOCAL_GROUP_SIZE + vecRowShift;
-			const int fMatCol = iSubMat * LOCAL_GROUP_SIZE + vecColShift;
-			if (fMatRow < rowsCount && fMatCol < colsRowsCount)
-				fMatGroup[vecRowShift][vecColShift] = firstMatrix[fMatRow * colsRowsCount + fMatCol];
+			const int fMatY = iGroupY * LOCAL_GROUP_SIZE + vecYShift;
+			const int fMatX = iSubMat * LOCAL_GROUP_SIZE + vecXShift;
+			if (fMatY < yCount && fMatX < elsCount)
+				fMatGroup[vecYShift][vecXShift] = firstMatrix[fMatY * elsCount + fMatX];
 			else
-				fMatGroup[vecRowShift][vecColShift] = 0;
+				fMatGroup[vecYShift][vecXShift] = 0;
 
-			const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + vecRowShift;
-			const int sMatCol = iGroupCol * LOCAL_GROUP_SIZE + vecColShift;
-			if (sMatRow < colsRowsCount && sMatCol < colsCount)
-				sMatGroup[vecRowShift][vecColShift] = secondMatrix[sMatRow * colsCount + sMatCol];
+			const int sMatY = iSubMat * LOCAL_GROUP_SIZE + vecYShift;
+			const int sMatX = iGroupX * LOCAL_GROUP_SIZE + vecXShift;
+			if (sMatY < elsCount && sMatX < xCount)
+				sMatGroup[vecYShift][vecXShift] = secondMatrix[sMatY * xCount + sMatX];
 			else
-				sMatGroup[vecRowShift][vecColShift] = 0;
+				sMatGroup[vecYShift][vecXShift] = 0;
 		}
 
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
 		{
 			float4 fMatVector;
-			fMatVector.s01 = fMatGroup[iRowLoc][iEl];
-			fMatVector.s23 = fMatGroup[iRowLoc + 1][iEl];
+			fMatVector.s01 = fMatGroup[iYLoc][iEl];
+			fMatVector.s23 = fMatGroup[iYLoc + 1][iEl];
 
 			float4 sMatVector;
-			sMatVector.s02 = sMatGroup[iEl][iColLoc];
-			sMatVector.s13 = sMatGroup[iEl][iColLoc + 1];
+			sMatVector.s02 = sMatGroup[iEl][iXLoc];
+			sMatVector.s13 = sMatGroup[iEl][iXLoc + 1];
 
 			elsValues += fMatVector * sMatVector;
 		}
 	}
 
-	const bool isCurrRowOk = iRow < rowsCount;
-	const bool isNextRowOk = iRow + 1 < rowsCount;
-	const bool isCurrColOk = iCol < colsCount;
-	const bool isNextColOk = iCol + 1 < colsCount;
-	if (isCurrRowOk)
+	const bool isCurrYOk = iY < yCount;
+	const bool isNextYOk = iY + 1 < yCount;
+	const bool isCurrXOk = iX < xCount;
+	const bool isNextXOk = iX + 1 < xCount;
+	if (isCurrYOk)
 	{
-		if (isCurrColOk)
+		if (isCurrXOk)
 		{
-			const uint iS0 = iRow * colsCount + iCol;
+			const uint iS0 = iY * xCount + iX;
 			resultMatrix[iS0] = elsValues.s0;
 		}
-		if (isNextColOk)
+		if (isNextXOk)
 		{
-			const uint iS1 = iRow * colsCount + (iCol + 1);
+			const uint iS1 = iY * xCount + (iX + 1);
 			resultMatrix[iS1] = elsValues.s1;
 		}
 	}
-	if (isNextRowOk)
+	if (isNextYOk)
 	{
-		if (isCurrColOk)
+		if (isCurrXOk)
 		{
-			const uint iS2 = (iRow + 1) * colsCount + iCol;
+			const uint iS2 = (iY + 1) * xCount + iX;
 			resultMatrix[iS2] = elsValues.s2;
 		}
-		if (isNextColOk)
+		if (isNextXOk)
 		{
-			const uint iS3 = (iRow + 1) * colsCount + (iCol + 1);
+			const uint iS3 = (iY + 1) * xCount + (iX + 1);
 			resultMatrix[iS3] = elsValues.s3;
 		}
 	}
