@@ -34,10 +34,10 @@ kernel void firstImpl(
 	float elValue = 0;
 	for (int iEl = 0; iEl < elsCount; iEl++)
 	{
-		elValue += firstMatrix[iX * elsCount + iEl] * secondMatrix[iEl * yCount + iY];
+		elValue += firstMatrix[iY * elsCount + iEl] * secondMatrix[iEl * xCount + iX];
 	}
 
-	matrixResult[iX * yCount + iY] = elValue;
+	matrixResult[iY * xCount + iX] = elValue;
 }
 
 kernel void secondImpl(
