@@ -43,9 +43,9 @@ kernel void firstImpl(
 kernel void secondImpl(
 	global const float* firstMatrix,
 	global const float* secondMatrix,
-	const int colsCount,
-	const int colsRowsCount,
-	const int rowsCount,
+	const int xCount,
+	const int elsCount,
+	const int yCount,
 	global float* resultMatrix)
 {
 	const int iX = get_global_id(0);
@@ -63,20 +63,20 @@ kernel void secondImpl(
 
 	float elValue = 0;
 
-	const int fsSubMatCount = (int)ceil(colsRowsCount / (float)LOCAL_GROUP_SIZE);
+	const int fsSubMatCount = (int)ceil(elsCount / (float)LOCAL_GROUP_SIZE);
 	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
 	{
 		const int fMatRow = iGroupY * LOCAL_GROUP_SIZE + iYLoc;
 		const int fMatCol = iSubMat * LOCAL_GROUP_SIZE + iXLoc;
-		if (fMatRow < rowsCount && fMatCol < colsRowsCount)
-			fMatGroup[iYLoc][iXLoc] = firstMatrix[fMatRow * colsRowsCount + fMatCol];
+		if (fMatRow < yCount && fMatCol < elsCount)
+			fMatGroup[iYLoc][iXLoc] = firstMatrix[fMatRow * elsCount + fMatCol];
 		else
 			fMatGroup[iYLoc][iXLoc] = 0;
 
 		const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + iYLoc;
 		const int sMatCol = iGroupX * LOCAL_GROUP_SIZE + iXLoc;
-		if (sMatRow < colsRowsCount && sMatCol < colsCount)
-			sMatGroup[iYLoc][iXLoc] = secondMatrix[sMatRow * colsCount + sMatCol];
+		if (sMatRow < elsCount && sMatCol < xCount)
+			sMatGroup[iYLoc][iXLoc] = secondMatrix[sMatRow * xCount + sMatCol];
 		else
 			sMatGroup[iYLoc][iXLoc] = 0;
 
@@ -87,8 +87,8 @@ kernel void secondImpl(
 		}
 	}
 
-	if (iY < rowsCount && iX < colsCount)
-		resultMatrix[iY * colsCount + iX] = elValue;
+	if (iY < yCount && iX < xCount)
+		resultMatrix[iY * xCount + iX] = elValue;
 }
 
 kernel void secondVectorImpl(
