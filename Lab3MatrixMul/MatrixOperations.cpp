@@ -63,20 +63,20 @@ mtype* multiplyColumnwise(mtype* matrixA, mtype* matrixB, int rowsCount, int col
 	int xCount = rowsCount;
 	int yCount = colsCount;
 
-	for (int iCol = 0; iCol < yCount; iCol++) // Y
+	for (int iY = 0; iY < yCount; iY++) //iCol
 	{
-		for (int iRow = 0; iRow < xCount; iRow++) // X
+		for (int iX = 0; iX < xCount; iX++) // iRow
 		{
 			mtype elSum = 0;
 			for (int iEl = 0; iEl < elsCount; iEl++)
 			{
-				int indexA = iRow * elsCount + iEl;
-				int indexB = iEl * yCount + iCol;
+				int indexA = iX * elsCount + iEl;
+				int indexB = iEl * yCount + iY;
 				mtype elMul = matrixA[indexA] * matrixB[indexB];
 				elSum += elMul;
 			}
 
-			int indexRes = iRow * yCount + iCol;
+			int indexRes = iX * yCount + iY;
 			matrixRes[indexRes] = elSum;
 		}
 	}
