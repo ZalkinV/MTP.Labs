@@ -56,6 +56,31 @@ mtype* multiply(mtype* matrixA, mtype* matrixB, int rowsCount, int colsCount, in
 	return matrixRes;
 }
 
+mtype* multiplyColumnwise(mtype* matrixA, mtype* matrixB, int rowsCount, int colsCount, int elsCount)
+{
+	mtype* matrixRes = new mtype[rowsCount * colsCount];
+
+	for (int iCol = 0; iCol < rowsCount; iCol++) // Y
+	{
+		for (int iRow = 0; iRow < colsCount; iRow++) // X
+		{
+			mtype elSum = 0;
+			for (int iEl = 0; iEl < elsCount; iEl++)
+			{
+				int indexA = iCol * elsCount + iEl;
+				int indexB = iEl * colsCount + iRow;
+				mtype elMul = matrixA[indexA] * matrixB[indexB];
+				elSum += elMul;
+			}
+
+			int indexRes = iCol * colsCount + iRow;
+			matrixRes[indexRes] = elSum;
+		}
+	}
+
+	return matrixRes;
+}
+
 mtype* convertTo1D(mtype** matrix, int rowsCount, int colsCount)
 {
 	mtype* matrix1D = new mtype[rowsCount * colsCount];

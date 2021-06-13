@@ -5,6 +5,7 @@
 
 mtype** multiply(mtype** matrixA, mtype** matrixB, int rowsCount, int colsCount, int elsCount);
 mtype* multiply(mtype* matrixA, mtype* matrixB, int rowsCount, int colsCount, int elsCount);
+mtype* multiplyColumnwise(mtype* matrixA, mtype* matrixB, int rowsCount, int colsCount, int elsCount);
 mtype* convertTo1D(mtype** matrix, int rowsCount, int colsCount);
 
 void readMatrices(

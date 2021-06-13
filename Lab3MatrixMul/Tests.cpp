@@ -8,8 +8,10 @@
 
 void startTests()
 {
-	testThirdImplOn1x1xNSize(5);
-	testOnDifferentSizes();
+	//testThirdImplOn1x1xNSize(5);
+	//testOnDifferentSizes();
+	//testOnRandomMatricesWithSize(2, 3, 4);
+	testMultiplyColumnwise(2, 3, 4);
 }
 
 void runTest(int implNumber, mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t colsRowsCount, size_t colsCount)
@@ -83,6 +85,28 @@ void testThirdImplOn1x1xNSize(size_t colsCount)
 	mtype* secondMatrix = createSequentialMatrix(colsRowsCount, colsCount);
 
 	runTest(3, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
+
+	delete[] firstMatrix;
+	delete[] secondMatrix;
+}
+
+void testMultiplyColumnwise(size_t rowsCount, size_t colsRowsCount, size_t colsCount)
+{
+	mtype* firstMatrix = createRandMatrix(rowsCount, colsRowsCount);
+	mtype* secondMatrix = createRandMatrix(colsRowsCount, colsCount);
+
+	mtype* actual = multiplyColumnwise(firstMatrix, secondMatrix, rowsCount, colsCount, colsRowsCount);
+	mtype* expected = multiply(firstMatrix, secondMatrix, rowsCount, colsCount, colsRowsCount);
+
+	bool isEqual = equals(expected, actual, rowsCount, colsCount);
+	if (!isEqual)
+	{
+		printWrongMatricesInfo(expected, actual, firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
+	}
+	else
+	{
+		printf("%ix%ix%i passed!\n", rowsCount, colsRowsCount, colsCount);
+	}
 
 	delete[] firstMatrix;
 	delete[] secondMatrix;
