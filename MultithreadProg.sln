@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Prac4OpenCLMatrix", "Prac4O
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab3MatrixMul", "Lab3MatrixMul\Lab3MatrixMul.vcxproj", "{93A1E550-29E1-41B4-961F-43B4066036FB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab4PrefixSum", "Lab4PrefixSum\Lab4PrefixSum.vcxproj", "{148EC383-D496-47BB-A53B-A86D0DD55DF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +83,14 @@ Global
 		{93A1E550-29E1-41B4-961F-43B4066036FB}.Release|x64.Build.0 = Release|x64
 		{93A1E550-29E1-41B4-961F-43B4066036FB}.Release|x86.ActiveCfg = Release|Win32
 		{93A1E550-29E1-41B4-961F-43B4066036FB}.Release|x86.Build.0 = Release|Win32
+		{148EC383-D496-47BB-A53B-A86D0DD55DF9}.Debug|x64.ActiveCfg = Debug|x64
+		{148EC383-D496-47BB-A53B-A86D0DD55DF9}.Debug|x64.Build.0 = Debug|x64
+		{148EC383-D496-47BB-A53B-A86D0DD55DF9}.Debug|x86.ActiveCfg = Debug|Win32
+		{148EC383-D496-47BB-A53B-A86D0DD55DF9}.Debug|x86.Build.0 = Debug|Win32
+		{148EC383-D496-47BB-A53B-A86D0DD55DF9}.Release|x64.ActiveCfg = Release|x64
+		{148EC383-D496-47BB-A53B-A86D0DD55DF9}.Release|x64.Build.0 = Release|x64
+		{148EC383-D496-47BB-A53B-A86D0DD55DF9}.Release|x86.ActiveCfg = Release|Win32
+		{148EC383-D496-47BB-A53B-A86D0DD55DF9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
