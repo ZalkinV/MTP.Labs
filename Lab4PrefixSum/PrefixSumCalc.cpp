@@ -30,8 +30,8 @@ float* calcPrefixSum(
 	size_t chunkSize = roundToNextDivisible(arrLength, chunksCount) / chunksCount;
 	
 	size_t globalWorkSizeX = localGroupSize * chunksCount;
-	size_t* globalWorkSize = new size_t[] { globalWorkSizeX };
-	size_t* localWorkSize = new size_t[] { localGroupSize };
+	size_t globalWorkSize[] = { globalWorkSizeX };
+	size_t localWorkSize[] = { localGroupSize };
 
 	cl_program program = getProgram(context, "PrefSum.ocl");
 	char* buildOptions = new char[64];
@@ -74,11 +74,10 @@ float* calcPrefixSum(
 	printf("Stage 1 result:\n");
 	printArray(stage1Result, arrLength);
 	printf("\n");
-
 	// Finish stage 1
 
-	// Start stage 2. Get chunks' last elements and sum them
 
+	// Start stage 2. Get chunks' last elements and sum them
 	strcpy(kernelName, "prefSumStageTwo");
 	cl_kernel kernel2 = clCreateKernel(program, kernelName, &err); tryThrowErr(err);
 
@@ -103,11 +102,10 @@ float* calcPrefixSum(
 	printf("Stage 2 result:\n");
 	printArray(stage2Result, chunksCount);
 	printf("\n");
-
 	// Finish stage 2
 
-	// Start stage 3. Sum chunks last elements to result array
 
+	// Start stage 3. Sum chunks last elements to result array
 	strcpy(kernelName, "prefSumStageThree");
 	cl_kernel kernel3 = clCreateKernel(program, kernelName, &err); tryThrowErr(err);
 
@@ -126,7 +124,6 @@ float* calcPrefixSum(
 	printf("Stage 3 result:\n");
 	printArray(stage3Result, arrLength);
 	printf("\n");
-
 	// Finish stage 3
 
 	timer.stop();
@@ -135,7 +132,11 @@ float* calcPrefixSum(
 	err = clReleaseEvent(kernelStartEvent); tryThrowErr(err);
 	err = clReleaseMemObject(arrBuffer); tryThrowErr(err);
 	err = clReleaseMemObject(stage1ResultBuffer); tryThrowErr(err);
+	err = clReleaseMemObject(stage2ResultBuffer); tryThrowErr(err);
 	err = clReleaseProgram(program); tryThrowErr(err);
+
+	delete[] stage1Result;
+	delete[] stage2Result;
 
 	err = clReleaseCommandQueue(queue); tryThrowErr(err);
 	err = clReleaseContext(context); tryThrowErr(err);
