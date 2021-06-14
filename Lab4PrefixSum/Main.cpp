@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "ArrayOperations.h"
+#include "PrefixSumCalc.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ void labTask(int argc, char* argv[])
 	float* inputArr = readArray(inputFileName, &arrLength);
 
 	
-	float* resultArr = calcPrefixSum(inputArr, arrLength);
+	float* resultArr = calcPrefixSumSequential(inputArr, arrLength);
 	fprintArray(outputFileName, resultArr, arrLength);
 
 
