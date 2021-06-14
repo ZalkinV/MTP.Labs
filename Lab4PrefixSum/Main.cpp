@@ -32,6 +32,7 @@ void labTask(int argc, char* argv[])
 
 
 	delete[] inputArr;
+	delete[] resultArr;
 }
 
 int main(int argc, char* argv[])
