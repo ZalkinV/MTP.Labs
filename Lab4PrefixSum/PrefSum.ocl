@@ -55,4 +55,3 @@ kernel void prefSumStageTwo(
 		iChunk++;
 	}
 }
-

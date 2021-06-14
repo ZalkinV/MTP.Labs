@@ -40,19 +40,20 @@ float* calcPrefixSum(
 
 
 	char* kernelName = new char[32];
-	strcpy(kernelName, "prefSumStageOne");
-	cl_kernel kernel = clCreateKernel(program, kernelName, &err); tryThrowErr(err);
 
 	Timer timer;
 	timer.start();
 
-	// Start stage 1
+	// Start stage 1. Calc sums inside chunks
+	strcpy(kernelName, "prefSumStageOne");
+	cl_kernel kernel = clCreateKernel(program, kernelName, &err); tryThrowErr(err);
+
 	size_t arrBufferSize = arrLength * sizeof(float);
 	cl_mem arrBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, arrBufferSize, NULL, &err); tryThrowErr(err);
 	err = clEnqueueWriteBuffer(queue, arrBuffer, false, 0, arrBufferSize, arr, NULL, NULL, NULL); tryThrowErr(err);
 
 	size_t stage1ResultBufferSize = arrLength * sizeof(float);
-	cl_mem stage1ResultBuffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, stage1ResultBufferSize, NULL, &err); tryThrowErr(err);
+	cl_mem stage1ResultBuffer = clCreateBuffer(context, CL_MEM_READ_WRITE, stage1ResultBufferSize, NULL, &err); tryThrowErr(err);
 
 	cl_uint iArg = 0;
 	err = clSetKernelArg(kernel, iArg++, sizeof(cl_mem), &arrBuffer); tryThrowErr(err);
@@ -69,9 +70,39 @@ float* calcPrefixSum(
 	float* stage1Result = new float[stage1ResultBufferSize];
 	err = clEnqueueReadBuffer(queue, stage1ResultBuffer, true, NULL, stage1ResultBufferSize, stage1Result, NULL, NULL, NULL); tryThrowErr(err);
 	
+	printf("Stage 1 result:\n");
 	printArray(stage1Result, arrLength);
+	printf("\n");
 
 	// Finish stage 1
+
+	// Start stage 2. Get chunks' last elements and sum them
+
+	strcpy(kernelName, "prefSumStageTwo");
+	cl_kernel kernel2 = clCreateKernel(program, kernelName, &err); tryThrowErr(err);
+
+	size_t stage2ResultBufferSize = chunksCount * sizeof(float);
+	cl_mem stage2ResultBuffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, stage2ResultBufferSize, NULL, &err); tryThrowErr(err);
+
+	iArg = 0;
+	err = clSetKernelArg(kernel2, iArg++, sizeof(cl_mem), &stage1ResultBuffer); tryThrowErr(err);
+	err = clSetKernelArg(kernel2, iArg++, sizeof(int), &arrLength); tryThrowErr(err);
+	err = clSetKernelArg(kernel2, iArg++, sizeof(int), &chunkSize); tryThrowErr(err);
+	err = clSetKernelArg(kernel2, iArg++, sizeof(cl_mem), &stage2ResultBuffer); tryThrowErr(err);
+
+	size_t globalWorkSizeStage2[] = { 1 };
+	size_t localWorkSizeStage2[] = { 1 };
+	err = clEnqueueNDRangeKernel(queue, kernel2, workDim, NULL, globalWorkSizeStage2, localWorkSizeStage2, NULL, NULL, &kernelStartEvent); tryThrowErr(err);
+
+
+	float* stage2Result = new float[stage2ResultBufferSize];
+	err = clEnqueueReadBuffer(queue, stage2ResultBuffer, true, NULL, stage2ResultBufferSize, stage2Result, NULL, NULL, NULL); tryThrowErr(err);
+
+	printf("Stage 2 result:\n");
+	printArray(stage2Result, chunksCount);
+	printf("\n");
+
+	// Finish stage 2
 
 	timer.stop();
 	*fullElapsedTime = timer.getMs();
