@@ -21,7 +21,8 @@ void labTask(int argc, char* argv[])
 	float* inputArr = readArray(inputFileName, &arrLength);
 
 	
-	fprintArray(outputFileName, inputArr, arrLength);
+	float* resultArr = calcPrefixSum(inputArr, arrLength);
+	fprintArray(outputFileName, resultArr, arrLength);
 
 
 	delete[] inputArr;
