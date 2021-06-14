@@ -41,16 +41,18 @@ kernel void prefSumStageOne(
 
 kernel void prefSumStageTwo(
 	global const float* chunksSums,
-	const int chunksCount,
+	const int chunksSumsLength,
 	const int chunkSize,
 	global float* result)
 {
 	result[0] = 0;
+
+	int iChunk = 1;
 	int curLastElement = chunkSize - 1;
-	for (int iChunk = 1; iChunk < chunksCount; iChunk++)
+	for (int iEl = curLastElement; iEl < chunksSumsLength; iEl += chunkSize)
 	{
 		result[iChunk] = result[iChunk - 1] + chunksSums[curLastElement];
-		curLastElement += chunkSize;
+		iChunk++;
 	}
 }
 
