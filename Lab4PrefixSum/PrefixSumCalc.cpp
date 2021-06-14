@@ -69,6 +69,7 @@ float* calcPrefixSum(
 
 	float* stage1Result = new float[stage1ResultBufferSize];
 	err = clEnqueueReadBuffer(queue, stage1ResultBuffer, true, NULL, stage1ResultBufferSize, stage1Result, NULL, NULL, NULL); tryThrowErr(err);
+	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
 	
 	printf("Stage 1 result:\n");
 	printArray(stage1Result, arrLength);
@@ -97,6 +98,7 @@ float* calcPrefixSum(
 
 	float* stage2Result = new float[stage2ResultBufferSize];
 	err = clEnqueueReadBuffer(queue, stage2ResultBuffer, true, NULL, stage2ResultBufferSize, stage2Result, NULL, NULL, NULL); tryThrowErr(err);
+	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
 
 	printf("Stage 2 result:\n");
 	printArray(stage2Result, chunksCount);
@@ -119,6 +121,7 @@ float* calcPrefixSum(
 
 	float* stage3Result = new float[arrLength];
 	err = clEnqueueReadBuffer(queue, stage1ResultBuffer, true, NULL, stage1ResultBufferSize, stage3Result, NULL, NULL, NULL); tryThrowErr(err);
+	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
 
 	printf("Stage 3 result:\n");
 	printArray(stage3Result, arrLength);
@@ -128,7 +131,6 @@ float* calcPrefixSum(
 
 	timer.stop();
 	*fullElapsedTime = timer.getMs();
-	*kernelExecTime = getElapsedTimeMs(kernelStartEvent);
 
 	err = clReleaseEvent(kernelStartEvent); tryThrowErr(err);
 	err = clReleaseMemObject(arrBuffer); tryThrowErr(err);
