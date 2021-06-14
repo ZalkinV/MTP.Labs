@@ -1,5 +1,9 @@
 
-kernel void prefSumStageOne()
+kernel void prefSumStageOne(
+	global float* arr,
+	const int arrLength,
+	const int chunkSize,
+	global float* res)
 {
 
 }
