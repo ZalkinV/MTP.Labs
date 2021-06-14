@@ -8,6 +8,13 @@
 
 using namespace std;
 
+/*
+* Useful links:
+* Optimization, Specification and Verification of the Prefix Sum Program in an OpenCL Environment https://fmt.ewi.utwente.nl/media/147.pdf
+* Parallel Prefix Sum on the GPU (Scan) http://users.umiacs.umd.edu/~ramani/cmsc828e_gpusci/ScanTalk.pdf
+* Chapter 39. Parallel Prefix Sum (Scan) with CUDA https://developer.nvidia.com/gpugems/gpugems3/part-vi-gpu-computing/chapter-39-parallel-prefix-sum-scan-cuda
+* Lab: Computing a prefix sum in OpenCL https://www.cs.swan.ac.uk/~csmora/CSCM67/lab%203-%20prefix%20sum.pdf
+*/
 
 void labTask(int argc, char* argv[])
 {
