@@ -21,8 +21,13 @@ void labTask(int argc, char* argv[])
 	size_t arrLength = 0;
 	float* inputArr = readArray(inputFileName, &arrLength);
 
-	
-	float* resultArr = calcPrefixSumSequential(inputArr, arrLength);
+
+	float kernelExecTime = 0;
+	float fullElapsedTime = 0;
+	size_t localGroupSize = 8;
+	size_t chunksCount = 2;
+	float* resultArr = calcPrefixSum(deviceIndex, inputArr, arrLength, localGroupSize, chunksCount, &kernelExecTime, &fullElapsedTime);
+	printf("\nTime: %f\t%f\n", kernelExecTime, fullElapsedTime);
 	fprintArray(outputFileName, resultArr, arrLength);
 
 
