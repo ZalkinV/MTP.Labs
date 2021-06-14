@@ -104,6 +104,28 @@ float* calcPrefixSum(
 
 	// Finish stage 2
 
+	// Start stage 3. Sum chunks last elements to result array
+
+	strcpy(kernelName, "prefSumStageThree");
+	cl_kernel kernel3 = clCreateKernel(program, kernelName, &err); tryThrowErr(err);
+
+	iArg = 0;
+	err = clSetKernelArg(kernel3, iArg++, sizeof(cl_mem), &stage2ResultBuffer); tryThrowErr(err);
+	err = clSetKernelArg(kernel3, iArg++, sizeof(int), &chunkSize); tryThrowErr(err);
+	err = clSetKernelArg(kernel3, iArg++, sizeof(int), &arrLength); tryThrowErr(err);
+	err = clSetKernelArg(kernel3, iArg++, sizeof(cl_mem), &stage1ResultBuffer); tryThrowErr(err);
+
+	err = clEnqueueNDRangeKernel(queue, kernel3, workDim, NULL, globalWorkSize, localWorkSize, NULL, NULL, &kernelStartEvent); tryThrowErr(err);
+
+	float* stage3Result = new float[arrLength];
+	err = clEnqueueReadBuffer(queue, stage1ResultBuffer, true, NULL, stage1ResultBufferSize, stage3Result, NULL, NULL, NULL); tryThrowErr(err);
+
+	printf("Stage 3 result:\n");
+	printArray(stage3Result, arrLength);
+	printf("\n");
+
+	// Finish stage 3
+
 	timer.stop();
 	*fullElapsedTime = timer.getMs();
 	*kernelExecTime = getElapsedTimeMs(kernelStartEvent);
@@ -117,7 +139,7 @@ float* calcPrefixSum(
 	err = clReleaseContext(context); tryThrowErr(err);
 	err = clReleaseDevice(deviceId); tryThrowErr(err);
 
-	return stage1Result;
+	return stage3Result;
 }
 
 float* calcPrefixSumSequential(const float* arr, const size_t length)
