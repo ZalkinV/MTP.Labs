@@ -3,6 +3,7 @@
 
 #include "PrefixSumCalc.h"
 #include "Timer.h"
+#include "ArrayOperations.h"
 
 using namespace std;
 
@@ -43,6 +44,7 @@ float* calcPrefixSum(
 	Timer timer;
 	timer.start();
 
+	// Start stage 1
 	size_t arrBufferSize = arrLength * sizeof(float);
 	cl_mem arrBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, arrBufferSize, NULL, &err); tryThrowErr(err);
 	err = clEnqueueWriteBuffer(queue, arrBuffer, false, 0, arrBufferSize, arr, NULL, NULL, NULL); tryThrowErr(err);
@@ -64,6 +66,10 @@ float* calcPrefixSum(
 
 	float* stage1Result = new float[stage1ResultBufferSize];
 	err = clEnqueueReadBuffer(queue, stage1ResultBuffer, true, NULL, stage1ResultBufferSize, stage1Result, NULL, NULL, NULL); tryThrowErr(err);
+	
+	printArray(stage1Result, arrLength);
+
+	// Finish stage 1
 
 	timer.stop();
 	*fullElapsedTime = timer.getMs();

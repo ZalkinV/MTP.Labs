@@ -1,9 +1,42 @@
+#define LOCAL_GROUP_SIZE 8
 
 kernel void prefSumStageOne(
-	global float* arr,
+	global const float* arr,
 	const int arrLength,
 	const int chunkSize,
 	global float* res)
 {
+	local float chunkSums[LOCAL_GROUP_SIZE];
 
+	int iGroup = get_group_id(0);
+	int iLocalId = get_local_id(0);
+
+	int iFirst = iGroup * chunkSize;
+	int iLast = (iGroup + 1) * chunkSize;
+	if (iLast > arrLength)
+		iLast = arrLength;
+
+	float prevSum = 0;
+	for (int i = iFirst; i < iLast; i += LOCAL_GROUP_SIZE)
+	{
+		int iEl = iFirst + iLocalId;
+		
+		if (iEl < iLast)
+			chunkSums[iLocalId] = arr[iEl];
+		else
+			chunkSums[iLocalId] = 0;
+
+
+		for (int offset = 1; offset < LOCAL_GROUP_SIZE; offset *= 2)
+		{
+			if (iLocalId >= offset)
+				chunkSums[iLocalId] += chunkSums[iLocalId - offset];
+		}
+
+		if (iEl < iLast)
+			res[iEl] = chunkSums[iLocalId] + prevSum;
+
+
+		prevSum += chunkSums[iLocalId - 1];
+	}
 }
