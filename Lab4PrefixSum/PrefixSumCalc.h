@@ -14,3 +14,5 @@ float* calcPrefixSum(
 float* calcPrefixSumSequential(const float* arr, const size_t length);
 
 size_t roundToNextDivisible(size_t value, size_t divider);
+
+void printStageInfo(int stage, float* arr, size_t length);
