@@ -55,3 +55,25 @@ kernel void prefSumStageTwo(
 		iChunk++;
 	}
 }
+
+kernel void prefSumStageThree(
+	global const float* chunksPrefSums,
+	const int chunkSize,
+	const int arrLength,
+	global float* result)
+{
+	const int iLocalId = get_local_id(0);
+	const int iGroup = get_group_id(0);
+
+	int iFirst = iGroup * chunkSize;
+	int iLast = (iGroup + 1) * chunkSize;
+
+	if (iLast > arrLength)
+		iLast = arrLength;
+
+	int chunkSum = chunksPrefSums[iGroup];
+	for (int iEl = iFirst + iLocalId; iEl < iLast; iEl += LOCAL_GROUP_SIZE)
+	{
+		result[iEl] += chunkSum;
+	}
+}
