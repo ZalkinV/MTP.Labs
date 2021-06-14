@@ -21,6 +21,6 @@ void fillDevicesByType(
 
 cl_program getProgram(cl_context context, const char* sourceFilename);
 
-int buildProgram(cl_program program, cl_device_id deviceId);
+int buildProgram(cl_program program, cl_device_id deviceId, char* options);
 
 float getElapsedTimeMs(cl_event event);

@@ -34,7 +34,9 @@ float* calcPrefixSum(
 	size_t* localWorkSize = new size_t[] { localGroupSize };
 
 	cl_program program = getProgram(context, "PrefSum.ocl");
-	err = buildProgram(program, deviceId); tryThrowErr(err);
+	char* buildOptions = new char[64];
+	sprintf(buildOptions, "-D LOCAL_GROUP_SIZE=%i", localGroupSize);
+	err = buildProgram(program, deviceId, buildOptions); tryThrowErr(err);
 
 
 	char* kernelName = new char[32];

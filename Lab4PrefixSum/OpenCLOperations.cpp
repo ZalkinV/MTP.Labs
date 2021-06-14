@@ -119,9 +119,9 @@ cl_program getProgram(cl_context context, const char* sourceFilename)
 	return program;
 }
 
-cl_int buildProgram(cl_program program, cl_device_id deviceId)
+cl_int buildProgram(cl_program program, cl_device_id deviceId, char* options)
 {
-	cl_int compilationErr = clBuildProgram(program, 1, &deviceId, NULL, NULL, NULL);
+	cl_int compilationErr = clBuildProgram(program, 1, &deviceId, options, NULL, NULL);
 
 	if (compilationErr != 0)
 	{
