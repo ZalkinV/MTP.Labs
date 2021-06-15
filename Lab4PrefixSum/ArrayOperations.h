@@ -1,8 +1,5 @@
 #pragma once
 
-#define LOG_INFO
-
-
 float* readArray(const char* fileName, size_t* length);
 
 void printArray(const float* arr, const size_t length);
