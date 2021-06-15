@@ -6,11 +6,6 @@
 #include "PrefixSumCalc.h"
 
 
-void startTests()
-{
-	testLabExample();
-}
-
 void runTest(float* arr, size_t arrLength, size_t localGroupSize, size_t chunksCount)
 {
 	float kernelExecTime = 0;
@@ -33,11 +28,24 @@ void runTest(float* arr, size_t arrLength, size_t localGroupSize, size_t chunksC
 	delete[] actual;
 }
 
+void startTests()
+{
+	testLabExample();
+	testSwanExample();
+}
+
 void testLabExample()
 {
-	int arrLength = 5;
+	int len = 5;
 	float arr[] = { 1, 2, 3, 4, 5 };
-	runTest(arr, arrLength, 4, 2);
+	runTest(arr, len, 4, 2);
+}
+
+void testSwanExample()
+{
+	int len = 16;
+	float arr[] = { 1, 4, 2, 0, 2, 3, 1, 5, 2, 3, 6, 1, 5, 3, 2, 3 };
+	runTest(arr, len, 8, 2);
 }
 
 bool equals(float* firstArr, float* secondArr, size_t length)
