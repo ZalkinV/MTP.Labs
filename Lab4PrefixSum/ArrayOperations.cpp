@@ -53,3 +53,12 @@ void printArrayToStream(FILE* stream, const float* arr, const size_t length)
 	}
 	fprintf(stream, "\n");
 }
+
+void printStageArray(const char* stage, float* arr, size_t length)
+{
+#ifdef LOG_INFO
+	printf("Stage %s result:\n", stage);
+	printArray(arr, length);
+	printf("\n");
+#endif
+}

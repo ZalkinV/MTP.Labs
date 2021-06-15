@@ -1,8 +1,6 @@
 #define CL_TARGET_OPENCL_VERSION 120
 #define _CRT_SECURE_NO_WARNINGS
 
-//#define LOG_INFO 0
-
 #include "PrefixSumCalc.h"
 #include "Timer.h"
 #include "ArrayOperations.h"
@@ -73,7 +71,7 @@ float* calcPrefixSum(
 	err = clEnqueueReadBuffer(queue, stage1ResultBuffer, true, NULL, stage1ResultBufferSize, stage1Result, NULL, NULL, NULL); tryThrowErr(err);
 	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
 	
-	printStageInfo(1, stage1Result, arrLength);
+	printStageArray("1", stage1Result, arrLength);
 	// Finish stage 1
 
 
@@ -99,7 +97,7 @@ float* calcPrefixSum(
 	err = clEnqueueReadBuffer(queue, stage2ResultBuffer, true, NULL, stage2ResultBufferSize, stage2Result, NULL, NULL, NULL); tryThrowErr(err);
 	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
 
-	printStageInfo(2, stage2Result, chunksCount);
+	printStageArray("2", stage2Result, chunksCount);
 	// Finish stage 2
 
 
@@ -119,7 +117,7 @@ float* calcPrefixSum(
 	err = clEnqueueReadBuffer(queue, stage1ResultBuffer, true, NULL, stage1ResultBufferSize, stage3Result, NULL, NULL, NULL); tryThrowErr(err);
 	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
 
-	printStageInfo(3, stage3Result, arrLength);
+	printStageArray("3", stage3Result, arrLength);
 	// Finish stage 3
 
 	timer.stop();
@@ -166,13 +164,4 @@ size_t roundToNextDivisible(size_t value, size_t divider)
 	size_t highClosestDivisable = (lowDivideResult + 1) * divider;
 
 	return highClosestDivisable;
-}
-
-void printStageInfo(int stage, float* arr, size_t length)
-{
-#ifdef LOG_INFO
-	printf("Stage %i result:\n", stage);
-	printArray(arr, length);
-	printf("\n");
-#endif
 }
