@@ -5,6 +5,7 @@
 
 #include "ArrayOperations.h"
 #include "PrefixSumCalc.h"
+#include "Tests.h"
 
 using namespace std;
 
@@ -46,7 +47,8 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		labTask(argc, argv);
+		//labTask(argc, argv);
+		startTests();
 	}
 	catch (const exception& e)
 	{
