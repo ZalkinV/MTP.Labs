@@ -4,6 +4,7 @@
 #include "Tests.h"
 #include "ArrayOperations.h"
 #include "PrefixSumCalc.h"
+#include <stdlib.h>
 
 
 void runTest(float* arr, size_t arrLength, size_t localGroupSize, size_t chunksCount)
@@ -30,6 +31,8 @@ void runTest(float* arr, size_t arrLength, size_t localGroupSize, size_t chunksC
 
 void startTests()
 {
+	srand(0);
+
 	testLabExample();
 	testSwanExample();
 }
@@ -46,6 +49,28 @@ void testSwanExample()
 	int len = 16;
 	float arr[] = { 1, 4, 2, 0, 2, 3, 1, 5, 2, 3, 6, 1, 5, 3, 2, 3 };
 	runTest(arr, len, 8, 2);
+}
+
+float* generateRandomArray(size_t length)
+{
+	float* arr = new float[length];
+	for (int i = 0; i < length; i++)
+	{
+		arr[i] = rand() % 10;
+	}
+
+	return arr;
+}
+
+float* generateSequentialArray(size_t length)
+{
+	float* arr = new float[length];
+	for (int i = 0; i < length; i++)
+	{
+		arr[i] = i;
+	}
+
+	return arr;
 }
 
 bool equals(float* firstArr, float* secondArr, size_t length)

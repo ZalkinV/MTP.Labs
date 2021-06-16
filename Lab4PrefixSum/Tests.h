@@ -6,5 +6,8 @@ void startTests();
 void testLabExample();
 void testSwanExample();
 
+float* generateRandomArray(size_t length);
+float* generateSequentialArray(size_t length);
+
 bool equals(float* firstArr, float* secondArr, size_t length);
 void printWrongArraysInfo(float* expected, float* actual, size_t length);
