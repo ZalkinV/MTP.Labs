@@ -35,7 +35,7 @@ void startTests()
 
 	//testLabExample();
 	testSwanExample();
-	//testRandomOnDifferentSizes();
+	testRandomOnDifferentSizes();
 }
 
 void testLabExample()

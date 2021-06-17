@@ -40,8 +40,9 @@ kernel void prefSumStageOne(
 			res[iEl] = chunkSums[iLocalId] + prevSum;
 
 
-		prevSum += chunkSums[iLocalId - 1];
+		prevSum += chunkSums[LOCAL_GROUP_SIZE - 1];
 	}
+	//printf("gi=%i li=%i ps=%f\n", get_global_id(0), get_local_id(0), prevSum);
 }
 
 kernel void prefSumStageTwo(
