@@ -33,7 +33,7 @@ void startTests()
 {
 	srand(0);
 
-	testLabExample();
+	//testLabExample();
 	testSwanExample();
 }
 
@@ -48,7 +48,7 @@ void testSwanExample()
 {
 	int len = 16;
 	float arr[] = { 1, 4, 2, 0, 2, 3, 1, 5, 2, 3, 6, 1, 5, 3, 2, 3 };
-	runTest(arr, len, 8, 2);
+	runTest(arr, len, 8, 8);
 }
 
 float* generateRandomArray(size_t length)
