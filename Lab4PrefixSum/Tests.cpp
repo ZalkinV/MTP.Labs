@@ -34,8 +34,8 @@ void startTests()
 	srand(0);
 
 	//testLabExample();
-	//testSwanExample();
-	testRandomOnDifferentSizes();
+	testSwanExample();
+	//testRandomOnDifferentSizes();
 }
 
 void testLabExample()
@@ -49,7 +49,7 @@ void testSwanExample()
 {
 	int len = 16;
 	float arr[] = { 1, 4, 2, 0, 2, 3, 1, 5, 2, 3, 6, 1, 5, 3, 2, 3 };
-	runTest(arr, len, 8, 8);
+	runTest(arr, len, 2, 2);
 }
 
 void testRandomOnDifferentSizes()
