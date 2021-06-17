@@ -48,10 +48,9 @@ kernel void prefSumStageTwo(
 	result[0] = 0;
 
 	int iChunk = 1;
-	int curLastElement = chunkSize - 1;
-	for (int iEl = curLastElement; iEl < chunksSumsLength; iEl += chunkSize)
+	for (int iChunkLastEl = chunkSize - 1; iChunkLastEl < chunksSumsLength; iChunkLastEl += chunkSize)
 	{
-		result[iChunk] = result[iChunk - 1] + chunksSums[iEl];
+		result[iChunk] = result[iChunk - 1] + chunksSums[iChunkLastEl];
 		iChunk++;
 	}
 }
