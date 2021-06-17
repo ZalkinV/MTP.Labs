@@ -34,7 +34,8 @@ void startTests()
 	srand(0);
 
 	//testLabExample();
-	testSwanExample();
+	//testSwanExample();
+	testRandomOnDifferentSizes();
 }
 
 void testLabExample()
@@ -49,6 +50,22 @@ void testSwanExample()
 	int len = 16;
 	float arr[] = { 1, 4, 2, 0, 2, 3, 1, 5, 2, 3, 6, 1, 5, 3, 2, 3 };
 	runTest(arr, len, 8, 8);
+}
+
+void testRandomOnDifferentSizes()
+{
+	size_t sizes[] = { 1, 2, 4, 7, 8, 9, 15, 16, 17, 21, 32, 33, 41, 57, 101, 128, 237 };
+
+	size_t sizesLength = sizeof(sizes) / sizeof(size_t);
+	for (int i = 0; i < sizesLength; i++)
+	{
+		float arrLength = sizes[i];
+		float* arr = generateRandomArray(arrLength);
+		
+		runTest(arr, arrLength, 8, 4);
+
+		delete[] arr;
+	}
 }
 
 float* generateRandomArray(size_t length)
@@ -90,6 +107,7 @@ bool equals(float* firstArr, float* secondArr, size_t length)
 void printWrongArraysInfo(float* expected, float* actual, size_t length)
 {
 	printf("\n-----WRONG RESULT-----\n");
+	printf("length=%i\n", length);
 	printf("Actual:\n");
 	printArray(actual, length);
 	printf("Expected:\n");

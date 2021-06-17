@@ -5,6 +5,7 @@ void runTest(float* arr, size_t arrLength, size_t localGroupSize, size_t chunksC
 void startTests();
 void testLabExample();
 void testSwanExample();
+void testRandomOnDifferentSizes();
 
 float* generateRandomArray(size_t length);
 float* generateSequentialArray(size_t length);
