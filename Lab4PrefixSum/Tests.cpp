@@ -62,7 +62,7 @@ void testRandomOnDifferentSizes()
 		float arrLength = sizes[i];
 		float* arr = generateRandomArray(arrLength);
 		
-		runTest(arr, arrLength, 8, 4);
+		runTest(arr, arrLength, 32, 8);
 
 		delete[] arr;
 	}
