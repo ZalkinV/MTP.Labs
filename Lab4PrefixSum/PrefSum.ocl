@@ -76,7 +76,7 @@ kernel void prefSumStageThree(
 	if (iLast > arrLength)
 		iLast = arrLength;
 
-	int chunkSum = chunksPrefSums[iGroup];
+	float chunkSum = chunksPrefSums[iGroup];
 	for (int iEl = iFirst + iLocalId; iEl < iLast; iEl += LOCAL_GROUP_SIZE)
 	{
 		result[iEl] += chunkSum;
