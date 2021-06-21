@@ -39,6 +39,7 @@ float* calcPrefixSum(
 	char* buildOptions = new char[64];
 	sprintf(buildOptions, "-D LOCAL_GROUP_SIZE=%i", localGroupSize);
 	err = buildProgram(program, deviceId, buildOptions); tryThrowErr(err);
+	delete[] buildOptions;
 
 
 	char* kernelName = new char[32];
