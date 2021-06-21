@@ -127,10 +127,14 @@ float* calcPrefixSum(
 	err = clReleaseMemObject(arrBuffer); tryThrowErr(err);
 	err = clReleaseMemObject(stage1ResultBuffer); tryThrowErr(err);
 	err = clReleaseMemObject(stage2ResultBuffer); tryThrowErr(err);
+	err = clReleaseKernel(kernel); tryThrowErr(err);
+	err = clReleaseKernel(kernel2); tryThrowErr(err);
+	err = clReleaseKernel(kernel3); tryThrowErr(err);
 	err = clReleaseProgram(program); tryThrowErr(err);
 
 	delete[] stage1Result;
 	delete[] stage2Result;
+	delete[] kernelName;
 
 	err = clReleaseCommandQueue(queue); tryThrowErr(err);
 	err = clReleaseContext(context); tryThrowErr(err);
