@@ -12,9 +12,10 @@ void measureTime()
 {
 	srand(0);
 
-
-	size_t lengthsCount = 12;
-	size_t* lengths = getSizesPowerOfTwo(lengthsCount);
+	
+	size_t lengthsCount = 6;
+	size_t startPower = 15;
+	size_t* lengths = getSizesPowerOfTwo(lengthsCount, startPower);
 
 	size_t localGroupSizes[] = { 2, 16, 64 };
 	size_t localGroupSizesCount = sizeof(localGroupSizes) / sizeof(size_t);
@@ -64,12 +65,12 @@ void measureTime()
 	delete[] lengths;
 }
 
-size_t* getSizesPowerOfTwo(size_t len)
+size_t* getSizesPowerOfTwo(size_t len, size_t startPower)
 {
 	size_t* sizes = new size_t[len];
 	for (size_t i = 0; i < len; i++)
 	{
-		sizes[i] = (size_t)pow(2, i);
+		sizes[i] = (size_t)pow(2, startPower + i);
 	}
 
 	return sizes;
