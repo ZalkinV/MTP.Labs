@@ -18,7 +18,9 @@ float* calcPrefixSum(
 	float* fullElapsedTime)
 {
 	cl_device_id deviceId = getDeviceId(deviceIndex);
+#if !defined(TIME) && !defined(TEST)
 	printDeviceInfo(deviceId);
+#endif
 
 	cl_int err = 0;
 	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, &err); tryThrowErr(err);
