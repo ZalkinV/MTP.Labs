@@ -34,7 +34,7 @@ void labTask(int argc, char* argv[])
 	float kernelExecTime = 0;
 	float fullElapsedTime = 0;
 	size_t localGroupSize = 32;
-	size_t chunksCount = 8;
+	size_t chunksCount = 64;
 	float* resultArr = calcPrefixSum(deviceIndex, inputArr, arrLength, localGroupSize, chunksCount, &kernelExecTime, &fullElapsedTime);
 	printf("\nTime: %f\t%f\n", kernelExecTime, fullElapsedTime);
 	fprintArray(outputFileName, resultArr, arrLength);
