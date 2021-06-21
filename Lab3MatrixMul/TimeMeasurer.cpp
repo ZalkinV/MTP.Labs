@@ -29,7 +29,16 @@ void measureTime()
 				float kernelExecTime = 0;
 				float fullExecTime = 0;
 				mtype* result = runMulKernel(iDevice, firstMatrix, secondMatrix, rowColCount, rowColCount, rowColCount, implNumber, &kernelExecTime, &fullExecTime);
+				
+				mtype* expected = multiply(firstMatrix, secondMatrix, rowColCount, rowColCount, rowColCount);
+				bool isEqual = equals(expected, result, rowColCount, rowColCount);
+				if (!isEqual)
+				{
+					printf("WRONG! ");
+				}
+
 				printf("%i,%i,%i,%f,%f\n", iDevice, rowColCount, implNumber, kernelExecTime, fullExecTime);
+
 
 				delete[] result;
 			}
