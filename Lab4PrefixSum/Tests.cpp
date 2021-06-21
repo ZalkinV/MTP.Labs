@@ -94,9 +94,11 @@ bool equals(float* firstArr, float* secondArr, size_t length)
 {
 	for (size_t i = 0; i < length; i++)
 	{
-		if (fabs(firstArr[i] - secondArr[i]) > CL_FLT_EPSILON)
+		float firstEl = firstArr[i];
+		float secondEl = secondArr[i];
+		if (fabs(firstEl - secondEl) > CL_FLT_EPSILON)
 		{
-			printf("First diff at: %i\n", i);
+			printf("First diff at: %i (%f != %f)\n", i, firstEl, secondEl);
 			return false;
 		}
 	}

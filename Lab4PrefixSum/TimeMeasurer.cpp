@@ -49,7 +49,7 @@ void measureTime()
 					timer.stop();
 					float cpuExecTime = timer.getMs();
 					
-					//checkCorrectness(result, sequentialResult, length);
+					checkCorrectness(result, sequentialResult, length);
 
 					printf("%i,%i,%i,%i,%f,%f,%f\n", iDevice, length, localGroupSize, chunksCount, kernelExecTime, fullExecTime, cpuExecTime);
 
