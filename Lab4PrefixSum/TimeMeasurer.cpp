@@ -16,10 +16,10 @@ void measureTime()
 	size_t lengthsCount = 12;
 	size_t* lengths = getSizesPowerOfTwo(lengthsCount);
 
-	size_t localGroupSizes[] = { 2, 8, 64 };
+	size_t localGroupSizes[] = { 2, 16, 64 };
 	size_t localGroupSizesCount = sizeof(localGroupSizes) / sizeof(size_t);
 
-	size_t chunksCounts[] = { 2, 8, 64 };
+	size_t chunksCounts[] = { 2, 16, 64 };
 	size_t chunksCountsCount = sizeof(chunksCounts) / sizeof(size_t);
 
 	printf("Device,Length,LocalGroupSize,ChunksCount,Kernel ms,Full ms,CPU ms\n");
