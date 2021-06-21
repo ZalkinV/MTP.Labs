@@ -29,13 +29,7 @@ void measureTime()
 				float kernelExecTime = 0;
 				float fullExecTime = 0;
 				mtype* result = runMulKernel(iDevice, firstMatrix, secondMatrix, rowColCount, rowColCount, rowColCount, implNumber, &kernelExecTime, &fullExecTime);
-				
-				mtype* expected = multiply(firstMatrix, secondMatrix, rowColCount, rowColCount, rowColCount);
-				bool isEqual = equals(expected, result, rowColCount, rowColCount);
-				if (!isEqual)
-				{
-					printf("WRONG! ");
-				}
+				checkCorrectness(result, firstMatrix, secondMatrix, rowColCount, rowColCount, rowColCount);
 
 				printf("%i,%i,%i,%f,%f\n", iDevice, rowColCount, implNumber, kernelExecTime, fullExecTime);
 
@@ -60,4 +54,14 @@ size_t* getSizesPowerOfTwo(size_t len)
 	}
 
 	return sizes;
+}
+
+void checkCorrectness(mtype* actual, mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t colsRowsCount, size_t colsCount)
+{
+	mtype* expected = multiply(firstMatrix, secondMatrix, rowsCount, colsRowsCount, colsCount);
+	bool isEqual = equals(expected, actual, rowsCount, colsCount);
+	if (!isEqual)
+	{
+		printf("WRONG! ");
+	}
 }
