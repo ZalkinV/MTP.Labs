@@ -13,7 +13,6 @@ kernel void prefSumStageOne(
 	int iLast = (iGroup + 1) * chunkSize;
 	if (iLast > arrLength)
 		iLast = arrLength;
-	//printf("gi=%i lid=%i f=%i l=%i\n", iGroup, iLocalId, iFirst, iLast);
 
 	float prevSum = 0;
 	for (int i = iFirst; i < iLast; i += LOCAL_GROUP_SIZE)
@@ -24,7 +23,6 @@ kernel void prefSumStageOne(
 			chunkSums[iLocalId] = arr[iEl];
 		else
 			chunkSums[iLocalId] = 0;
-		//printf("gi=%i lid=%i el=%f(%i)\n", iGroup, iLocalId, arr[iEl], iEl);
 
 		barrier(CLK_LOCAL_MEM_FENCE);
 
@@ -33,7 +31,6 @@ kernel void prefSumStageOne(
 			if (iLocalId >= offset)
 			{
 				chunkSums[iLocalId] += chunkSums[iLocalId - offset];
-				//printf("gi=%i lid=%i idx=%i v=%f\n", iGroup, iLocalId, iLocalId - offset, chunkSums[iLocalId - offset]);
 			}
 
 			barrier(CLK_LOCAL_MEM_FENCE);
@@ -47,7 +44,6 @@ kernel void prefSumStageOne(
 
 		prevSum += chunkSums[LOCAL_GROUP_SIZE - 1];
 	}
-	//printf("gi=%i li=%i ps=%f\n", get_global_id(0), get_local_id(0), prevSum);
 }
 
 kernel void prefSumStageTwo(
