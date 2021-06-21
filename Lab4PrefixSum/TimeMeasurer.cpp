@@ -5,6 +5,7 @@
 #include "PrefixSumCalc.h"
 #include "Tests.h"
 #include <stdlib.h>
+#include "Timer.h"
 
 
 void measureTime()
@@ -21,7 +22,7 @@ void measureTime()
 	size_t chunksCounts[] = { 2, 8, 64 };
 	size_t chunksCountsCount = sizeof(chunksCounts) / sizeof(size_t);
 
-	printf("Device,Length,LocalGroupSize,ChunksCount,Kernel ms,Full ms\n");
+	printf("Device,Length,LocalGroupSize,ChunksCount,Kernel ms,Full ms,CPU ms\n");
 	for (cl_uint iDevice = 0; iDevice < 2; iDevice++)
 	{
 		for (size_t iSize = 0; iSize < lengthsCount; iSize++)
@@ -40,10 +41,16 @@ void measureTime()
 					float kernelExecTime = 0;
 					float fullExecTime = 0;
 					float* result = calcPrefixSum(iDevice, arr, length, localGroupSize, chunksCount, &kernelExecTime, &fullExecTime);
+					
+					Timer timer;
+					timer.start();
 					float* sequentialResult = calcPrefixSumSequential(arr, length);
+					timer.stop();
+					float cpuExecTime = timer.getMs();
+					
 					checkCorrectness(result, sequentialResult, length);
 
-					printf("%i,%i,%i,%i,%f,%f\n", iDevice, length, localGroupSize, chunksCount, kernelExecTime, fullExecTime);
+					printf("%i,%i,%i,%i,%f,%f,%f\n", iDevice, length, localGroupSize, chunksCount, kernelExecTime, fullExecTime, cpuExecTime);
 
 					delete[] result;
 					delete[] sequentialResult;
