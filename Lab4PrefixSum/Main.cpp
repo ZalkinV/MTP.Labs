@@ -6,6 +6,7 @@
 #include "ArrayOperations.h"
 #include "PrefixSumCalc.h"
 #include "Tests.h"
+#include "TimeMeasurer.h"
 
 using namespace std;
 
@@ -47,10 +48,12 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-#ifndef TEST
-		labTask(argc, argv);
-#else
+#ifdef TEST
 		startTests();
+#elif TIME
+		measureTime();
+#else
+		labTask(argc, argv);
 #endif
 	}
 	catch (const exception& e)
