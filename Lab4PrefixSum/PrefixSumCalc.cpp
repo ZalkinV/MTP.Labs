@@ -18,7 +18,9 @@ float* calcPrefixSum(
 	float* fullElapsedTime)
 {
 	cl_device_id deviceId = getDeviceId(deviceIndex);
+#if !defined(TIME) && !defined(TEST)
 	printDeviceInfo(deviceId);
+#endif
 
 	cl_int err = 0;
 	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, &err); tryThrowErr(err);
@@ -37,6 +39,7 @@ float* calcPrefixSum(
 	char* buildOptions = new char[64];
 	sprintf(buildOptions, "-D LOCAL_GROUP_SIZE=%i", localGroupSize);
 	err = buildProgram(program, deviceId, buildOptions); tryThrowErr(err);
+	delete[] buildOptions;
 
 
 	char* kernelName = new char[32];
@@ -70,6 +73,7 @@ float* calcPrefixSum(
 	float* stage1Result = new float[stage1ResultBufferSize];
 	err = clEnqueueReadBuffer(queue, stage1ResultBuffer, true, NULL, stage1ResultBufferSize, stage1Result, NULL, NULL, NULL); tryThrowErr(err);
 	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
+	err = clReleaseEvent(kernelStartEvent); tryThrowErr(err);
 	
 	printStageArray("1", stage1Result, arrLength);
 	// Finish stage 1
@@ -96,6 +100,7 @@ float* calcPrefixSum(
 	float* stage2Result = new float[stage2ResultBufferSize];
 	err = clEnqueueReadBuffer(queue, stage2ResultBuffer, true, NULL, stage2ResultBufferSize, stage2Result, NULL, NULL, NULL); tryThrowErr(err);
 	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
+	err = clReleaseEvent(kernelStartEvent); tryThrowErr(err);
 
 	printStageArray("2", stage2Result, chunksCount);
 	// Finish stage 2
@@ -116,6 +121,7 @@ float* calcPrefixSum(
 	float* stage3Result = new float[arrLength];
 	err = clEnqueueReadBuffer(queue, stage1ResultBuffer, true, NULL, stage1ResultBufferSize, stage3Result, NULL, NULL, NULL); tryThrowErr(err);
 	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
+	err = clReleaseEvent(kernelStartEvent); tryThrowErr(err);
 
 	printStageArray("3", stage3Result, arrLength);
 	// Finish stage 3
@@ -123,14 +129,17 @@ float* calcPrefixSum(
 	timer.stop();
 	*fullElapsedTime = timer.getMs();
 
-	err = clReleaseEvent(kernelStartEvent); tryThrowErr(err);
 	err = clReleaseMemObject(arrBuffer); tryThrowErr(err);
 	err = clReleaseMemObject(stage1ResultBuffer); tryThrowErr(err);
 	err = clReleaseMemObject(stage2ResultBuffer); tryThrowErr(err);
+	err = clReleaseKernel(kernel); tryThrowErr(err);
+	err = clReleaseKernel(kernel2); tryThrowErr(err);
+	err = clReleaseKernel(kernel3); tryThrowErr(err);
 	err = clReleaseProgram(program); tryThrowErr(err);
 
 	delete[] stage1Result;
 	delete[] stage2Result;
+	delete[] kernelName;
 
 	err = clReleaseCommandQueue(queue); tryThrowErr(err);
 	err = clReleaseContext(context); tryThrowErr(err);
