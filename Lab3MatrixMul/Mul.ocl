@@ -80,11 +80,14 @@ kernel void secondImpl(
 		else
 			sMatGroup[iYLoc][iXLoc] = 0;
 
+		barrier(CLK_LOCAL_MEM_FENCE);
 
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
 		{
 			elValue += fMatGroup[iYLoc][iEl] * sMatGroup[iEl][iXLoc];
 		}
+
+		barrier(CLK_LOCAL_MEM_FENCE);
 	}
 
 	if (iY < yCount && iX < xCount)
@@ -131,6 +134,7 @@ kernel void secondVectorImpl(
 		else
 			sMatGroup[iYLoc][iXLoc] = 0;
 			
+		barrier(CLK_LOCAL_MEM_FENCE);
 
 		const int vectorsCount = LOCAL_GROUP_SIZE / 8;
 		for (int iVector = 0; iVector < vectorsCount; iVector++)
@@ -154,6 +158,8 @@ kernel void secondVectorImpl(
 											sMatGroup[iVectorEl + 7][iXLoc]);
 			resVector += fMatY * sMatX;
 		}
+
+		barrier(CLK_LOCAL_MEM_FENCE);
 	}
 
 	if (iY < yCount && iX < xCount)
@@ -206,6 +212,8 @@ kernel void thirdImpl(
 				sMatGroup[vecYShift][vecXShift] = 0;
 		}
 
+		barrier(CLK_LOCAL_MEM_FENCE);
+
 		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
 		{
 			float4 fMatVector;
@@ -218,6 +226,8 @@ kernel void thirdImpl(
 
 			elsValues += fMatVector * sMatVector;
 		}
+
+		barrier(CLK_LOCAL_MEM_FENCE);
 	}
 
 	const bool isCurrYOk = iY < yCount;

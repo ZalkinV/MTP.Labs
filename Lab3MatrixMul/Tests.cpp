@@ -146,11 +146,13 @@ bool equals(mtype* firstMatrix, mtype* secondMatrix, size_t rowsCount, size_t co
 	
 	for (size_t i = 0; i < length; i++)
 	{
-		if (fabs(firstMatrix[i] - secondMatrix[i]) > CL_FLT_EPSILON)
+		float firstEl = firstMatrix[i];
+		float secondEl = secondMatrix[i];
+		if (fabs(firstEl - secondEl) > CL_FLT_EPSILON)
 		{
 			size_t iRow = i / colsCount;
 			size_t iCol = i % colsCount;
-			printf("First error at: %i %i\n", iRow, iCol);
+			printf("First error at: %i %i (%f != %f)\n", iRow, iCol, firstEl, secondEl);
 			return false;
 		}
 	}

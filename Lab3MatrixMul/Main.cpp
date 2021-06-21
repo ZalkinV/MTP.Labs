@@ -5,6 +5,7 @@
 
 #include "MatrixMulImpls.h"
 #include "Tests.h"
+#include "TimeMeasurer.h"
 
 using namespace std;
 
@@ -61,8 +62,13 @@ int main(int argc, char* argv[])
 {
 	try
 	{
+#ifdef TEST
+		startTests();
+#elif TIME
+		measureTime();
+#else
 		labTask(argc, argv);
-		//startTests();
+#endif
 	}
 	catch (const exception& e)
 	{

@@ -16,8 +16,9 @@ mtype* runMulKernel(
 	float* fullElapsedTime)
 {
 	cl_device_id deviceId = getDeviceId(deviceIndex);
+#if !defined(TIME) && !defined(TEST)
 	printDeviceInfo(deviceId);
-
+#endif
 	cl_int err = 0;
 	cl_context context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, &err); tryThrowErr(err);
 
@@ -75,9 +76,14 @@ mtype* runMulKernel(
 		firstRowsCount, colsRowsCount, secondColsCount,
 		kernelExecTime, fullElapsedTime);
 
+
 	err = clReleaseCommandQueue(queue); tryThrowErr(err);
 	err = clReleaseContext(context); tryThrowErr(err);
 	err = clReleaseDevice(deviceId); tryThrowErr(err);
+
+	delete[] localWorkSize;
+	delete[] globalWorkSize;
+	delete[] kernelName;
 
 	return resultMatrix;
 }
@@ -138,6 +144,7 @@ mtype* runImplementation(
 	err = clReleaseMemObject(firstBuffer); tryThrowErr(err);
 	err = clReleaseMemObject(secondBuffer); tryThrowErr(err);
 	err = clReleaseMemObject(resultBuffer); tryThrowErr(err);
+	err = clReleaseKernel(kernel); tryThrowErr(err);
 	err = clReleaseProgram(program); tryThrowErr(err);
 
 	return resultMatrix;
