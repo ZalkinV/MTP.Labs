@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdlib.h>
 
 #include "TimeMeasurer.h"
 #include "MatrixMulImpls.h"
@@ -7,6 +8,9 @@
 
 void measureTime()
 {
+	srand(0);
+
+
 	size_t sizesCount = 12;
 	size_t* sizes = getSizesPowerOfTwo(sizesCount);
 
