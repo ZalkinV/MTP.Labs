@@ -61,8 +61,11 @@ int main(int argc, char* argv[])
 {
 	try
 	{
+#ifdef TEST
+		startTests();
+#else
 		labTask(argc, argv);
-		//startTests();
+#endif
 	}
 	catch (const exception& e)
 	{
