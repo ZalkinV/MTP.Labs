@@ -76,9 +76,14 @@ mtype* runMulKernel(
 		firstRowsCount, colsRowsCount, secondColsCount,
 		kernelExecTime, fullElapsedTime);
 
+
 	err = clReleaseCommandQueue(queue); tryThrowErr(err);
 	err = clReleaseContext(context); tryThrowErr(err);
 	err = clReleaseDevice(deviceId); tryThrowErr(err);
+
+	delete[] localWorkSize;
+	delete[] globalWorkSize;
+	delete[] kernelName;
 
 	return resultMatrix;
 }
