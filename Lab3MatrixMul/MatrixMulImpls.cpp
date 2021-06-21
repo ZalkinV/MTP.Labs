@@ -144,6 +144,7 @@ mtype* runImplementation(
 	err = clReleaseMemObject(firstBuffer); tryThrowErr(err);
 	err = clReleaseMemObject(secondBuffer); tryThrowErr(err);
 	err = clReleaseMemObject(resultBuffer); tryThrowErr(err);
+	err = clReleaseKernel(kernel); tryThrowErr(err);
 	err = clReleaseProgram(program); tryThrowErr(err);
 
 	return resultMatrix;
