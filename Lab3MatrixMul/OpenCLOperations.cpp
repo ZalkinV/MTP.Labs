@@ -26,6 +26,9 @@ cl_device_id getDeviceId(cl_uint deviceIndex)
 
 	cl_device_id selectedDeviceId = devicesIds[selectedDeviceIndex];
 
+	delete[] devicesIds;
+	delete[] platformsIds;
+
 	return selectedDeviceId;
 }
 
@@ -84,6 +87,8 @@ void fillDevicesByType(
 				(*startIndex)++;
 			}
 		}
+
+		delete[] curPlatformDevicesIds;
 	}
 }
 
