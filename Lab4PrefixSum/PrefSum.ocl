@@ -26,18 +26,23 @@ kernel void prefSumStageOne(
 			chunkSums[iLocalId] = 0;
 		//printf("gi=%i lid=%i el=%f(%i)\n", iGroup, iLocalId, arr[iEl], iEl);
 
+		barrier(CLK_LOCAL_MEM_FENCE);
+
 		for (int offset = 1; offset < LOCAL_GROUP_SIZE; offset *= 2)
 		{
 			if (iLocalId >= offset)
 			{
 				chunkSums[iLocalId] += chunkSums[iLocalId - offset];
 				//printf("gi=%i lid=%i idx=%i v=%f\n", iGroup, iLocalId, iLocalId - offset, chunkSums[iLocalId - offset]);
-
 			}
+
+			barrier(CLK_LOCAL_MEM_FENCE);
 		}
 
 		if (iEl < iLast)
 			res[iEl] = chunkSums[iLocalId] + prevSum;
+
+		barrier(CLK_LOCAL_MEM_FENCE);
 
 
 		prevSum += chunkSums[LOCAL_GROUP_SIZE - 1];
