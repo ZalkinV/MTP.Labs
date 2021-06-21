@@ -13,30 +13,30 @@ void measureTime()
 	size_t impls[] = { 1, 2, 23, 3 };
 	size_t implsCount = sizeof(impls) / sizeof(size_t);
 
-	cl_uint deviceIndex = 1;
 	printf("Device,Size,Impl,Kernel ms,Full ms\n");
-
-	for (int iSize = 0; iSize < sizesCount; iSize++)
+	for (cl_uint iDevice = 0; iDevice < 2; iDevice++)
 	{
-		size_t rowColCount = sizes[iSize];
-		mtype* firstMatrix = createRandMatrix(rowColCount, rowColCount);
-		mtype* secondMatrix = createRandMatrix(rowColCount, rowColCount);
-
-		for (int iImpl = 0; iImpl < implsCount; iImpl++)
+		for (int iSize = 0; iSize < sizesCount; iSize++)
 		{
-			int implNumber = impls[iImpl];
+			size_t rowColCount = sizes[iSize];
+			mtype* firstMatrix = createRandMatrix(rowColCount, rowColCount);
+			mtype* secondMatrix = createRandMatrix(rowColCount, rowColCount);
 
-			float kernelExecTime = 0;
-			float fullExecTime = 0;
-			mtype* result = runMulKernel(deviceIndex, firstMatrix, secondMatrix, rowColCount, rowColCount, rowColCount, implNumber, &kernelExecTime, &fullExecTime);
-			printf("%i,%i,%i,%f,%f\n", deviceIndex, rowColCount, implNumber, kernelExecTime, fullExecTime);
+			for (int iImpl = 0; iImpl < implsCount; iImpl++)
+			{
+				int implNumber = impls[iImpl];
 
-			delete[] result;
+				float kernelExecTime = 0;
+				float fullExecTime = 0;
+				mtype* result = runMulKernel(iDevice, firstMatrix, secondMatrix, rowColCount, rowColCount, rowColCount, implNumber, &kernelExecTime, &fullExecTime);
+				printf("%i,%i,%i,%f,%f\n", iDevice, rowColCount, implNumber, kernelExecTime, fullExecTime);
+
+				delete[] result;
+			}
+
+			delete[] firstMatrix;
+			delete[] secondMatrix;
 		}
-
-
-		delete[] firstMatrix;
-		delete[] secondMatrix;
 	}
 
 	delete[] sizes;
