@@ -73,6 +73,7 @@ float* calcPrefixSum(
 	float* stage1Result = new float[stage1ResultBufferSize];
 	err = clEnqueueReadBuffer(queue, stage1ResultBuffer, true, NULL, stage1ResultBufferSize, stage1Result, NULL, NULL, NULL); tryThrowErr(err);
 	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
+	err = clReleaseEvent(kernelStartEvent); tryThrowErr(err);
 	
 	printStageArray("1", stage1Result, arrLength);
 	// Finish stage 1
@@ -99,6 +100,7 @@ float* calcPrefixSum(
 	float* stage2Result = new float[stage2ResultBufferSize];
 	err = clEnqueueReadBuffer(queue, stage2ResultBuffer, true, NULL, stage2ResultBufferSize, stage2Result, NULL, NULL, NULL); tryThrowErr(err);
 	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
+	err = clReleaseEvent(kernelStartEvent); tryThrowErr(err);
 
 	printStageArray("2", stage2Result, chunksCount);
 	// Finish stage 2
@@ -119,6 +121,7 @@ float* calcPrefixSum(
 	float* stage3Result = new float[arrLength];
 	err = clEnqueueReadBuffer(queue, stage1ResultBuffer, true, NULL, stage1ResultBufferSize, stage3Result, NULL, NULL, NULL); tryThrowErr(err);
 	*kernelExecTime += getElapsedTimeMs(kernelStartEvent);
+	err = clReleaseEvent(kernelStartEvent); tryThrowErr(err);
 
 	printStageArray("3", stage3Result, arrLength);
 	// Finish stage 3
@@ -126,7 +129,6 @@ float* calcPrefixSum(
 	timer.stop();
 	*fullElapsedTime = timer.getMs();
 
-	err = clReleaseEvent(kernelStartEvent); tryThrowErr(err);
 	err = clReleaseMemObject(arrBuffer); tryThrowErr(err);
 	err = clReleaseMemObject(stage1ResultBuffer); tryThrowErr(err);
 	err = clReleaseMemObject(stage2ResultBuffer); tryThrowErr(err);
