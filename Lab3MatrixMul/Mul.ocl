@@ -1,0 +1,263 @@
+kernel void firstImplOld(
+	global const float* firstMatrix,
+	global const float* secondMatrix,
+	const int colsCount,
+	const int colsRowsCount,
+	const int rowsCount,
+	global float* matrixResult)
+{
+	const int iRow = get_global_id(1);
+	const int iCol = get_global_id(0);
+
+
+	float elValue = 0;
+	for (int iEl = 0; iEl < colsRowsCount; iEl++)
+	{
+		elValue += firstMatrix[iRow * colsRowsCount + iEl] * secondMatrix[iEl * colsCount + iCol];
+	}
+
+	matrixResult[iRow * colsCount + iCol] = elValue;
+}
+
+kernel void firstImpl(
+	global const float* firstMatrix,
+	global const float* secondMatrix,
+	const int xCount,
+	const int elsCount,
+	const int yCount,
+	global float* matrixResult)
+{
+	const int iX = get_global_id(0);
+	const int iY = get_global_id(1);
+
+
+	float elValue = 0;
+	for (int iEl = 0; iEl < elsCount; iEl++)
+	{
+		elValue += firstMatrix[iY * elsCount + iEl] * secondMatrix[iEl * xCount + iX];
+	}
+
+	matrixResult[iY * xCount + iX] = elValue;
+}
+
+kernel void secondImpl(
+	global const float* firstMatrix,
+	global const float* secondMatrix,
+	const int xCount,
+	const int elsCount,
+	const int yCount,
+	global float* resultMatrix)
+{
+	const int iX = get_global_id(0);
+	const int iY = get_global_id(1);
+
+	const int iGroupX = get_group_id(0);
+	const int iGroupY = get_group_id(1);
+
+	const int iXLoc = get_local_id(0);
+	const int iYLoc = get_local_id(1);
+
+	local float fMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+
+
+	float elValue = 0;
+
+	const int fsSubMatCount = (int)ceil(elsCount / (float)LOCAL_GROUP_SIZE);
+	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
+	{
+		const int fMatRow = iGroupY * LOCAL_GROUP_SIZE + iYLoc;
+		const int fMatCol = iSubMat * LOCAL_GROUP_SIZE + iXLoc;
+		if (fMatRow < yCount && fMatCol < elsCount)
+			fMatGroup[iYLoc][iXLoc] = firstMatrix[fMatRow * elsCount + fMatCol];
+		else
+			fMatGroup[iYLoc][iXLoc] = 0;
+
+		const int sMatRow = iSubMat * LOCAL_GROUP_SIZE + iYLoc;
+		const int sMatCol = iGroupX * LOCAL_GROUP_SIZE + iXLoc;
+		if (sMatRow < elsCount && sMatCol < xCount)
+			sMatGroup[iYLoc][iXLoc] = secondMatrix[sMatRow * xCount + sMatCol];
+		else
+			sMatGroup[iYLoc][iXLoc] = 0;
+
+		barrier(CLK_LOCAL_MEM_FENCE);
+
+		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
+		{
+			elValue += fMatGroup[iYLoc][iEl] * sMatGroup[iEl][iXLoc];
+		}
+
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
+
+	if (iY < yCount && iX < xCount)
+		resultMatrix[iY * xCount + iX] = elValue;
+}
+
+kernel void secondVectorImpl(
+	global const float* firstMatrix,
+	global const float* secondMatrix,
+	const int xCount,
+	const int elsCount,
+	const int yCount,
+	global float* resultMatrix)
+{
+	const int iX = get_global_id(0);
+	const int iY = get_global_id(1);
+
+	const int iGroupX = get_group_id(0);
+	const int iGroupY = get_group_id(1);
+
+	const int iXLoc = get_local_id(0);
+	const int iYLoc = get_local_id(1);
+
+	local float fMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+	local float sMatGroup[LOCAL_GROUP_SIZE][LOCAL_GROUP_SIZE];
+
+
+	float8 resVector;
+
+	const int fsSubMatCount = (int)ceil(elsCount / (float)LOCAL_GROUP_SIZE);
+	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
+	{
+		const int fMatY = iGroupY * LOCAL_GROUP_SIZE + iYLoc;
+		const int fMatX = iSubMat * LOCAL_GROUP_SIZE + iXLoc;
+		if (fMatY < yCount && fMatX < elsCount)
+			fMatGroup[iYLoc][iXLoc] = firstMatrix[fMatY * elsCount + fMatX];
+		else
+			fMatGroup[iYLoc][iXLoc] = 0;
+
+		const int sMatY = iSubMat * LOCAL_GROUP_SIZE + iYLoc;
+		const int sMatX = iGroupX * LOCAL_GROUP_SIZE + iXLoc;
+		if (sMatY < elsCount && sMatX < xCount)
+			sMatGroup[iYLoc][iXLoc] = secondMatrix[sMatY * xCount + sMatX];
+		else
+			sMatGroup[iYLoc][iXLoc] = 0;
+			
+		barrier(CLK_LOCAL_MEM_FENCE);
+
+		const int vectorsCount = LOCAL_GROUP_SIZE / 8;
+		for (int iVector = 0; iVector < vectorsCount; iVector++)
+		{
+			const int iVectorEl = iVector * vectorsCount;
+			const float8 fMatY = (float8)(	fMatGroup[iYLoc][iVectorEl + 0],
+											fMatGroup[iYLoc][iVectorEl + 1],
+											fMatGroup[iYLoc][iVectorEl + 2],
+											fMatGroup[iYLoc][iVectorEl + 3],
+											fMatGroup[iYLoc][iVectorEl + 4],
+											fMatGroup[iYLoc][iVectorEl + 5],
+											fMatGroup[iYLoc][iVectorEl + 6],
+											fMatGroup[iYLoc][iVectorEl + 7]);
+			const float8 sMatX = (float8)(	sMatGroup[iVectorEl + 0][iXLoc],
+											sMatGroup[iVectorEl + 1][iXLoc],
+											sMatGroup[iVectorEl + 2][iXLoc],
+											sMatGroup[iVectorEl + 3][iXLoc],
+											sMatGroup[iVectorEl + 4][iXLoc],
+											sMatGroup[iVectorEl + 5][iXLoc],
+											sMatGroup[iVectorEl + 6][iXLoc],
+											sMatGroup[iVectorEl + 7][iXLoc]);
+			resVector += fMatY * sMatX;
+		}
+
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
+
+	if (iY < yCount && iX < xCount)
+		resultMatrix[iY * xCount + iX] = resVector.s0 + resVector.s1 + resVector.s2 + resVector.s3 + resVector.s4 + resVector.s5 + resVector.s6 + resVector.s7;
+}
+
+kernel void thirdImpl(
+	global const float* firstMatrix,
+	global const float* secondMatrix,
+	const int xCount,
+	const int elsCount,
+	const int yCount,
+	global float* resultMatrix)
+{
+	const int iX = get_global_id(0) * VEC_SIZE;
+	const int iY = get_global_id(1) * VEC_SIZE;
+
+	const int iGroupX = get_group_id(0) * VEC_SIZE;
+	const int iGroupY = get_group_id(1) * VEC_SIZE;
+
+	const int iXLoc = get_local_id(0) * VEC_SIZE;
+	const int iYLoc = get_local_id(1) * VEC_SIZE;
+
+	local float fMatGroup[LOCAL_GROUP_SIZE * VEC_SIZE][LOCAL_GROUP_SIZE * VEC_SIZE];
+	local float sMatGroup[LOCAL_GROUP_SIZE * VEC_SIZE][LOCAL_GROUP_SIZE * VEC_SIZE];
+
+
+	float4 elsValues;
+
+	const int fsSubMatCount = (int)ceil(elsCount / (float)LOCAL_GROUP_SIZE);
+	for (int iSubMat = 0; iSubMat < fsSubMatCount; iSubMat++)
+	{
+		for (int iVecEl = 0; iVecEl < VEC_SIZE * VEC_SIZE; iVecEl++)
+		{
+			const uint vecYShift = iYLoc + iVecEl / VEC_SIZE;
+			const uint vecXShift = iXLoc + iVecEl % VEC_SIZE;
+
+			const int fMatY = iGroupY * LOCAL_GROUP_SIZE + vecYShift;
+			const int fMatX = iSubMat * LOCAL_GROUP_SIZE + vecXShift;
+			if (fMatY < yCount && fMatX < elsCount)
+				fMatGroup[vecYShift][vecXShift] = firstMatrix[fMatY * elsCount + fMatX];
+			else
+				fMatGroup[vecYShift][vecXShift] = 0;
+
+			const int sMatY = iSubMat * LOCAL_GROUP_SIZE + vecYShift;
+			const int sMatX = iGroupX * LOCAL_GROUP_SIZE + vecXShift;
+			if (sMatY < elsCount && sMatX < xCount)
+				sMatGroup[vecYShift][vecXShift] = secondMatrix[sMatY * xCount + sMatX];
+			else
+				sMatGroup[vecYShift][vecXShift] = 0;
+		}
+
+		barrier(CLK_LOCAL_MEM_FENCE);
+
+		for (int iEl = 0; iEl < LOCAL_GROUP_SIZE; iEl++)
+		{
+			float4 fMatVector;
+			fMatVector.s01 = fMatGroup[iYLoc][iEl];
+			fMatVector.s23 = fMatGroup[iYLoc + 1][iEl];
+
+			float4 sMatVector;
+			sMatVector.s02 = sMatGroup[iEl][iXLoc];
+			sMatVector.s13 = sMatGroup[iEl][iXLoc + 1];
+
+			elsValues += fMatVector * sMatVector;
+		}
+
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
+
+	const bool isCurrYOk = iY < yCount;
+	const bool isNextYOk = iY + 1 < yCount;
+	const bool isCurrXOk = iX < xCount;
+	const bool isNextXOk = iX + 1 < xCount;
+	if (isCurrYOk)
+	{
+		if (isCurrXOk)
+		{
+			const uint iS0 = iY * xCount + iX;
+			resultMatrix[iS0] = elsValues.s0;
+		}
+		if (isNextXOk)
+		{
+			const uint iS1 = iY * xCount + (iX + 1);
+			resultMatrix[iS1] = elsValues.s1;
+		}
+	}
+	if (isNextYOk)
+	{
+		if (isCurrXOk)
+		{
+			const uint iS2 = (iY + 1) * xCount + iX;
+			resultMatrix[iS2] = elsValues.s2;
+		}
+		if (isNextXOk)
+		{
+			const uint iS3 = (iY + 1) * xCount + (iX + 1);
+			resultMatrix[iS3] = elsValues.s3;
+		}
+	}
+}
