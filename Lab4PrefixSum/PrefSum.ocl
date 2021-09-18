@@ -1,0 +1,85 @@
+kernel void prefSumStageOne(
+	global const float* arr,
+	const int arrLength,
+	const int chunkSize,
+	global float* res)
+{
+	local float chunkSums[LOCAL_GROUP_SIZE];
+
+	int iGroup = get_group_id(0);
+	int iLocalId = get_local_id(0);
+
+	int iFirst = iGroup * chunkSize;
+	int iLast = (iGroup + 1) * chunkSize;
+	if (iLast > arrLength)
+		iLast = arrLength;
+
+	float prevSum = 0;
+	for (int i = iFirst; i < iLast; i += LOCAL_GROUP_SIZE)
+	{
+		int iEl = i + iLocalId;
+		
+		if (iEl < iLast)
+			chunkSums[iLocalId] = arr[iEl];
+		else
+			chunkSums[iLocalId] = 0;
+
+		barrier(CLK_LOCAL_MEM_FENCE);
+
+		for (int offset = 1; offset < LOCAL_GROUP_SIZE; offset *= 2)
+		{
+			if (iLocalId >= offset)
+			{
+				chunkSums[iLocalId] += chunkSums[iLocalId - offset];
+			}
+
+			barrier(CLK_LOCAL_MEM_FENCE);
+		}
+
+		if (iEl < iLast)
+			res[iEl] = chunkSums[iLocalId] + prevSum;
+
+		barrier(CLK_LOCAL_MEM_FENCE);
+
+
+		prevSum += chunkSums[LOCAL_GROUP_SIZE - 1];
+	}
+}
+
+kernel void prefSumStageTwo(
+	global const float* chunksSums,
+	const int chunksSumsLength,
+	const int chunkSize,
+	global float* result)
+{
+	result[0] = 0;
+
+	int iChunk = 1;
+	for (int iChunkLastEl = chunkSize - 1; iChunkLastEl < chunksSumsLength; iChunkLastEl += chunkSize)
+	{
+		result[iChunk] = result[iChunk - 1] + chunksSums[iChunkLastEl];
+		iChunk++;
+	}
+}
+
+kernel void prefSumStageThree(
+	global const float* chunksPrefSums,
+	const int chunkSize,
+	const int arrLength,
+	global float* result)
+{
+	const int iLocalId = get_local_id(0);
+	const int iGroup = get_group_id(0);
+
+	int iFirst = iGroup * chunkSize;
+	int iLast = (iGroup + 1) * chunkSize;
+
+	if (iLast > arrLength)
+		iLast = arrLength;
+
+	float chunkSum = chunksPrefSums[iGroup];
+	for (int iEl = iFirst + iLocalId; iEl < iLast; iEl += LOCAL_GROUP_SIZE)
+	{
+		result[iEl] += chunkSum;
+	}
+}

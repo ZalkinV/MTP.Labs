@@ -62,7 +62,7 @@ cl_program getProgram(cl_context context, const char* sourceFilename)
 	return program;
 }
 
-int buildProgram(cl_program program, cl_device_id deviceId)
+int buildProgram(cl_program program, cl_device_id deviceId, char* options)
 {
 	cl_int compilationErr = clBuildProgram(program, 1, &deviceId, "", NULL, NULL);
 
